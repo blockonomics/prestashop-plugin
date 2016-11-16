@@ -28,7 +28,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     if(invoice_status == -1){
       $scope.tick_interval  = $interval($scope.tick, 1000);
 
-      var ws = new WebSocket("ws://localhost:8080/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
+      var ws = new WebSocket("ws://blockonomics.co/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
 
       ws.onmessage = function (evt) {
         console.log(evt);
