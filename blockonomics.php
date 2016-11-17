@@ -22,11 +22,11 @@ class Blockonomics extends PaymentModule
     $this->description = $this->l('Module for accepting payments by bitcoin.');
     $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
-    Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_API', 'https://blockonomics.co/api/new_address');
-    Configuration::updateValue('BLOCKONOMICS_PRICE_API', 'https://blockonomics.co/api/price?currency=');
+    Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_API', 'http://localhost:8080/api/new_address');
+    Configuration::updateValue('BLOCKONOMICS_PRICE_API', 'http://localhost:8080/api/price?currency=');
 
     if (!Configuration::get('BLOCKONOMICS_API_KEY'))
-      $this->warning = $this->l('API Key is not provided to communicate with https://blockonomics.co');
+      $this->warning = $this->l('API Key is not provided to communicate with http://localhost:8080');
   }
 
   public function install()
