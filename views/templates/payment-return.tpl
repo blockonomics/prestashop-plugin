@@ -16,7 +16,7 @@
 
 <div class="col-xs-12">
 <!-- Status -->
-<label ng-init="init({$status}, '{$addr}', {$timestamp})" ng-show="{$status} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</label>
+<label ng-init="init({$status}, '{$addr}', {$timestamp}, '{$base_websocket_url}' )" ng-show="{$status} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</label>
 <div class="value ng-binding" style="margin-bottom:10px;" >
 <strong style="color: #956431;" ng-show="{$status} == -1" >To
 pay, send exact amount of BTC to the given address</strong>
@@ -63,7 +63,7 @@ Received : <strong style="color: #956431;">{math equation="x/y" x=$bits_payed y=
 
 <!-- Transaction Details -->
 <div ng-show="{$status} >=0" class="value ng-binding" style="margin-bottom:10px;" >
-Transaction : <a style="font-weight:bold;color: #956431;" href="http://www.blockonomics.co/api/tx?txid={$txid}&addr={$addr}">Receipt</a>
+Transaction : <a style="font-weight:bold;color: #956431;" href="{$base_url}/api/tx?txid={$txid}&addr={$addr}">{$txid}</a>
 </div>
 </div>
 </div>

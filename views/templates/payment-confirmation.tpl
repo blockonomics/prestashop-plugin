@@ -14,7 +14,7 @@
 <h3>{l s='Bitcoin payment' mod='blockonomics'}</h3>
 <form action="{$this_path_ssl}payment-execution.php" method="post">
 	<p>
-		<img src="{$this_path_ssl}img/blockonomics-logo.png" alt="{l s='bitcoin' mod='blockonomics'}" style="float:left; margin: 0px 10px 5px 0px;" />
+		<img src="{$this_path_ssl}img/confirmation-logo.png" alt="{l s='bitcoin' mod='blockonomics'}" style="float:left; margin: 0px 10px 5px 0px;" />
 		{l s='You have chosen to pay by bitcoin.' mod='blockonomics'}
 		<br/><br />
 	</p>

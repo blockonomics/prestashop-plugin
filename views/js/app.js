@@ -24,11 +24,11 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
 
 
 
-  $scope.init = function(invoice_status, invoice_addr, invoice_timestamp){
+  $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url){
     if(invoice_status == -1){
       $scope.tick_interval  = $interval($scope.tick, 1000);
 
-      var ws = new WebSocket("ws://localhost:8080/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
+      var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
 
       ws.onmessage = function (evt) {
         console.log(evt);

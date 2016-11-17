@@ -1,0 +1,5 @@
+<?php
+$BLOCKONOMICS_BASE_URL = 'http://localhost:8080';
+$BLOCKONOMICS_WEBSOCKET_URL = 'ws://localhost:8080';
+$BLOCKONOMICS_NEW_ADDRESS_URL = $BLOCKONOMICS_BASE_URL.'/api/new_address';
+$BLOCKONOMICS_PRICE_URL = $BLOCKONOMICS_BASE_URL.'/api/price?currency=';

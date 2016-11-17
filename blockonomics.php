@@ -2,6 +2,7 @@
 if (!defined('_PS_VERSION_') or !defined('_CAN_LOAD_FILES_'))
   exit;
 
+
 class Blockonomics extends PaymentModule
 {
   private $_html = '';
@@ -22,19 +23,23 @@ class Blockonomics extends PaymentModule
     $this->description = $this->l('Module for accepting payments by bitcoin.');
     $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
-    Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_API', 'http://localhost:8080/api/new_address');
-    Configuration::updateValue('BLOCKONOMICS_PRICE_API', 'http://localhost:8080/api/price?currency=');
+    //Include configuration from the local file.
+    include(dirname(__FILE__).'/blockonomics_config.php');
+    Configuration::updateValue('BLOCKONOMICS_BASE_URL', $BLOCKONOMICS_BASE_URL);
+    Configuration::updateValue('BLOCKONOMICS_PRICE_URL', $BLOCKONOMICS_PRICE_URL);
+    Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_URL', $BLOCKONOMICS_NEW_ADDRESS_URL);
+    Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
 
     if (!Configuration::get('BLOCKONOMICS_API_KEY'))
-      $this->warning = $this->l('API Key is not provided to communicate with http://localhost:8080');
+      $this->warning = $this->l('API Key is not provided to communicate with '.Configuration::get('BLOCKONOMICS_BASE_URL'));
   }
 
   public function install()
   {
     if (!parent::install() OR 
-      !$this->installOrder('BITCOIN_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') OR 
-      !$this->installOrder('BITCOIN_ORDER_STATE_STATUS_0', 'Waiting for 2 Confirmations', NULL) OR 
-      !$this->installOrder('BITCOIN_ORDER_STATE_STATUS_2', 'Bitcoin Payment Confirmed', NULL) OR 
+      !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') OR 
+      !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0', 'Waiting for 2 Confirmations', NULL) OR 
+      !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2', 'Bitcoin Payment Confirmed', NULL) OR 
       !$this->installDB() OR 
       !$this->registerHook('payment') OR 
       !$this->registerHook('paymentReturn') OR 
@@ -51,9 +56,9 @@ class Blockonomics extends PaymentModule
   public function uninstall()
   {
     if (!parent::uninstall() OR 
-      !$this->uninstallOrder('BITCOIN_ORDER_STATE_WAIT') OR 
-      !$this->uninstallOrder('BITCOIN_ORDER_STATE_STATUS_0') OR 
-      !$this->uninstallOrder('BITCOIN_ORDER_STATE_STATUS_2') OR 
+      !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT') OR 
+      !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0') OR 
+      !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2') OR 
       !$this->uninstallDB())
       return false;
     return true;
@@ -126,11 +131,14 @@ class Blockonomics extends PaymentModule
   function uninstallDB()
   {
     Db::getInstance()->Execute('DROP TABLE  `' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders`;');
-    Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_API');
-    Configuration::deleteByName('BLOCKONOMICS_PRICE_API');
     Configuration::deleteByName('BLOCKONOMICS_API_KEY');
     Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
     Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
+
+    Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
+    Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
+    Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
+    Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
     return true;
   }
 
@@ -158,7 +166,7 @@ class Blockonomics extends PaymentModule
     $currency = new Currency((int) $id_currency);
     $options = array( 'http' => array( 'method'  => 'GET') );
     $context = stream_context_create($options);
-    $contents = file_get_contents(Configuration::get('BLOCKONOMICS_PRICE_API').$currency->iso_code, false, $context);
+    $contents = file_get_contents(Configuration::get('BLOCKONOMICS_PRICE_URL').$currency->iso_code, false, $context);
     $priceObj = json_decode($contents);
     return $priceObj->price;
   }
@@ -175,7 +183,7 @@ class Blockonomics extends PaymentModule
 
     //Generate new address for this invoice
     $context = stream_context_create($options);
-    $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_API'), false, $context);
+    $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL'), false, $context);
     $addressObj = json_decode($contents);
     return $addressObj->address;
   }
@@ -201,6 +209,11 @@ class Blockonomics extends PaymentModule
     global $cookie, $smarty;
 
     $price = $this->getBTCPrice($cart->id_currency);
+
+    //Redirect to order page if the price is zero
+    if(!$price)
+      Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
+
     //Total Cart value in bits
     $total_cost = $cart->getOrderTotal(true, Cart::BOTH);
     $bits = intval(1.0e8*$total_cost/$price);
@@ -229,8 +242,8 @@ class Blockonomics extends PaymentModule
 
 
     $state = $params['objOrder']->getCurrentState();
-    if ($state == Configuration::get('BITCOIN_ORDER_STATE_WAIT') OR 
-      $state == Configuration::get('BITCOIN_ORDER_STATE_STATUS_0') OR 
+    if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') OR 
+      $state == Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_0') OR 
       $state == _PS_OS_OUTOFSTOCK_) {
 
       //Render invoice template
@@ -256,6 +269,8 @@ class Blockonomics extends PaymentModule
         'txid' => $b_order[0]['txid'],
         'bits' => $b_order[0]['bits'],
         'value' => $b_order[0]['value'],
+        'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+        'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
         'timestamp' => $b_order[0]['timestamp'],
         'currency_iso_code' => $params['currencyObj']->iso_code,
         'bits_payed' => $b_order[0]['bits_payed']
@@ -278,6 +293,7 @@ class Blockonomics extends PaymentModule
       'status' => intval($b_order[0]['status']),
       'addr' => $b_order[0]['addr'],
       'txid' => $b_order[0]['txid'],
+      'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
       'bits_payed' => $b_order[0]['bits_payed']
     ));
 
@@ -300,8 +316,10 @@ class Blockonomics extends PaymentModule
 
     if($tx_status == -1){
       $status = 'Payment Not Received.';
+    } else if($tx_status == 0){
+      $status = 'Waiting for 2 Confirmations.';
     } else {
-      $status = 'Payment Received ( >= '.$b_order[0]['status'].' Confirmations).';
+      $status = 'Payment Confirmed.';
     }
 
     $smarty->assign(array(
@@ -309,6 +327,7 @@ class Blockonomics extends PaymentModule
       'addr' => $b_order[0]['addr'],
       'txid' => $b_order[0]['txid'],
       'bits' => $b_order[0]['bits'],
+      'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
       'bits_payed' => $b_order[0]['bits_payed']
     ));
 

@@ -21,9 +21,9 @@ if($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')){
     $o = new Order($order[0]['id_order']);
 
     if($status == 0){
-      $o->setCurrentState(Configuration::get('BITCOIN_ORDER_STATE_STATUS_0'));
+      $o->setCurrentState(Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_0'));
     } else if ($status == 2){
-      $o->setCurrentState(Configuration::get('BITCOIN_ORDER_STATE_STATUS_2'));
+      $o->setCurrentState(Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_2'));
       $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
     }
   }

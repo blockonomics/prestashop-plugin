@@ -37,12 +37,16 @@ if (!isset($new_address)){
 
 $current_time = time();
 $price = $blockonomics->getBTCPrice($currency->id);
+
+if(!$price)
+	Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
+
 $bits = intval(1.0e8*$total/$price);
 
 $mailVars =	array(
 	'{bitcoin_address}' => $new_address,
 	'{bits}' => $bits/1.0e8,
-	'{track_url}' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__.'order-confirmation.php?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
+	'{track_url}' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
         );
 
 /*
@@ -50,7 +54,7 @@ print_r($mailVars);
  */
 
 $mes = "Adr BTC : " .$new_address;
-$blockonomics->validateOrder((int)($cart->id), Configuration::get('BITCOIN_ORDER_STATE_WAIT'), $total, $blockonomics->displayName, $mes, $mailVars, (int)($currency->id), false, $customer->secure_key);
+$blockonomics->validateOrder((int)($cart->id), Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'), $total, $blockonomics->displayName, $mes, $mailVars, (int)($currency->id), false, $customer->secure_key);
 
 
 Db::getInstance()->Execute("INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
