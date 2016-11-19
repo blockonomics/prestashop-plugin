@@ -9,8 +9,11 @@ Features
 
 Prestashop Setup
 -----------------
-- Upload the zip using Modules and Services > Add new Module
-- Locate the module in the modules list (search author blockonomics) and click on Install
+- Upload the release tar.gz using Modules and Services > Add new Module
+- Or if you prefer to clone directly inside modules, remember that directory name
+  should be blockonomics.  
+`git clone git@github.com:blockonomics/prestashop-plugin.git blockonomics`
+- Locate the module in Admin > modules list (search author blockonomics) and click on Install
 
 
 Blockonomics Setup
