@@ -1,3 +1,12 @@
+Features
+--------
+- Accept bitcoin payments on your website with ease
+- Payments go directly in your own bitcoin wallet
+- All HD wallet like trezor, blockchain.info, mycelium supported
+- No approvals of API key/documentation required
+- Uses [blockonomics API](https://www.blockonomics.co/views/api.html)
+
+
 Prestashop Setup
 -----------------
 - Upload the zip using Modules and Services > Add new Module
@@ -6,7 +15,7 @@ Prestashop Setup
 
 Blockonomics Setup
 -----------------
-- Goto https://www.blockonomics.co/views/merchants_get_started.html and complete merchant wizard
+- Complete [blockonomics merchant wizard](https://www.blockonomics.co/views/merchants_get_started.html) 
 - Get API key from Wallet Watcher > Settings
 - Put this API key in prestashop module 
 - Copy callback url from prestashop module and set it in blockonomics merchant tab
