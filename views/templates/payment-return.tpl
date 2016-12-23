@@ -68,7 +68,7 @@ Transaction : <a style="font-weight:bold;color: #956431;" href="{$base_url}/api/
 </div>
 </div>
 <div class="row">
-<input type="text" class="invoice-address" value="{$addr}" readonly="readonly"> 
+<a href="bitcoin:{$addr}?amount={math equation="x/y" x=$bits y=100000000}" class="invoice-address">{$addr}</a> 
 </div>
 </div>
 </div>
