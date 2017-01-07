@@ -123,7 +123,7 @@ class Blockonomics extends PaymentModule
     $secret = md5(uniqid(rand(), true));
     Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
     Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', 
-    Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+    Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
 
     return true;
   }
@@ -155,7 +155,7 @@ class Blockonomics extends PaymentModule
 
     $smarty->assign(array(
       'this_path' => $this->_path,
-      'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+      'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
     ));
 
     return $this->display(__FILE__, 'views/templates/payment-selection.tpl');
@@ -222,7 +222,7 @@ class Blockonomics extends PaymentModule
       'nbProducts' => $cart->nbProducts(),
       'total_bits' => $bits,
       'total_btc' => $bits/1.0e8,
-      'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+      'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
     ));
 
     return $this->display(__FILE__, 'views/templates/payment-confirmation.tpl');
@@ -343,7 +343,7 @@ class Blockonomics extends PaymentModule
       $secret = md5(uniqid(rand(), true));
       Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
       Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', 
-        Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+        Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
     }
 
     global $smarty;
@@ -354,7 +354,7 @@ class Blockonomics extends PaymentModule
       'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
       'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
       'token' => Tools::getAdminTokenLite("AdminOrders"),
-      'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+      'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
     ));
 
 
