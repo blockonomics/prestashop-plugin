@@ -63,7 +63,7 @@ Received : <strong style="color: #956431;">{math equation="x/y" x=$bits_payed y=
 
 <!-- Transaction Details -->
 <div ng-show="{$status} >=0" class="value ng-binding" style="margin-bottom:10px;" >
-Transaction : <a style="font-weight:bold;color: #956431;" href="{$base_url}/api/tx?txid={$txid}&addr={$addr}">{$txid}</a>
+Transaction : <a style="font-weight:bold;color: #956431;" href="{$base_url}/api/tx?txid={$txid}&addr={$addr}">{$txid|truncate:20:""}</a>
 </div>
 </div>
 </div>
