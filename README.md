@@ -18,7 +18,7 @@ Prestashop Setup
 
 Blockonomics Setup
 -----------------
-- Complete [blockonomics merchant wizard](https://www.blockonomics.co/views/merchants_get_started.html) 
+- Complete [blockonomics merchant wizard](https://www.blockonomics.co/merchants) 
 - Get API key from Wallet Watcher > Settings
 - Put this API key in prestashop module 
 - Copy callback url from prestashop module and set it in blockonomics merchant tab
