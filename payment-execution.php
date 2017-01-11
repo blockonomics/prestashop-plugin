@@ -13,12 +13,6 @@ $customer = new Customer((int)$cart->id_customer);
 if (!Validate::isLoadedObject($customer))
 	Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
 
-$verif = Db::getInstance()->ExecuteS("SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `id_order` = ".$cart->id." LIMIT 1");
-
-if (isset ($verif[0]["id_order"])){
-  echo 'Basket Already Register';
-    die();
-}
 
 $currency = new Currency((int)(isset($_POST['currency_payement']) ? $_POST['currency_payement'] : $cookie->id_currency));
 $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
