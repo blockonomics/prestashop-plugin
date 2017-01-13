@@ -18,7 +18,7 @@
  * International Registered Trademark & Property of Blockonomics
  */
 
-if (!defined('_PS_VERSION_') or !defined('_CAN_LOAD_FILES_')){
+if (!defined('_PS_VERSION_') or !defined('_CAN_LOAD_FILES_')) {
     exit;
 }
 
@@ -55,22 +55,22 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_URL', $BLOCKONOMICS_NEW_ADDRESS_URL);
         Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
 
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')){
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l('API Key is not provided to communicate with '.Configuration::get('BLOCKONOMICS_BASE_URL'));
         }
     }
 
     public function install()
     {
-        if (!parent::install() or 
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') or 
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0', 'Waiting for 2 Confirmations', null) or 
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2', 'Bitcoin Payment Confirmed', null) or 
-            !$this->installDB() or 
-            !$this->registerHook('payment') or 
-            !$this->registerHook('paymentReturn') or 
-            !$this->registerHook('displayPDFInvoice') or 
-            !$this->registerHook('invoice')){
+        if (!parent::install() or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0', 'Waiting for 2 Confirmations', null) or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2', 'Bitcoin Payment Confirmed', null) or
+            !$this->installDB() or
+            !$this->registerHook('payment') or
+            !$this->registerHook('paymentReturn') or
+            !$this->registerHook('displayPDFInvoice') or
+            !$this->registerHook('invoice')) {
             return false;
         }
 
@@ -80,12 +80,12 @@ class Blockonomics extends PaymentModule
 
     public function uninstall()
     {
-        if (!parent::uninstall() or 
-            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT') or 
-            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0') or 
-            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2') or 
-            !$this->uninstallDB()){
-                return false;
+        if (!parent::uninstall() or
+            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT') or
+            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0') or
+            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2') or
+            !$this->uninstallDB()) {
+            return false;
         }
         return true;
     }
@@ -93,10 +93,10 @@ class Blockonomics extends PaymentModule
     public function installOrder($key, $title, $template)
     {
         $orderState = new OrderState();
-        $orderState->name = array_fill(0,10,$title);
+        $orderState->name = array_fill(0, 10, $title);
         $orderState->color = '#add8e6';
         $orderState->send_email = isset($template);
-        $orderState->template = array_fill(0,10,$template);
+        $orderState->template = array_fill(0, 10, $template);
         $orderState->hidden = false;
         $orderState->delivery = false;
         $orderState->logable = false;
@@ -106,7 +106,7 @@ class Blockonomics extends PaymentModule
             return false;
         }
 
-        if(isset($template)){
+        if (isset($template)) {
             copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
 
             copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/en/'.$template.'.txt');
@@ -151,7 +151,7 @@ class Blockonomics extends PaymentModule
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', 
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL',
             Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
 
         return true;
@@ -174,11 +174,11 @@ class Blockonomics extends PaymentModule
     // Display payment
     public function hookPayment($params)
     {
-        if (!$this->active){
+        if (!$this->active) {
             return;
         }
 
-        if (!$this->checkCurrency($params['cart'])){
+        if (!$this->checkCurrency($params['cart'])) {
             return;
         }
 
@@ -224,10 +224,9 @@ class Blockonomics extends PaymentModule
         $currency_order = new Currency((int) ($cart->id_currency));
         $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
-        if (is_array($currencies_module)){
-            foreach ($currencies_module as $currency_module)
-            {
-                if ($currency_order->id == $currency_module['id_currency']){
+        if (is_array($currencies_module)) {
+            foreach ($currencies_module as $currency_module) {
+                if ($currency_order->id == $currency_module['id_currency']) {
                     return true;
                 }
             }
@@ -236,18 +235,18 @@ class Blockonomics extends PaymentModule
 
     public function showConfirmationPage($cart)
     {
-        if (!$this->active){
+        if (!$this->active) {
             return;
         }
 
-        if (!$this->checkCurrency($cart)){
+        if (!$this->checkCurrency($cart)) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
         }
 
         $price = $this->getBTCPrice($cart->id_currency);
 
         //Redirect to order page if the price is zero
-        if(!$price){
+        if (!$price) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
         }
 
@@ -269,7 +268,7 @@ class Blockonomics extends PaymentModule
     // Display Payment Return
     public function hookPaymentReturn($params)
     {
-        if (!$this->active){
+        if (!$this->active) {
             return;
         }
 
@@ -282,9 +281,9 @@ class Blockonomics extends PaymentModule
 
 
         $state = $params['objOrder']->getCurrentState();
-        if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or 
-            $state == Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_0') or 
-            $state == _PS_OS_OUTOFSTOCK_){
+        if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
+            $state == Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_0') or
+            $state == _PS_OS_OUTOFSTOCK_) {
 
             //Render invoice template
             $this->context->controller->addJS($this->_path.'views/js/bootstrap.js');
@@ -321,7 +320,7 @@ class Blockonomics extends PaymentModule
     //Add Bitcoin invoice to pdf invoice
     public function hookDisplayPDFInvoice($params)
     {
-        if (!$this->active){
+        if (!$this->active) {
             return;
         }
 
@@ -336,13 +335,11 @@ class Blockonomics extends PaymentModule
         ));
 
         return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
-
     }
 
     //Display Invoice
     public function hookInvoice($params)
     {
-
         $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . $params['id_order']. '  LIMIT 1');
 
     /*
@@ -351,9 +348,9 @@ class Blockonomics extends PaymentModule
 
         $tx_status = (int)($b_order[0]['status']);
 
-        if($tx_status == -1){
+        if ($tx_status == -1) {
             $status = 'Payment Not Received.';
-        } else if($tx_status == 0){
+        } elseif ($tx_status == 0) {
             $status = 'Waiting for 2 Confirmations.';
         } else {
             $status = 'Payment Confirmed.';
@@ -373,13 +370,13 @@ class Blockonomics extends PaymentModule
 
     public function getContent()
     {
-        if (Tools::getIsset(Tools::getValue('updateApiKey'))){
+        if (Tools::getIsset(Tools::getValue('updateApiKey'))) {
             Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
-        } else if (Tools::getIsset(Tools::getValue('updateCallback'))){
+        } elseif (Tools::getIsset(Tools::getValue('updateCallback'))) {
             //Generate new callback secret
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-            Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', 
+            Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL',
                 Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
         }
 

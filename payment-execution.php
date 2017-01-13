@@ -25,19 +25,19 @@ include(dirname(__FILE__).'/blockonomics.php');
 $blockonomics = new Blockonomics();
 $cart = $blockonomics->context->cart;
 
-if(!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active){
+if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
     Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
 }
 
 $customer = new Customer((int)$cart->id_customer);
 
-if(!Validate::isLoadedObject($customer)){
+if (!Validate::isLoadedObject($customer)) {
     Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
 }
 
 $verif = Db::getInstance()->ExecuteS("SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `id_order` = ".$cart->id." LIMIT 1");
 
-if(isset ($verif[0]["id_order"])){
+if (isset($verif[0]["id_order"])) {
     echo 'Basket Already Register';
     die();
 }
@@ -53,7 +53,7 @@ echo "<br/><br/><br/><br/>";
 print_r($cart);
  */
 
-if(!isset($new_address)){
+if (!isset($new_address)) {
     echo 'Not able to generate new bitcoin address at this time.';
     die();
 }
@@ -61,13 +61,13 @@ if(!isset($new_address)){
 $current_time = time();
 $price = $blockonomics->getBTCPrice($currency->id);
 
-if(!$price){
+if (!$price) {
     Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
 }
 
 $bits = (int)(1.0e8*$total/$price);
 
-$mailVars =	array(
+$mailVars =    array(
     '{bitcoin_address}' => $new_address,
     '{bits}' => $bits/1.0e8,
     '{track_url}' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
