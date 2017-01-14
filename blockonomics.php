@@ -151,9 +151,7 @@ class Blockonomics extends PaymentModule
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
-
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret); 
         return true;
     }
 
@@ -381,8 +379,7 @@ class Blockonomics extends PaymentModule
             //Generate new callback secret
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-            Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL',
-                Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+            Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
         }
 
         $this->smarty->assign(array(
@@ -391,8 +388,7 @@ class Blockonomics extends PaymentModule
             'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
             'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
             'token' => Tools::getAdminTokenLite("AdminOrders"),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
+            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'));
 
 
         return $this->display(__FILE__, 'views/templates/admin/backend.tpl');
