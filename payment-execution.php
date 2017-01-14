@@ -70,7 +70,7 @@ $bits = (int)(1.0e8*$total/$price);
 $mailVars =    array(
     '{bitcoin_address}' => $new_address,
     '{bits}' => $bits/1.0e8,
-    '{track_url}' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
+    '{track_url}' => Tools::getHttpHost(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
 );
 
 /*
@@ -84,4 +84,4 @@ $blockonomics->validateOrder((int)($cart->id), Configuration::get('BLOCKONOMICS_
 Db::getInstance()->Execute("INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
     ('".$blockonomics->currentOrder."','".$current_time."','".$new_address."', '', -1,'".$total."','".$bits."', 0)");
 
-Tools::redirectLink(Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
