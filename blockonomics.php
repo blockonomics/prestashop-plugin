@@ -32,7 +32,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.6';
+        $this->version = '1.0.7';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -373,9 +373,9 @@ class Blockonomics extends PaymentModule
 
     public function getContent()
     {
-        if (Tools::getIsset(Tools::getValue('updateApiKey'))) {
+        if (Tools::getValue('updateApiKey')) {
             Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
-        } elseif (Tools::getIsset(Tools::getValue('updateCallback'))) {
+        } elseif (Tools::getValue('updateCallback')) {
             //Generate new callback secret
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
