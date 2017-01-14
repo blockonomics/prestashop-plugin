@@ -23,7 +23,7 @@ include(dirname(__FILE__).'/../../header.php');
 include(dirname(__FILE__).'/blockonomics.php');
 
 $blockonomics = new Blockonomics();
-$cart = $blockonomics->context->cart;
+$cart = $blockonomics->getContext()->cart;
 
 if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
     Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
@@ -42,7 +42,7 @@ if (isset($verif[0]["id_order"])) {
     die();
 }
 
-$cookie = $blockonomics->context->cookie;
+$cookie = $blockonomics->getContext()->cookie;
 $currency = new Currency((int)(Tools::getIsset(Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency));
 $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
 $new_address = $blockonomics->getNewAddress();

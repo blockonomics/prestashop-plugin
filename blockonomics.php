@@ -219,6 +219,11 @@ class Blockonomics extends PaymentModule
         return $addressObj->address;
     }
 
+    public function getContext()
+    {
+       return $this->context;
+    }
+
     public function checkCurrency($cart)
     {
         $currency_order = new Currency((int) ($cart->id_currency));
