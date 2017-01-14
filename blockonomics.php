@@ -64,8 +64,8 @@ class Blockonomics extends PaymentModule
     {
         if (!parent::install() or
             !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0', 'Waiting for 2 Confirmations', null) or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2', 'Bitcoin Payment Confirmed', null) or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null) or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null) or
             !$this->installDB() or
             !$this->registerHook('payment') or
             !$this->registerHook('paymentReturn') or
@@ -82,8 +82,8 @@ class Blockonomics extends PaymentModule
     {
         if (!parent::uninstall() or
             !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT') or
-            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_0') or
-            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_STATUS_2') or
+            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_0') or
+            !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_2') or
             !$this->uninstallDB()) {
             return false;
         }
@@ -287,7 +287,7 @@ class Blockonomics extends PaymentModule
 
         $state = $params['objOrder']->getCurrentState();
         if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
-            $state == Configuration::get('BLOCKONOMICS_ORDER_STATE_STATUS_0') or
+            $state == Configuration::get('BLOCKONOMICS_ORDER_STATUS_0') or
             $state == _PS_OS_OUTOFSTOCK_) {
 
             //Render invoice template
