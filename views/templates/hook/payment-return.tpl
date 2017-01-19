@@ -55,9 +55,10 @@ pay, send exact amount of BTC to the given address</strong>
 <div class="row qr-code-box">
 <div class="col-xs-5 qr-code">
 <div class="qr-enclosure">
+<a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}"> 
 <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="250">
 <canvas class="qrcode"></canvas>
-</qrcode>
+</qrcode></a>
 </div>
 </div>
 </div>
