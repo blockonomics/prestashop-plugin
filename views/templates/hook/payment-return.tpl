@@ -21,13 +21,11 @@
 <div class="col-md-7 col-md-offset-3 invoice" ng-controller="CheckoutController">
 <!-- heading row -->
 <div class="row">
-<div class="invoice-heading" ng-init="invoice_status = {$status|escape:'htmlall':'UTF-8'}"> 
-<span class="ng-binding"> Order# {$id_order|escape:'htmlall':'UTF-8'}</span>
+<h4> Order# {$id_order|escape:'htmlall':'UTF-8'}</h4>
 <span ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" class="invoice-heading-right" >//clock*1000 | date:'mm:ss' : 'UTC'//</span>
-</div>
 <div class="progress" ng-hide="{$status|escape:'htmlall':'UTF-8'} != -1">
-<div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width://progress//%">
-</div>
+<progress class="progress progress-primary" max="100" value="//progress//">
+</progress>
 </div>
 </div>
 <!-- Amount row -->
@@ -37,8 +35,8 @@
 <!-- Status -->
 <label ng-init="init({$status|escape:'htmlall':'UTF-8'}, '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'}, '{$base_websocket_url|escape:'htmlall':'UTF-8'}' )" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</label>
 <div class="value ng-binding" style="margin-bottom:10px;" >
-<strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >To
-pay, send exact amount of BTC to the given address</strong>
+<h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >To
+pay, send exact amount of BTC to the given address</h3>
 <strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} == 0"> Unconfirmed</strong>
 <strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} == 1"> Partially Confirmed</strong>
 <strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 2" >Confirmed</strong>
@@ -48,7 +46,7 @@ pay, send exact amount of BTC to the given address</strong>
 <div class="col-xs-6 invoice-amount"  style="border-right:#ccc 1px solid;">
 <!-- address-->
 <div class="row">
-<label class="col-xs-6" style="margin-bottom:15px;margin-top:15px;" for="btn-address">Bitcoin Address</label>
+<h4 class="col-xs-6" style="margin-bottom:15px;margin-top:15px;" for="btn-address">Bitcoin Address</h4>
 </div>
 
 <!-- QR Code -->
@@ -66,12 +64,12 @@ pay, send exact amount of BTC to the given address</strong>
 
 <div class="col-xs-6 invoice-status" style="margin-top:15px;">
 <!-- Amount -->
-<label for="invoice-amount">Amount</label>
+<h4 for="invoice-amount">Amount</h4>
 <div class="value ng-binding">
-<strong style="color: #956431;">{math equation="x/y" x=$bits y=100000000}</strong>
-<small>BTC</small> ⇌
-<strong style="color: #956431;">{$value|escape:'htmlall':'UTF-8'}</strong> 
-<small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small>
+<label>{math equation="x/y" x=$bits y=100000000}
+<small>BTC</small></label> ⇌
+<label>{$value|escape:'htmlall':'UTF-8'}
+<small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small></label>
 </div>
 
 <!-- Payment Details -->
@@ -89,7 +87,9 @@ href="{$base_url|escape:'htmlall':'UTF-8'}/api/tx?txid={$txid|escape:'htmlall':'
 </div>
 </div>
 <div class="row">
-<input type="text" class="invoice-address" value="{$addr|escape:'htmlall':'UTF-8'}" readonly="readonly"> 
+<div class="input-group">
+  <span class="input-group-addon"><h4>{$addr|escape:'htmlall':'UTF-8'}</h4></span>
+</div>
 </div>
 </div>
 </div>

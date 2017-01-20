@@ -294,7 +294,9 @@ class Blockonomics extends PaymentModule
             $this->context->controller->addJS($this->_path.'views/js/app.js');
             $this->context->controller->addJS($this->_path.'views/js/vendors.min.js');
             $this->context->controller->addJS($this->_path.'views/js/angular-qrcode.js');
+            $this->context->controller->addJS($this->_path.'views/js/prestashop-ui-kit.js');
             $this->context->controller->addCSS($this->_path.'views/css/style.css');
+            $this->context->controller->addCSS($this->_path.'views/css/bootstrap-prestashop-ui-kit.css');
 
             $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['objOrder']->id. '  LIMIT 1');
     /*
