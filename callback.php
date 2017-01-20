@@ -30,7 +30,7 @@ $addr = Tools::getValue('addr');
 //Match secret for callback
 if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     //Update status and txid for transaction
-    $query="UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET status='".$status."',txid='".$txid."',bits_payed=".$value." WHERE addr='".$addr."'";
+    $query="UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET status='".(int)$status."',txid='".pSQL($txid)."',bits_payed=".(int)$value." WHERE addr='".pSQL($addr)."'";
     $result = Db::getInstance()->Execute($query);
 
     if ($status == 0 || $status == 2) {
