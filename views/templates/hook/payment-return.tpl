@@ -33,13 +33,13 @@
 
 <div class="col-xs-12">
 <!-- Status -->
-<label ng-init="init({$status|escape:'htmlall':'UTF-8'}, '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'}, '{$base_websocket_url|escape:'htmlall':'UTF-8'}' )" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</label>
+<h4 ng-init="init({$status|escape:'htmlall':'UTF-8'}, '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'}, '{$base_websocket_url|escape:'htmlall':'UTF-8'}' )" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
 <div class="value ng-binding" style="margin-bottom:10px;" >
 <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >To
 pay, send exact amount of BTC to the given address</h3>
-<strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} == 0"> Unconfirmed</strong>
-<strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} == 1"> Partially Confirmed</strong>
-<strong style="color: #956431;" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 2" >Confirmed</strong>
+<label ng-show="{$status|escape:'htmlall':'UTF-8'} == 0"> Unconfirmed</label>
+<label ng-show="{$status|escape:'htmlall':'UTF-8'} == 1"> Partially Confirmed</label>
+<label ng-show="{$status|escape:'htmlall':'UTF-8'} >= 2" >Confirmed</label>
 </div>
 </div>
 
@@ -75,13 +75,13 @@ pay, send exact amount of BTC to the given address</h3>
 <!-- Payment Details -->
 <label style="margin-top:15px;" ng-hide="{$status|escape:'htmlall':'UTF-8'} == -1" for="invoice-amount" >Payment Details</label>
 <div ng-hide="{$status|escape:'htmlall':'UTF-8'} == -1" class="value ng-binding">
-Received : <strong style="color: #956431;">{math equation="x/y" x=$bits_payed y=100000000}</strong>
+Received : <label>{math equation="x/y" x=$bits_payed y=100000000}</label>
 <small>BTC</small> 
 </div>
 
 <!-- Transaction Details -->
 <div ng-show="{$status|escape:'htmlall':'UTF-8'} >=0" class="value ng-binding" style="margin-bottom:10px;" >
-Transaction : <a style="font-weight:bold;color: #956431;"
+Transaction : <a class="url"
 href="{$base_url|escape:'htmlall':'UTF-8'}/api/tx?txid={$txid|escape:'htmlall':'UTF-8'}&addr={$addr|escape:'htmlall':'UTF-8'}">{$txid|escape:'htmlall':'UTF-8'|truncate:20:""}</a>
 </div>
 </div>
