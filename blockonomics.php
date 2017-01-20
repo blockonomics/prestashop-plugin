@@ -327,7 +327,7 @@ class Blockonomics extends PaymentModule
             return;
         }
 
-        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' (int).$params['object']->id_order. '  LIMIT 1');
+        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' .(int)$params['object']->id_order. '  LIMIT 1');
 
         $this->smarty->assign(array(
             'status' => (int)($b_order[0]['status']),
