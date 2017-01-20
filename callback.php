@@ -34,7 +34,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     $result = Db::getInstance()->Execute($query);
 
     if ($status == 0 || $status == 2) {
-        $order = Db::getInstance()->ExecuteS("SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `addr` = '".$addr."' LIMIT 1");
+        $order = Db::getInstance()->ExecuteS("SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `addr` = '".pSQL($addr)."' LIMIT 1");
 
         //Update order status
         $o = new Order($order[0]['id_order']);
