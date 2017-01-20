@@ -296,7 +296,7 @@ class Blockonomics extends PaymentModule
             $this->context->controller->addJS($this->_path.'views/js/angular-qrcode.js');
             $this->context->controller->addCSS($this->_path.'views/css/style.css');
 
-            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . $params['objOrder']->id. '  LIMIT 1');
+            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['objOrder']->id. '  LIMIT 1');
     /*
     print_r($b_order);
      */
@@ -327,7 +327,7 @@ class Blockonomics extends PaymentModule
             return;
         }
 
-        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' .$params['object']->id_order. '  LIMIT 1');
+        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' (int).$params['object']->id_order. '  LIMIT 1');
 
         $this->smarty->assign(array(
             'status' => (int)($b_order[0]['status']),
@@ -343,7 +343,7 @@ class Blockonomics extends PaymentModule
     //Display Invoice
     public function hookInvoice($params)
     {
-        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . $params['id_order']. '  LIMIT 1');
+        $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['id_order']. '  LIMIT 1');
 
     /*
     print_r($b_order);
