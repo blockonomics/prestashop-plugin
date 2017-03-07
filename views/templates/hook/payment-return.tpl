@@ -91,5 +91,6 @@ href="{$base_url|escape:'htmlall':'UTF-8'}/api/tx?txid={$txid|escape:'htmlall':'
   <span class="input-group-addon"><h4>{$addr|escape:'htmlall':'UTF-8'}</h4></span>
 </div>
 </div>
+  <h3>Powered by blockonomics</h3>
 </div>
 </div>

@@ -212,7 +212,7 @@ class Blockonomics extends PaymentModule
 
         //Generate new address for this invoice
         $context = stream_context_create($options);
-        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL'), false, $context);
+        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
         $addressObj = Tools::jsonDecode($contents);
         return $addressObj->address;
     }
