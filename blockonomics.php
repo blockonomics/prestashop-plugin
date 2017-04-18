@@ -287,7 +287,6 @@ class Blockonomics extends PaymentModule
         if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
             $state == Configuration::get('BLOCKONOMICS_ORDER_STATUS_0') or
             $state == _PS_OS_OUTOFSTOCK_) {
-
             //Render invoice template
             $this->context->controller->addJS($this->_path.'views/js/bootstrap.js');
             $this->context->controller->addJS($this->_path.'views/js/angular.js');
