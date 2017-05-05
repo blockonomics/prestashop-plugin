@@ -32,3 +32,10 @@ Troubleshooting
 -----------------
 - Not able to generate new bitcoin address: Your webhost is blocking outgoing HTTP connections. Blockonomics requires to do an outgoing POST to generate new address. Check with your webhost to allow this.
 - Order page repeatedly refreshing on payment: Your webhost is blocking incoming callbacks from bots, our you have a DDOS protection in place that is causing this. Blockonomics.co uses curl to callback your server with payment notification and cannot emulate a browser accessing your website.
+
+
+Screenshots
+-----------------
+![admin orders page](screenshot-1.png)
+![order details](screenshot-2.png)
+![checkout page](screenshot-3.png)
