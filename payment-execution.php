@@ -47,8 +47,9 @@ print_r($cart);
  */
 
 if (!isset($new_address)) {
-    echo 'Not able to generate new bitcoin address at this time.';
-    die();
+  $result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTP connections. Blockonomics requires an outgoing HTTP POST to generate new address. Check with your webhosting provider to allow this. If problem still persists contact').' webmaster at blockonomics.co';
+  echo ($result);
+  die();
 }
 
 $current_time = time();
