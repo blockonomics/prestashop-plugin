@@ -37,8 +37,8 @@ Troubleshooting
 Screenshots
 -----------------
 #### Checkout Page 
-![checkout page](screenshot-3.png)
+![checkout page](views/img/screenshot-3.png)
 #### Order Details 
-![order details](screenshot-2.png)
+![order details](views/img/screenshot-2.png)
 #### Admin Orders Page 
-![admin orders page](screenshot-1.png)
+![admin orders page](views/img/screenshot-1.png)
