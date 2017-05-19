@@ -122,7 +122,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 
 		Db::getInstance()->Execute("INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
-			('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)");
+      ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)");
+
+    $redirect_link = '/index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
 
 		$this->context->smarty->assign(array(
 			'id_order' => (int)($blockonomics->currentOrder),
@@ -134,8 +136,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 			'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
 			'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
 			'timestamp' => $current_time,
-			'currency_iso_code' => $currency->id,
-			'bits_payed' => 0
+			'currency_iso_code' => $currency->iso_code,
+      'bits_payed' => 0,
+      'redirect_link' => $redirect_link
 		));
 
 

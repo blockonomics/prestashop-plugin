@@ -60,6 +60,7 @@
         <span class="input-group-addon"><h4 style="text-transform:none">{$addr|escape:'htmlall':'UTF-8'}</h4></span>
       </div>
     </div>
+    <span ng-hide="true" ng-bind="final_link" ng-cloak>{$redirect_link|escape:'htmlall':'UTF-8'}</span>
     <h3>Powered by blockonomics</h3>
   </div>
 </div>

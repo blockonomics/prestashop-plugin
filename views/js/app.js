@@ -50,13 +50,9 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
             var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
 
             ws.onmessage = function (evt) {
-                console.log(evt);
                 $interval(function(){
-                    if ($scope.tick_interval)
-                        $interval.cancel($scope.tick_interval);
-
-                    $window.location.reload();
-                }, 5000, 1);
+                    $window.location = $scope.final_url;
+                }, 200, 1);
             }
         }
     }
