@@ -28,10 +28,56 @@
  */
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
+	public function setMedia()
+  {
+    parent::setMedia();
+    $this->registerStylesheet(
+      'mystyle',
+      'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
+      [
+        'postion' => 'head'
+      ]
+    );
+    $this->registerStylesheet(
+      'mystyle1',
+      'modules/blockonomics/views/css/style.css',
+      [
+        'postion' => 'head',
+      ]
+    );
+    $this->registerJavascript(
+      'bootstrap',
+      'modules/blockonomics/views/js/bootstrap.js'
+    );
+    $this->registerJavascript(
+      'angular',
+      'modules/blockonomics/views/js/angular.js'
+    );
+    $this->registerJavascript(
+      'vendor',
+      'modules/blockonomics/views/js/vendors.min.js'
+    );
+    $this->registerJavascript(
+      'qrcode',
+      'modules/blockonomics/views/js/angular-qrcode.js'
+    );
+    $this->registerJavascript(
+      'app',
+      'modules/blockonomics/views/js/app.js'
+    );
+    //this->context->controller->addJS('/view/js/bootstrap.js');*/
+		/*$this->context->controller->addJS('module:blockonomics/views/js/angular.js');
+		$this->context->controller->addJS('module:blockonomics/views/js/app.js');
+		$this->context->controller->addJS('module:blockonomics/views/js/vendors.min.js');
+		$this->context->controller->addJS('module:blockonomics/views/js/angular-qrcode.js');
+		$this->context->controller->addJS('module:blockonomics/views/js/prestashop-ui-kit.js');
+		$this->context->controller->addCSS('module:blockonomics/views/css/style.css');
+    $this->context->controller->addCSS('module:blockonomics/views/css/bootstrap-prestashop-ui-kit.css');*/
+	}
 	public function postProcess()
 	{
-    $cart = $this->context->cart;
-    $blockonomics = $this->module;
+		$cart = $this->context->cart;
+		$blockonomics = $this->module;
 
 		if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
 			Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
@@ -92,7 +138,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 			'bits_payed' => 0
 		));
 
-   Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
+
+
+		$this->setTemplate('module:blockonomics/views/templates/front/payment-return.tpl');
+		//Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
 		//Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
 	}
 }
