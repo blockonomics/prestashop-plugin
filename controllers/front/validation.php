@@ -126,7 +126,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(array(
 			'id_order' => (int)($blockonomics->currentOrder),
-			'status' => 0,
+			'status' => -1,
 			'addr' => $new_address,	
 			'txid' => "",
 			'bits' => (int)$bits,
@@ -134,7 +134,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 			'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
 			'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
 			'timestamp' => $current_time,
-			'currency_iso_code' => 'USD',
+			'currency_iso_code' => $currency->id,
 			'bits_payed' => 0
 		));
 
