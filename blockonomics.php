@@ -327,7 +327,7 @@ class Blockonomics extends PaymentModule
                 'bits_payed' => $b_order[0]['bits_payed']
             ));
 
-            return $this->display(__FILE__, 'views/templates/hook/payment-return.tpl');
+            //return $this->display(__FILE__, 'views/templates/hook/payment-return.tpl');
         }
     }
 

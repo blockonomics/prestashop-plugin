@@ -78,7 +78,22 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 		Db::getInstance()->Execute("INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
 			('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)");
 
-		Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+		$this->context->smarty->assign(array(
+			'id_order' => (int)($blockonomics->currentOrder),
+			'status' => 0,
+			'addr' => $new_address,	
+			'txid' => "",
+			'bits' => (int)$bits,
+			'value' => (float)$total,
+			'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+			'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
+			'timestamp' => $current_time,
+			'currency_iso_code' => 'USD',
+			'bits_payed' => 0
+		));
+
+   Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
+		//Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
 	}
 }
 
