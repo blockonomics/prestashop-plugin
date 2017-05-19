@@ -38,6 +38,7 @@ class Blockonomics extends PaymentModule
         $this->need_instance = 1;
         $this->bootstrap = true;
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->controllers = array('validation');
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
 
         parent::__construct();
@@ -191,9 +192,8 @@ class Blockonomics extends PaymentModule
     public function getBTCPaymentOption()
     {
       $offlineOption = new PaymentOption();
-      $url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment-execution.php';
       $offlineOption->setCallToActionText($this->l('Pay by bitcoin'))
-        ->setAction($url);
+        ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true));
       return $offlineOption;
     }
 
@@ -293,7 +293,7 @@ class Blockonomics extends PaymentModule
      */
 
 
-        $state = $params['objOrder']->getCurrentState();
+        $state = $params['order']->getCurrentState();
         if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
             $state == Configuration::get('BLOCKONOMICS_ORDER_STATUS_0') or
             $state == _PS_OS_OUTOFSTOCK_) {
@@ -307,7 +307,7 @@ class Blockonomics extends PaymentModule
             $this->context->controller->addCSS($this->_path.'views/css/style.css');
             $this->context->controller->addCSS($this->_path.'views/css/bootstrap-prestashop-ui-kit.css');
 
-            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['objOrder']->id. '  LIMIT 1');
+            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['order']->id. '  LIMIT 1');
     /*
     print_r($b_order);
      */
