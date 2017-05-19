@@ -19,11 +19,13 @@
  */
 
 include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../header.php');
+/**include(dirname(__FILE__).'/../../header.inc.php');*/
 include(dirname(__FILE__).'/blockonomics.php');
 
 $blockonomics = new Blockonomics();
-$cart = $blockonomics->getContext()->cart;
+$cart = $blockonomics->context->cart;
+echo('cart is'.$cart);
+return;
 
 if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
     Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');

@@ -22,6 +22,7 @@ if (!defined('_PS_VERSION_') or !defined('_CAN_LOAD_FILES_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class Blockonomics extends PaymentModule
 {
@@ -32,10 +33,11 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.1';
+        $this->version = '1.7.1';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
 
         parent::__construct();
@@ -63,15 +65,15 @@ class Blockonomics extends PaymentModule
     public function install()
     {
         if (!parent::install() or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null) or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null) or
-            !$this->installDB() or
-            !$this->registerHook('payment') or
-            !$this->registerHook('paymentReturn') or
-            !$this->registerHook('displayPDFInvoice') or
-            !$this->registerHook('invoice')) {
-            return false;
+          !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') or
+          !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null) or
+          !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null) or
+          !$this->installDB() or
+          !$this->registerHook('paymentOptions') or
+          !$this->registerHook('paymentReturn') or
+          !$this->registerHook('displayPDFInvoice') or
+          !$this->registerHook('invoice')) {
+          return false;
         }
 
         $this->active = true;
@@ -170,7 +172,7 @@ class Blockonomics extends PaymentModule
     }
 
     // Display payment
-    public function hookPayment($params)
+    public function hookPaymentOptions($params)
     {
         if (!$this->active) {
             return;
@@ -180,13 +182,21 @@ class Blockonomics extends PaymentModule
             return;
         }
 
-        $this->smarty->assign(array(
-            'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/payment-selection.tpl');
+        $payment_options = [
+          $this->getBTCPaymentOption()
+        ];
+        return $payment_options;
     }
+
+    public function getBTCPaymentOption()
+    {
+      $offlineOption = new PaymentOption();
+      $url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment-execution.php';
+      $offlineOption->setCallToActionText($this->l('Pay by bitcoin'))
+        ->setAction($url);
+      return $offlineOption;
+    }
+
 
     public function getBTCPrice($id_currency)
     {
