@@ -17,7 +17,7 @@
 
       <div class="col-xs-12">
         <!-- Status -->
-        <h4 ng-init="init({$status|escape:'htmlall':'UTF-8'}, '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'}, '{$base_websocket_url|escape:'htmlall':'UTF-8'}' )" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
+        <h4 ng-init="init({$status|escape:'htmlall':'UTF-8'}, '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'}, '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'UTF-8'}')" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
         <div class="value ng-binding" style="margin-bottom:10px;margin-top:10px" >
           <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >To
             pay, send exact amount of BTC to the given address</h3>
@@ -60,7 +60,6 @@
         <span class="input-group-addon"><h4 style="text-transform:none">{$addr|escape:'htmlall':'UTF-8'}</h4></span>
       </div>
     </div>
-    <span ng-hide="true" ng-bind="final_link" ng-cloak>{$redirect_link|escape:'htmlall':'UTF-8'}</span>
     <h3>Powered by blockonomics</h3>
   </div>
 </div>
