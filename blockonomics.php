@@ -71,7 +71,6 @@ class Blockonomics extends PaymentModule
           !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null) or
           !$this->installDB() or
           !$this->registerHook('paymentOptions') or
-          !$this->registerHook('paymentReturn') or
           !$this->registerHook('displayPDFInvoice') or
           !$this->registerHook('invoice')) {
           return false;
@@ -276,59 +275,6 @@ class Blockonomics extends PaymentModule
         ));
 
         return $this->display(__FILE__, 'views/templates/hook/payment-confirmation.tpl');
-    }
-
-    // Display Payment Return
-    public function hookPaymentReturn($params)
-    {
-        if (!$this->active) {
-            return;
-        }
-
-    /*
-    print_r("Order ID<br>");
-    print_r($params['objOrder']->id);
-    print_r("<br>");
-    print_r($params);
-     */
-
-
-        $state = $params['order']->getCurrentState();
-        if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
-            $state == Configuration::get('BLOCKONOMICS_ORDER_STATUS_0') or
-            $state == _PS_OS_OUTOFSTOCK_) {
-            //Render invoice template
-            $this->context->controller->addJS($this->_path.'views/js/bootstrap.js');
-            $this->context->controller->addJS($this->_path.'views/js/angular.js');
-            $this->context->controller->addJS($this->_path.'views/js/app.js');
-            $this->context->controller->addJS($this->_path.'views/js/vendors.min.js');
-            $this->context->controller->addJS($this->_path.'views/js/angular-qrcode.js');
-            $this->context->controller->addJS($this->_path.'views/js/prestashop-ui-kit.js');
-            $this->context->controller->addCSS($this->_path.'views/css/style.css');
-            $this->context->controller->addCSS($this->_path.'views/css/bootstrap-prestashop-ui-kit.css');
-
-            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['order']->id. '  LIMIT 1');
-    /*
-    print_r($b_order);
-     */
-
-            $this->smarty->assign(array(
-                'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-                'id_order' => $params['objOrder']->id,
-                'status' => (int)($b_order[0]['status']),
-                'addr' => $b_order[0]['addr'],
-                'txid' => $b_order[0]['txid'],
-                'bits' => $b_order[0]['bits'],
-                'value' => $b_order[0]['value'],
-                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-                'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
-                'timestamp' => $b_order[0]['timestamp'],
-                'currency_iso_code' => $params['currencyObj']->iso_code,
-                'bits_payed' => $b_order[0]['bits_payed']
-            ));
-
-            //return $this->display(__FILE__, 'views/templates/hook/payment-return.tpl');
-        }
     }
 
     //Add Bitcoin invoice to pdf invoice
