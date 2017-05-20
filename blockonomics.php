@@ -245,37 +245,6 @@ class Blockonomics extends PaymentModule
         }
     }
 
-    public function showConfirmationPage($cart)
-    {
-        if (!$this->active) {
-            return;
-        }
-
-        if (!$this->checkCurrency($cart)) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
-        }
-
-        $price = $this->getBTCPrice($cart->id_currency);
-
-        //Redirect to order page if the price is zero
-        if (!$price) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
-        }
-
-        //Total Cart value in bits
-        $total_cost = $cart->getOrderTotal(true, Cart::BOTH);
-        $bits = (int)(1.0e8*$total_cost/$price);
-
-        $this->smarty->assign(array(
-            'nbProducts' => $cart->nbProducts(),
-            'total_bits' => $bits,
-            'total_btc' => $bits/1.0e8,
-            'order_link' => $this->context->link->getPageLink('order.php', true),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/payment-confirmation.tpl');
-    }
 
     //Add Bitcoin invoice to pdf invoice
     public function hookDisplayPDFInvoice($params)
