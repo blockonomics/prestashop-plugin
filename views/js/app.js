@@ -44,16 +44,11 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
 
 
     $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url){
-        if(invoice_status == -1){
-            $scope.tick_interval  = $interval($scope.tick, 1000);
-
-            var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
-
-            ws.onmessage = function (evt) {
-                $interval(function(){
-                    $window.location = final_url;
-                }, 200, 1);
-            }
+      if(invoice_status == -1){
+        var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
+        ws.onmessage = function (evt) {
+          $window.location = final_url;
         }
+      }
     }
 });
