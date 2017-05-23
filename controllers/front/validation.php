@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * 2007-2015 PrestaShop
  *
  * NOTICE OF LICENSE
@@ -23,9 +23,6 @@
  *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-/**
- * @since 1.5.0
- */
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
     public function setMedia()
@@ -34,16 +31,12 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->registerStylesheet(
       'mystyle',
       'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
-      [
-        'postion' => 'head'
-      ]
+      array('postion' => 'head')
     );
         $this->registerStylesheet(
       'mystyle1',
       'modules/blockonomics/views/css/style.css',
-      [
-        'postion' => 'head',
-      ]
+      array('postion' => 'head')
     );
         $this->registerJavascript(
       'bootstrap',
