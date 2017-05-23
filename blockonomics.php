@@ -189,9 +189,7 @@ class Blockonomics extends PaymentModule
             return;
         }
 
-        $payment_options = [
-          $this->getBTCPaymentOption()
-        ];
+        $payment_options = array($this->getBTCPaymentOption());
         return $payment_options;
     }
 
