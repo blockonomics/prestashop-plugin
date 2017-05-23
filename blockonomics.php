@@ -65,13 +65,13 @@ class Blockonomics extends PaymentModule
 
     public function install()
     {
-        if (!parent::install() 
-            or !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting') 
-            or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null) 
-            or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null) 
-            or !$this->installDB() 
-            or !$this->registerHook('paymentOptions') 
-            or !$this->registerHook('displayPDFInvoice') 
+        if (!parent::install()
+            or !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', 'bitcoin_waiting')
+            or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null)
+            or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null)
+            or !$this->installDB()
+            or !$this->registerHook('paymentOptions')
+            or !$this->registerHook('displayPDFInvoice')
             or !$this->registerHook('invoice')
         ) {
             return false;
@@ -83,10 +83,10 @@ class Blockonomics extends PaymentModule
 
     public function uninstall()
     {
-        if (!parent::uninstall() 
-            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT') 
-            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_0') 
-            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_2') 
+        if (!parent::uninstall()
+            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATE_WAIT')
+            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_0')
+            or !$this->uninstallOrder('BLOCKONOMICS_ORDER_STATUS_2')
             or !$this->uninstallDB()
         ) {
             return false;
