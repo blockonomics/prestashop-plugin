@@ -73,7 +73,7 @@ class Blockonomics extends PaymentModule
           !$this->registerHook('paymentOptions') or
           !$this->registerHook('displayPDFInvoice') or
           !$this->registerHook('invoice')) {
-          return false;
+            return false;
         }
 
         $this->active = true;
@@ -193,10 +193,10 @@ class Blockonomics extends PaymentModule
 
     public function getBTCPaymentOption()
     {
-      $offlineOption = new PaymentOption();
-      $offlineOption->setCallToActionText($this->l('Pay by bitcoin'))
+        $offlineOption = new PaymentOption();
+        $offlineOption->setCallToActionText($this->l('Pay by bitcoin'))
         ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true));
-      return $offlineOption;
+        return $offlineOption;
     }
 
 
