@@ -31,14 +31,14 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 	public function setMedia()
   {
     parent::setMedia();
-    $this->context->controller->addJS('module:blockonomics/view/js/bootstrap.js');
-		$this->context->controller->addJS('module:blockonomics/views/js/angular.js');
-		$this->context->controller->addJS('module:blockonomics/views/js/vendors.min.js');
-		$this->context->controller->addJS('module:blockonomics/views/js/angular-qrcode.js');
-		$this->context->controller->addJS('module:blockonomics/views/js/prestashop-ui-kit.js');
-		$this->context->controller->addJS('module:blockonomics/views/js/app.js');
-		$this->context->controller->addCSS('module:blockonomics/views/css/style.css');
-    $this->context->controller->addCSS('module:blockonomics/views/css/bootstrap-prestashop-ui-kit.css');
+    $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/bootstrap.js');
+		$this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
+		$this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
+		$this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
+		$this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
+		$this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
+		$this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
+    $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
 	}
 	public function postProcess()
 	{
