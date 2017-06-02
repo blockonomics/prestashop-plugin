@@ -107,13 +107,16 @@ class Blockonomics extends PaymentModule
         }
 
         if (isset($template)) {
-            copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
 
-            copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/en/'.$template.'.txt');
-            copy(dirname(__FILE__) . '/mail/en/'.$template.'.html', dirname(__FILE__) . '/../../mails/en/'.$template.'.html');
+          copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
 
-            copy(dirname(__FILE__) . '/mail/fr/'.$template.'.txt', dirname(__FILE__) . '/../../mails/fr/'.$template.'.txt');
-            copy(dirname(__FILE__) . '/mail/fr/'.$template.'.html', dirname(__FILE__) . '/../../mails/fr/'.$template.'.html');
+          // Copy order confiramtion html to all the language folders
+          foreach(Language::getLanguages(true) AS $lang)
+          {
+            $iso_code = $lang['iso_code'];
+            copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.txt');
+            copy(dirname(__FILE__) . '/mail/en/'.$template.'.html', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.html');
+          }
         }
 
         Configuration::updateValue($key, (int) $orderState->id);
@@ -182,7 +185,8 @@ class Blockonomics extends PaymentModule
 
         $this->smarty->assign(array(
             'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+            'this_path_ssl_validation' =>  $this->context->link->getModuleLink($this->name, 'validation', array(), true);
         ));
 
         return $this->display(__FILE__, 'views/templates/hook/payment-selection.tpl');
@@ -233,91 +237,6 @@ class Blockonomics extends PaymentModule
                     return true;
                 }
             }
-        }
-    }
-
-    public function showConfirmationPage($cart)
-    {
-        if (!$this->active) {
-            return;
-        }
-
-        if (!$this->checkCurrency($cart)) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
-        }
-
-        $price = $this->getBTCPrice($cart->id_currency);
-
-        //Redirect to order page if the price is zero
-        if (!$price) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
-        }
-
-        //Total Cart value in bits
-        $total_cost = $cart->getOrderTotal(true, Cart::BOTH);
-        $bits = (int)(1.0e8*$total_cost/$price);
-
-        $this->smarty->assign(array(
-            'nbProducts' => $cart->nbProducts(),
-            'total_bits' => $bits,
-            'total_btc' => $bits/1.0e8,
-            'order_link' => $this->context->link->getPageLink('order.php', true),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/payment-confirmation.tpl');
-    }
-
-    // Display Payment Return
-    public function hookPaymentReturn($params)
-    {
-        if (!$this->active) {
-            return;
-        }
-
-    /*
-    print_r("Order ID<br>");
-    print_r($params['objOrder']->id);
-    print_r("<br>");
-    print_r($params);
-     */
-
-
-        $state = $params['objOrder']->getCurrentState();
-        if ($state == Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT') or
-            $state == Configuration::get('BLOCKONOMICS_ORDER_STATUS_0') or
-            $state == _PS_OS_OUTOFSTOCK_) {
-            //Render invoice template
-            $this->context->controller->addJS($this->_path.'views/js/bootstrap.js');
-            $this->context->controller->addJS($this->_path.'views/js/angular.js');
-            $this->context->controller->addJS($this->_path.'views/js/app.js');
-            $this->context->controller->addJS($this->_path.'views/js/vendors.min.js');
-            $this->context->controller->addJS($this->_path.'views/js/angular-qrcode.js');
-            $this->context->controller->addJS($this->_path.'views/js/prestashop-ui-kit.js');
-            $this->context->controller->addCSS($this->_path.'views/css/style.css');
-            $this->context->controller->addCSS($this->_path.'views/css/bootstrap-prestashop-ui-kit.css');
-
-            $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' . (int)$params['objOrder']->id. '  LIMIT 1');
-    /*
-    print_r($b_order);
-     */
-
-            $this->smarty->assign(array(
-                'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-                'id_order' => $params['objOrder']->id,
-                'status' => (int)($b_order[0]['status']),
-                'addr' => $b_order[0]['addr'],
-                'txid' => $b_order[0]['txid'],
-                'bits' => $b_order[0]['bits'],
-                'value' => $b_order[0]['value'],
-                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-                'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
-                'timestamp' => $b_order[0]['timestamp'],
-                'currency_iso_code' => $params['currencyObj']->iso_code,
-                'bits_payed' => $b_order[0]['bits_payed']
-            ));
-
-            return $this->display(__FILE__, 'views/templates/hook/payment-return.tpl');
         }
     }
 
