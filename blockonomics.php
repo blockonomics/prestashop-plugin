@@ -172,6 +172,10 @@ class Blockonomics extends PaymentModule
         return true;
     }
 
+    public function hookPaymentReturn($params) {
+      return $this->display(__FILE__, 'payment-return.tpl');
+    }
+
     // Display payment
     public function hookPayment($params)
     {

@@ -109,7 +109,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 
 
-		$this->setTemplate('payment-return.tpl');
+		$this->setTemplate('payment.tpl');
 		//Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
 		//Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
 	}
