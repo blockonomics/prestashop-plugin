@@ -108,15 +108,18 @@ class Blockonomics extends PaymentModule
             return false;
         }
 
-        if (isset($template)) {
-            copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
+				if (isset($template)) {
 
-            copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/en/'.$template.'.txt');
-            copy(dirname(__FILE__) . '/mail/en/'.$template.'.html', dirname(__FILE__) . '/../../mails/en/'.$template.'.html');
+					copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
 
-            copy(dirname(__FILE__) . '/mail/fr/'.$template.'.txt', dirname(__FILE__) . '/../../mails/fr/'.$template.'.txt');
-            copy(dirname(__FILE__) . '/mail/fr/'.$template.'.html', dirname(__FILE__) . '/../../mails/fr/'.$template.'.html');
-        }
+					// Copy order confiramtion html to all the language folders
+					foreach(Language::getLanguages(true) AS $lang)
+					{
+						$iso_code = $lang['iso_code'];
+						copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.txt');
+						copy(dirname(__FILE__) . '/mail/en/'.$template.'.html', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.html');
+					}
+				}
 
         Configuration::updateValue($key, (int) $orderState->id);
         return true;
