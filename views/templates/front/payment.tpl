@@ -62,7 +62,7 @@ for="btn-address">{l s="Bitcoin Address" mod="blockonomics"}</h4>
           <div class="col-xs-5 qr-code">
             <div class="qr-enclosure">
               <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}"> 
-                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="250">
+                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="200">
                 <canvas class="qrcode"></canvas>
                 </qrcode></a>
             </div>
