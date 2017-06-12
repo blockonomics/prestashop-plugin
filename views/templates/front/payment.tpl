@@ -46,8 +46,7 @@
 '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
 '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}')" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
         <div class="value ng-binding" style="margin-bottom:10px;margin-top:10px" >
-          <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >{l s="To pay,
-send exact amount of BTC to the given address" mod="blockonomics"}</h3>
+          <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >{l s="To pay, send exact amount of BTC to the given address" mod="blockonomics"}</h3>
         </div>
       </div>
 
