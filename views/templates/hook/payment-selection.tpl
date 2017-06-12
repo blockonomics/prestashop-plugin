@@ -19,6 +19,6 @@
 
 <p class="payment_module">
 	<a href="{$this_path_ssl_validation|escape:'htmlall':'UTF-8'}" style="background: url({$this_path_ssl|escape:'htmlall':'UTF-8'}views/img/payment-selection-logo.png) 15px 12px no-repeat #fbfbfb;" title="{l s='Pay by bitcoin' mod='blockonomics'}">
-		{l s='Pay by Bitcoin' mod='blockonomics'}
+		{l s='Pay by bitcoin' mod='blockonomics'}
 	</a>
 </p>
