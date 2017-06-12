@@ -62,7 +62,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 
 		if (!isset($new_address)) {
-			$result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTP connections. Blockonomics requires an outgoing HTTP POST to generate new address. Check with your webhosting provider to allow this. If problem still persists contact').' webmaster at blockonomics.co';
+			$result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact').' webmaster at blockonomics.co';
 			echo($result);
 			die();
 		}
