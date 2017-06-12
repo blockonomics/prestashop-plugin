@@ -253,15 +253,18 @@ class Blockonomics extends PaymentModule
 
         $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' .(int)$params['object']->id_order. '  LIMIT 1');
 
-        $this->smarty->assign(array(
+        if ($b_order){
+          $this->smarty->assign(array(
             'status' => (int)($b_order[0]['status']),
             'addr' => $b_order[0]['addr'],
             'txid' => $b_order[0]['txid'],
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
             'bits_payed' => $b_order[0]['bits_payed']
-        ));
+          ));
 
-        return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
+          return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
+        }
+        return;
     }
 
     //Display Invoice
@@ -273,26 +276,29 @@ class Blockonomics extends PaymentModule
     print_r($b_order);
      */
 
-        $tx_status = (int)($b_order[0]['status']);
 
-        if ($tx_status == -1) {
+        if ($b_order){
+          $tx_status = (int)($b_order[0]['status']);
+
+          if ($tx_status == -1) {
             $status = 'Payment Not Received.';
-        } elseif ($tx_status == 0) {
+          } elseif ($tx_status == 0) {
             $status = 'Waiting for 2 Confirmations.';
-        } else {
+          } else {
             $status = 'Payment Confirmed.';
-        }
-
-        $this->smarty->assign(array(
+          }
+          $this->smarty->assign(array(
             'status' => $status,
             'addr' => $b_order[0]['addr'],
             'txid' => $b_order[0]['txid'],
             'bits' => $b_order[0]['bits'],
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
             'bits_payed' => $b_order[0]['bits_payed']
-        ));
+          ));
 
-        return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
+          return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
+        }
+        return;
     }
 
     public function getContent()

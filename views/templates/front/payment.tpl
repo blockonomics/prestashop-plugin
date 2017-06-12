@@ -17,7 +17,7 @@
  * International Registered Trademark & Property of Blockonomics
  *}
 
-{capture name=path}{l s='Bitcoin payment.' mod='blockonomics'}{/capture}
+{capture name=path}{l s='Bitcoin payment' mod='blockonomics'}{/capture}
 
 {include file="$tpl_dir./breadcrumb.tpl"}
 
