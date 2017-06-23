@@ -254,7 +254,6 @@ class Blockonomics extends PaymentModule
 
           return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
         }
-        return;
     }
 
     //Display Invoice
@@ -288,7 +287,6 @@ class Blockonomics extends PaymentModule
 
           return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
         }
-        return;
     }
 
     public function getContent()
