@@ -18,9 +18,9 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author PrestaShop SA <contact@prestashop.com>
- *  @copyright  2007-2015 PrestaShop SA
- *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ *  @author    PrestaShop SA <contact@prestashop.com>
+ *  @copyright 2007-2015 PrestaShop SA
+ *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -88,12 +88,15 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $blockonomics->validateOrder((int)($cart->id), Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'), $total, $blockonomics->displayName, $mes, $mailVars, (int)($currency->id), false, $customer->secure_key);
 
 
-        Db::getInstance()->Execute("INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
-      ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)");
+        Db::getInstance()->Execute(
+            "INSERT INTO "._DB_PREFIX_."blockonomics_bitcoin_orders (id_order, timestamp,  addr, txid, status,value, bits, bits_payed) VALUES
+      ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)"
+        );
 
         $redirect_link = '/index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
 
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign(
+            array(
             'id_order' => (int)($blockonomics->currentOrder),
             'status' => -1,
             'addr' => $new_address,
@@ -104,9 +107,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
-      'bits_payed' => 0,
-      'redirect_link' => $redirect_link
-        ));
+            'bits_payed' => 0,
+            'redirect_link' => $redirect_link
+            )
+        );
 
 
 

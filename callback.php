@@ -18,8 +18,8 @@
  * International Registered Trademark & Property of Blockonomics
  */
 
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../header.php');
+require dirname(__FILE__).'/../../config/config.inc.php';
+require dirname(__FILE__).'/../../header.php';
 
 $secret = Tools::getValue('secret');
 $txid = Tools::getValue('txid');
