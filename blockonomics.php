@@ -92,9 +92,10 @@ class Blockonomics extends PaymentModule
 
     public function installOrder($key, $title, $template)
     {
-				//Already existing from previous install(ignore)
-				if (Configuration::get($key)>0)
-					return true;
+        //Already existing from previous install(ignore)
+                if (Configuration::get($key)>0) {
+                    return true;
+                }
         $orderState = new OrderState();
         $orderState->name = array_fill(0, 10, $title);
         $orderState->color = '#add8e6';
@@ -162,8 +163,9 @@ class Blockonomics extends PaymentModule
         return true;
     }
 
-    public function hookPaymentReturn($params) {
-      return $this->display(__FILE__, 'payment-return.tpl');
+    public function hookPaymentReturn($params)
+    {
+        return $this->display(__FILE__, 'payment-return.tpl');
     }
 
     // Display payment
@@ -243,8 +245,8 @@ class Blockonomics extends PaymentModule
 
         $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' .(int)$params['object']->id_order. '  LIMIT 1');
 
-        if ($b_order){
-          $this->smarty->assign(array(
+        if ($b_order) {
+            $this->smarty->assign(array(
             'status' => (int)($b_order[0]['status']),
             'addr' => $b_order[0]['addr'],
             'txid' => $b_order[0]['txid'],
@@ -252,7 +254,7 @@ class Blockonomics extends PaymentModule
             'bits_payed' => $b_order[0]['bits_payed']
           ));
 
-          return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
+            return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
         }
     }
 
@@ -266,17 +268,17 @@ class Blockonomics extends PaymentModule
      */
 
 
-        if ($b_order){
-          $tx_status = (int)($b_order[0]['status']);
+        if ($b_order) {
+            $tx_status = (int)($b_order[0]['status']);
 
-          if ($tx_status == -1) {
-            $status = 'Payment Not Received.';
-          } elseif ($tx_status == 0) {
-            $status = 'Waiting for 2 Confirmations.';
-          } else {
-            $status = 'Payment Confirmed.';
-          }
-          $this->smarty->assign(array(
+            if ($tx_status == -1) {
+                $status = 'Payment Not Received.';
+            } elseif ($tx_status == 0) {
+                $status = 'Waiting for 2 Confirmations.';
+            } else {
+                $status = 'Payment Confirmed.';
+            }
+            $this->smarty->assign(array(
             'status' => $status,
             'addr' => $b_order[0]['addr'],
             'txid' => $b_order[0]['txid'],
@@ -285,7 +287,7 @@ class Blockonomics extends PaymentModule
             'bits_payed' => $b_order[0]['bits_payed']
           ));
 
-          return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
+            return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
         }
     }
 
