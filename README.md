@@ -7,14 +7,11 @@ Features
 - Uses [blockonomics API](https://www.blockonomics.co/views/api.html)
 
 
-Prestashop Setup
+Installation
 -----------------
+- [Installation Video Tutorial](https://www.youtube.com/watch?v=NlfsejbkLNk)
 - Upload blockonomics.zip from [releases](https://github.com/blockonomics/prestashop-plugin/releases) using Modules and Services > Add new Module.
 - Locate the module in Admin > modules list (search author blockonomics) and click on Install
-
-
-Blockonomics Setup
------------------
 - Complete [blockonomics merchant wizard](https://www.blockonomics.co/merchants) 
 - Get API key from Wallet Watcher > Settings
 - Put this API key in prestashop module 
