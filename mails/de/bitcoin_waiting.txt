@@ -1,18 +1,18 @@
-Hi {firstname} {lastname},
+Hallo {firstname} {lastname},
 
-We have logged your order {order_name}.
-This will be sent upon receipt of payment.
+Wir haben Ihre Bestellung angemeldet {order_name}.
+Diese wird nach Zahlungseingang versendet.
 
-Remember, you chose to pay your order by bitcoin, thank you to send us your payment :
+Sie haben sich entschieden, in Bitcoin zu bezahlen, vielen Dank für die Zusendung Ihrer Zahlung :
 
-- The amount of {total_paid}
+- Die Menge an {total_paid}
 
-- at {bitcoin_address}
+- an {bitcoin_address}
 
-You can track the status of your transaction bitcoin at : {track_url}
+Sie können den Status Ihrer Transaktion auf dieser Seite verfolgen, indem Sie : {track_url}
 
-You can access any time to track your order and download your invoice from the "Orders history" of the "My Account" on our site {shop_url}
-If you have a guest account, you can track your order at: {shop_url}guest-tracking.php
+Sie können den Status Ihrer Bestellung aufrufen und Ihre Rechnung aus dem "Auftragsverlauf" in "Mein Konto" auf unserer Website herunterladen.{shop_url}
+Wenn du ein Gastkonto hast, kannst du deinen Auftrag an: {shop_url}guest-tracking.php
 
 {shop_name} - {shop_url}
 
