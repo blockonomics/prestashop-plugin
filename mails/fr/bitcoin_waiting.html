@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Message from {shop_name}</title>
+</head>
+<body>
+	<table style="font-family:Verdana,sans-serif; font-size:11px; color:#374953; width: 550px;">
+		<tr>
+			<td align="left">
+				<a href="{shop_url}" title="{shop_name}"><img alt="{shop_name}" src="{shop_logo}" style="border:none;" ></a>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left">Hi <strong style="color:#375D81;">{firstname} {lastname}</strong>,</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left" style="background-color:#375D81; color:#FFF; font-size: 12px; font-weight:bold; padding: 0.5em 1em;">History of your order No. {id_order}</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left">
+				We have logged your order {order_name}. This will be sent upon receipt of payment.
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left">
+				Remember, you chose to pay your order by bitcoin, thank you to send us your payment :
+				<br /><br />
+        - The amount of <b>{bits} BTC ⇌ {total_paid} </b>
+				<br /><br />
+				- at <b>{bitcoin_address}</b>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left">
+			You can track the status of your transaction on this page by <a href="{track_url}" style="color:#375D81; font-weight:bold; text-decoration:none;">clicking here</a>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="left">
+        You can access the status of your order and download your invoice from the <a href="{shop_url}?controller=history" style="color:#375D81; font-weight:bold; text-decoration:none;">"Orders history"</a> in <a href="{shop_url}my-account.php" style="color:#375D81; font-weight:bold; text-decoration:none;">"My Account"</a> on our site.
+			</td>
+		</tr>
+		<tr>
+			<td align="left">
+				If you have a guest account, you can track your order in <a href="{shop_url}?controller=guest-tracking" style="color:#375D81; font-weight:bold; text-decoration:none;">"Follow guest"</a> of the site.
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="center" style="font-size:10px; border-top: 1px solid #D9DADE;">
+				<a href="{shop_url}" style="color:#375D81; font-weight:bold; text-decoration:none;">{shop_name}</a> made with <a href="http://www.prestashop.com/" style="text-decoration:none; color:#374953;">PrestaShop™</a>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
