@@ -1,0 +1,21 @@
+Hallo {firstname} {lastname},
+
+Wir haben Ihre Bestellung angemeldet {order_name}.
+Diese wird nach Zahlungseingang versendet.
+
+Sie haben sich entschieden, in Bitcoin zu bezahlen, vielen Dank für die Zusendung Ihrer Zahlung :
+
+- Die Menge an {total_paid}
+
+- an {bitcoin_address}
+
+Sie können den Status Ihrer Transaktion auf dieser Seite verfolgen, indem Sie : {track_url}
+
+Sie können den Status Ihrer Bestellung aufrufen und Ihre Rechnung aus dem "Auftragsverlauf" in "Mein Konto" auf unserer Website herunterladen.{shop_url}
+Wenn du ein Gastkonto hast, kannst du deinen Auftrag an: {shop_url}guest-tracking.php
+
+{shop_name} - {shop_url}
+
+
+
+{shop_url} made ​​with PrestaShop™

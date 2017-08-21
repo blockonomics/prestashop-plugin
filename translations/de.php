@@ -1,0 +1,34 @@
+<?php
+
+global $_MODULE;
+$_MODULE = array();
+$_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97'] = 'Bitcoin - Blockonomics';
+$_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b'] = 'Modul zur Annahme von Zahlungen per Bitcoin';
+$_MODULE['<{blockonomics}prestashop>blockonomics_876f23178c29dc2552c0b48bf23cd9bd'] = 'Sind Sie sicher, dass Sie deinstallieren wollen?';
+$_MODULE['<{blockonomics}prestashop>blockonomics_176e07e16e8cbc5408fd2370e7ca46f4'] = 'Der API Key fehlt';
+$_MODULE['<{blockonomics}prestashop>validation_eb60ab14749e5732652e66fbaf2bd75e'] = 'Bitcoin-Adresse kann nicht generiert werden.                                                                                                       ';
+$_MODULE['<{blockonomics}prestashop>validation_0144a6881f12ff1a318c528ea617b0d3'] = 'Hinweis für Website-Webmaster: Ihr Webhost blockiert ausgehende HTTPS-Verbindungen. Blockonomics erfordert einen ausgehenden HTTPS POST (Port 443), um eine neue Adresse zu erzeugen. Überprüfen Sie mit Ihrem Webhosting-Anbieter, um dies zu erlauben. Wenn das Problem weiterhin besteht, kontaktieren Sie bitte';
+$_MODULE['<{blockonomics}prestashop>backend_7a7fe687860a1f969da05ee0542d3472'] = 'HTTP CallBack URL';
+$_MODULE['<{blockonomics}prestashop>backend_ea322c1046209c05eb1bcbab770167de'] = 'Kopiere diese URL und setze ein';
+$_MODULE['<{blockonomics}prestashop>backend_8e72d3fa2a04c6e1468a12d8229ff3a3'] = 'Aktualisiere CallBack mit neuem Geheimnis';
+$_MODULE['<{blockonomics}prestashop>backend_11a41948965196a131e064503e52b37c'] = 'API Key';
+$_MODULE['<{blockonomics}prestashop>backend_1bf5b4af2eac83750c4ad6145a97d753'] = 'Aus erzeugen';
+$_MODULE['<{blockonomics}prestashop>backend_c9cc8cce247e49bae79f15173ce97354'] = 'abspeichern';
+$_MODULE['<{blockonomics}prestashop>payment_261a1140d97b4fe17aabc2433d7c0234'] = 'Bitcoin Zahlung';
+$_MODULE['<{blockonomics}prestashop>payment_3ffaf70863d6f46e2719050a37d9ef86'] = 'Bestellnummer';
+$_MODULE['<{blockonomics}prestashop>payment_1e6326b3b94e1d9068ec460ae82dfd48'] = 'Um zu zahlen, senden Sie genaue Menge an Bitcoin an die angegebene Adresse';
+$_MODULE['<{blockonomics}prestashop>payment_0c0f5919972bfc91771b8552015a57ab'] = 'Bitcoin-Adresse';
+$_MODULE['<{blockonomics}prestashop>payment_b2f40690858b404ed10e62bdf422c704'] = 'Menge';
+$_MODULE['<{blockonomics}prestashop>invoice_pdf_ed15da2b3ba1d3c667dda1092c1d5391'] = 'Bitcoins bezahlt';
+$_MODULE['<{blockonomics}prestashop>invoice_pdf_1b0ffaae3973401f71cd000ab9f7856e'] = 'Transaktion';
+$_MODULE['<{blockonomics}prestashop>invoice_044da71a05123e80ef695c1a858190e3'] = 'Bitcoin-Transaktionsdetails';
+$_MODULE['<{blockonomics}prestashop>invoice_0c0f5919972bfc91771b8552015a57ab'] = 'Bitcoin-Adresse';
+$_MODULE['<{blockonomics}prestashop>invoice_ec53a8c4f07baed5d8825072c89799be'] = 'Status';
+$_MODULE['<{blockonomics}prestashop>invoice_791d6355d34dfaf60d68ef04d1ee5767'] = 'Warenkorb Wert';
+$_MODULE['<{blockonomics}prestashop>invoice_388fd2767ba1fd2296f536425d106de3'] = 'Betrag bezahlt';
+$_MODULE['<{blockonomics}prestashop>invoice_e85e425d1f3579ce8570ca744e96ee32'] = 'Transaktionslink';
+$_MODULE['<{blockonomics}prestashop>invoice_b06c5ecc37b9cd61a0cab0534ed1f15d'] = 'Zahlungsfehler';
+$_MODULE['<{blockonomics}prestashop>invoice_19f6928f876d94988ddb92c6516016b6'] = 'Der gezahlte Betrag stimmt nicht mit dem Wagenkorb überein.';
+$_MODULE['<{blockonomics}prestashop>payment-return_88526efe38fd18179a127024aba8c1d7'] = 'Ihre Bestellung auf %s ist abgeschlossen.';
+$_MODULE['<{blockonomics}prestashop>payment-return_d720f4b31c72f552bb47294af95e3dce'] = 'Ihre Bestellung wird gesendet, sobald Ihre Zahlung durch das Bitcoin-Netzwerk bestätigt wird.';
+$_MODULE['<{blockonomics}prestashop>payment-selection_575792812af3733426415dc226913037'] = 'Mit Bitcoin Bezahlen';

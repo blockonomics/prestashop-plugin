@@ -1,0 +1,21 @@
+Bonjour {firstname} {lastname},
+
+Nous avons enregistré votre commande {order_name}.
+Cela sera envoyé dès réception du paiement.
+
+Rappelez-vous, vous avez choisi de payer votre commande par bitcoin, merci de nous envoyer votre paiement :
+
+- La quantité de {total_paid}
+
+- à {bitcoin_address}
+
+Vous pouvez suivre l'état de votre transaction sur cette page en : {track_url}
+
+Vous pouvez accéder au statut de votre commande et télécharger votre facture à partir de l’  "Historique des commandes" dans "Mon compte"  sur notre site {shop_url}
+Si vous avez un compte invité, vous pouvez suivre votre commande dans : {shop_url}guest-tracking.php
+
+{shop_name} - {shop_url}
+
+
+
+{shop_url} réalisé avec PrestaShop™
