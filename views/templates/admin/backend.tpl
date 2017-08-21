@@ -22,7 +22,7 @@
 <div class="clear"></div>
 <br>
 <!--Call back url -->
-<h3>{l s='HTTP CallBack URL :' mod='blockonomics'}</h3>
+<h3>{l s='HTTP CallBack URL ' mod='blockonomics'}:</h3>
 <h4>{l s='Copy this url and set in ' mod='blockonomics'}<a href="https://www.blockonomics.co/merchants">Merchant Setup</a></h4>
 <input readonly name="callBackUrl" type="text" value="{$callback_url|escape:'htmlall':'UTF-8'}">
 <br>
@@ -38,7 +38,7 @@
 <br>
 
 <!-- API Key configuration -->
-<h3>{l s='API key :' mod='blockonomics'}</h3>
+<h3>{l s='API key ' mod='blockonomics'}:</h3>
 <h4>{l s='Generate from ' mod='blockonomics'} <a href="https://www.blockonomics.co/blockonomics">Wallet Watcher</a> &gt; Settings </h4>
 <input name="apiKey" type="text" value="{$api_key|escape:'htmlall':'UTF-8'}">
 <br>
