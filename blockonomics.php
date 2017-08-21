@@ -96,6 +96,10 @@ class Blockonomics extends PaymentModule
 
     public function installOrder($key, $title, $template)
     {
+        //Already existing from previous install(ignore)
+        if (Configuration::get($key)>0) {
+            return true;
+        }
         $orderState = new OrderState();
         $orderState->name = array_fill(0, 10, $title);
         $orderState->color = '#add8e6';
@@ -110,18 +114,6 @@ class Blockonomics extends PaymentModule
             return false;
         }
 
-				if (isset($template)) {
-
-					copy(dirname(__FILE__) . '/logo.gif', dirname(__FILE__) . '/../../img/os/' . (int) $orderState->id . '.gif');
-
-					// Copy order confiramtion html to all the language folders
-					foreach(Language::getLanguages(true) AS $lang)
-					{
-						$iso_code = $lang['iso_code'];
-						copy(dirname(__FILE__) . '/mail/en/'.$template.'.txt', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.txt');
-						copy(dirname(__FILE__) . '/mail/en/'.$template.'.html', dirname(__FILE__) . '/../../mails/'.$iso_code.'/'.$template.'.html');
-					}
-				}
 
         Configuration::updateValue($key, (int) $orderState->id);
         return true;
