@@ -44,7 +44,7 @@ class Blockonomics extends PaymentModule
         parent::__construct();
 
         $this->displayName = $this->l('Bitcoin - Blockonomics');
-        $this->description = $this->l('Module for accepting payments by bitcoin.');
+        $this->description = $this->l('Module for accepting payments by bitcoin');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         //Include configuration from the local file.

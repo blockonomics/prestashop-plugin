@@ -6,6 +6,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca9
 $_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b'] = 'Module d\'acceptation des paiements en bitcoin';
 $_MODULE['<{blockonomics}prestashop>blockonomics_876f23178c29dc2552c0b48bf23cd9bd'] = 'Êtes-vous sur de vouloir désinstaller?';
 $_MODULE['<{blockonomics}prestashop>blockonomics_176e07e16e8cbc5408fd2370e7ca46f4'] = 'La clé de L’API n\'est pas fournie pour communiquer avec Blockonomics';
+$_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc226913037'] = 'Payer en Bitcoin';
 $_MODULE['<{blockonomics}prestashop>validation_eb60ab14749e5732652e66fbaf2bd75e'] = 'Impossible de générer l\'adresse bitcoin.';
 $_MODULE['<{blockonomics}prestashop>validation_0144a6881f12ff1a318c528ea617b0d3'] = 'Note pour le webmaster du site: votre hébergement Web bloque les connexions HTTPS sortantes. Blockonomics nécessite un HTTPS POST sortant (port 443) pour générer de nouvelle adresse. Vérifiez auprès de votre fournisseur d’accès internet pour nous autoriser. Si le problème persiste encore, contactez-nous';
 $_MODULE['<{blockonomics}prestashop>backend_7a7fe687860a1f969da05ee0542d3472'] = 'HTTP CallBack URL';
