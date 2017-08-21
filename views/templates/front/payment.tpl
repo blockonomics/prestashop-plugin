@@ -46,7 +46,8 @@
       <div class="col-xs-6 invoice-amount"  style="border-right:#ccc 1px solid;">
         <!-- address-->
         <div class="row">
-          <h4 class="col-xs-6" style="margin-bottom:15px;margin-top:15px;" for="btn-address">Bitcoin Address</h4>
+          <h4 class="col-xs-6" style="margin-bottom:15px;margin-top:15px;"
+for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
         </div>
 
         <!-- QR Code -->
@@ -54,7 +55,7 @@
           <div class="col-xs-5 qr-code">
             <div class="qr-enclosure">
               <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}"> 
-                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="250">
+                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="200">
                 <canvas class="qrcode"></canvas>
                 </qrcode></a>
             </div>

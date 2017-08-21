@@ -59,7 +59,7 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $this->warning = $this->l('API Key is not provided to communicate with '.Configuration::get('BLOCKONOMICS_BASE_URL'));
+            $this->warning = $this->l('API Key is not provided to communicate with Blockonomics');
         }
     }
 

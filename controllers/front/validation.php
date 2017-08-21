@@ -90,7 +90,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 
         if (!isset($new_address)) {
-            $result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTP connections. Blockonomics requires an outgoing HTTP POST to generate new address. Check with your webhosting provider to allow this. If problem still persists contact').' webmaster at blockonomics.co';
+            $result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact').' webmaster at blockonomics.co';
             echo($result);
             die();
         }
@@ -141,7 +141,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
 
 
-        $this->setTemplate('module:blockonomics/views/templates/front/payment-return.tpl');
+        $this->setTemplate('module:blockonomics/views/templates/front/payment.tpl');
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
