@@ -43,6 +43,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     }
     public function postProcess()
     {
+        $this->display_column_left = false;
         $cart = $this->context->cart;
         $blockonomics = $this->module;
 
