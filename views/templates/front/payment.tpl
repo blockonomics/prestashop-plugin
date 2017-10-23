@@ -54,8 +54,8 @@ for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
         <div class="row qr-code-box">
           <div class="col-xs-5 qr-code">
             <div class="qr-enclosure">
-              <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}"> 
-                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={math equation="x/y" x=$bits y=100000000}" size="200">
+              <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}"> 
+                <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="200">
                 <canvas class="qrcode"></canvas>
                 </qrcode></a>
             </div>
@@ -67,7 +67,7 @@ for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
         <!-- Amount -->
         <h4 for="invoice-amount">{l s='Amount' mod='blockonomics'}</h4>
         <div class="value ng-binding">
-          <label>{math equation="x/y" x=$bits y=100000000}
+          <label>{$bits|escape:'htmlall':'UTF-8'}
             <small>BTC</small></label> ⇌
           <label>{$value|escape:'htmlall':'UTF-8'}
             <small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small></label>

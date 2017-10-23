@@ -128,7 +128,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'status' => -1,
             'addr' => $new_address,
             'txid' => "",
-            'bits' => (int)$bits,
+            'bits' => rtrim(sprintf('%.8f', $bits/1.0e8), '0'),
             'value' => (float)$total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
             'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
