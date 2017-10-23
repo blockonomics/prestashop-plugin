@@ -36,6 +36,7 @@ class Blockonomics extends PaymentModule
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
+        $this->display_column_left = false;
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
 
         parent::__construct();

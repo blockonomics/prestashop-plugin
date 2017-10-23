@@ -19,8 +19,6 @@
 
 {capture name=path}{l s='Bitcoin payment' mod='blockonomics'}{/capture}
 
-{include file="$tpl_dir./breadcrumb.tpl"}
-
 {assign var='current_step' value='payment'}
 
 {include file="$tpl_dir./order-steps.tpl"}
