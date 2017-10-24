@@ -71,6 +71,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $cart = $this->context->cart;
+        $this->display_column_left = false;
         $blockonomics = $this->module;
 
         if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
