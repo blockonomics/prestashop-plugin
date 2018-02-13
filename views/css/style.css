@@ -16,15 +16,14 @@
   float:right;
 }
 
-
-
 @media (max-width: 979px) {
   .invoice {
     width:100%;
   }
 }
 
-
+body#module-blockonomics-validation #center_column {width:951px}
+body#module-blockonomics-validation #right_column, body#module-blockonomics-validation #left_column {display:none}
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
