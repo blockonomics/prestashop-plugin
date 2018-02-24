@@ -60,12 +60,50 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $cookie = $blockonomics->getContext()->cookie;
         $currency = new Currency((int)(Tools::getIsset(Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency));
         $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
-        $new_address = $blockonomics->getNewAddress();
 
+        // API Key not set
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            $result = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: API Key not set. Please login to Admin and go to Blockonomics module configuration to set you API Key </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+            echo($result);
+            die();
+        }
+
+        $responseObj = $blockonomics->getNewAddress();
+
+        if(isset($responseObj->status)) {
+            if($responseObj->status == 500) {
+                // New address gen has thrown an error
+                $error_code = $responseObj->message;
+
+                switch ($error_code) {
+                    case "Could not find matching xpub":
+                        $error_str = '<h4>Unable to generate bitcoin address.</h4> <p>Note for site webmaster: There is a problem in the Callback URL. Make sure that you have set your Callback URL from the PrestaShop admin Blockonomics module configuration to your Merchants > Settings.</p>';
+                        break;
+
+                    default:
+                        $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact webmaster at blockonomics.co</p>';
+                }
+
+                echo $error_str . '<p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+                die();
+            }
+        } elseif(!ini_get('allow_url_fopen')) {
+            // allow_url_fopen not enabled
+            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+            echo($error_str);
+            die();
+  
+        } elseif (!isset($responseObj)) {
+            // Response empty / 401: Incorrect API Key
+            echo '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: API Key is incorrect. Make sure that the API key set in PrestaShop admin  Blockonomics module configuration is correct.</p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+            die();
+        }
+
+        $new_address = $responseObj->address;
 
         if (!isset($new_address)) {
-            $result = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4>'.$blockonomics->l('Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists, log a ticket on').' https://blockonomics.freshdesk.com';
-            echo($result);
+            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact webmaster at blockonomics.co</p>';
+            echo($error_str);
             die();
         }
 
