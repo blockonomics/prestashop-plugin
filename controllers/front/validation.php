@@ -102,7 +102,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $new_address = $responseObj->address;
 
         if (!isset($new_address)) {
-            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact webmaster at blockonomics.co</p>';
+            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
             echo($error_str);
             die();
         }
