@@ -213,15 +213,16 @@ class Blockonomics extends PaymentModule
             'http' => array(
                 'header'  => array('Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),'Content-type: application/x-www-form-urlencoded'),
                 'method'  => 'POST',
-                'content' => ''
+                'content' => '',
+                'ignore_errors' => true
             )
         );
 
         //Generate new address for this invoice
         $context = stream_context_create($options);
-        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
-        $addressObj = Tools::jsonDecode($contents);
-        return $addressObj->address;
+        $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
+        $responseObj = Tools::jsonDecode($contents);
+        return $responseObj;
     }
 
     public function getContext()
