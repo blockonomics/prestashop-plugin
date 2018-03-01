@@ -63,9 +63,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         // API Key not set
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $result = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: API Key not set. Please login to Admin and go to Blockonomics module configuration to set you API Key </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
-            echo($result);
-            die();
+            $error_str = 'API Key not set. Please login to Admin and go to Blockonomics module configuration to set you API Key.';
+            $this->displayError($error_str);
         }
 
         $responseObj = $blockonomics->getNewAddress();
@@ -77,34 +76,36 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
                 switch ($error_code) {
                     case "Could not find matching xpub":
-                        $error_str = '<h4>Unable to generate bitcoin address.</h4> <p>Note for site webmaster: There is a problem in the Callback URL. Make sure that you have set your Callback URL from the PrestaShop admin Blockonomics module configuration to your Merchants > Settings.</p>';
+                        $error_str = 'There is a problem in the Callback URL. Make sure that you have set your Callback URL from the PrestaShop admin Blockonomics module configuration to your Merchants > Settings.';
+                        break;
+                    case "This require you to add an xpub in your wallet watcher":
+                        $error_str = 'There is a problem in the XPUB. Make sure that the you have added an address to Wallet Wathcer > Address Wathcer. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.';
                         break;
 
                     default:
-                        $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. If problem still persists contact webmaster at blockonomics.co</p>';
+                        $error_str = $responseObj->message;
                 }
 
-                echo $error_str . '<p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
-                die();
+                if(isset($error_str)) {
+                    $this->displayError($error_str);
+                }
             }
         } elseif(!ini_get('allow_url_fopen')) {
             // allow_url_fopen not enabled
-            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
-            echo($error_str);
-            die();
+            $error_str = 'The allow_url_fopen is not enabled, please enable this option to allow address generation.';
+            $this->displayError($error_str);
   
         } elseif (!isset($responseObj)) {
             // Response empty / 401: Incorrect API Key
-            echo '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: API Key is incorrect. Make sure that the API key set in PrestaShop admin  Blockonomics module configuration is correct.</p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
-            die();
+            $error_str = 'API Key is incorrect. Make sure that the API key set in PrestaShop admin  Blockonomics module configuration is correct.';
+            $this->displayError($error_str);
         }
 
         $new_address = $responseObj->address;
 
         if (!isset($new_address)) {
-            $error_str = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this. </p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
-            echo($error_str);
-            die();
+            $error_str = 'Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this.';
+            $this->displayError($error_str);
         }
 
         $current_time = time();
@@ -156,5 +157,17 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->setTemplate('payment.tpl');
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+    }
+
+    private function displayError($error_str) {
+
+        $unable_to_generate = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: ';
+        
+        $troubleshooting_guide = '</p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+
+        $error_message = $unable_to_generate . $error_str . $troubleshooting_guide;
+
+        echo $error_message;
+        die();
     }
 }
