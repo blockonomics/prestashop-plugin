@@ -79,7 +79,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                         $error_str = 'There is a problem in the Callback URL. Make sure that you have set your Callback URL from the PrestaShop admin Blockonomics module configuration to your Merchants > Settings.';
                         break;
                     case "This require you to add an xpub in your wallet watcher":
-                        $error_str = 'There is a problem in the XPUB. Make sure that the you have added an address to Wallet Wathcer > Address Wathcer. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.';
+                        $error_str = 'There is a problem in the XPUB. Make sure that the you have added an address to Wallet Watcher > Address Watcher. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.';
                         break;
 
                     default:
@@ -163,7 +163,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $unable_to_generate = '<h4>Unable to generate bitcoin address.</h4><p> Note for site webmaster: ';
         
-        $troubleshooting_guide = '</p><p> If problem persists, please consult this troubleshooting article: <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address</a></p>';
+        $troubleshooting_guide = '</p><p> If problem persists, please consult <a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">this troubleshooting article</a></p>';
 
         $error_message = $unable_to_generate . $error_str . $troubleshooting_guide;
 
