@@ -222,6 +222,11 @@ class Blockonomics extends PaymentModule
         $context = stream_context_create($options);
         $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
         $responseObj = Tools::jsonDecode($contents);
+        
+        //Create response object if it does not exist
+        if (!isset($responseObj)) $responseObj = new stdClass();
+        $responseObj->{'response_code'} = $http_response_header[0];
+
         return $responseObj;
     }
 
