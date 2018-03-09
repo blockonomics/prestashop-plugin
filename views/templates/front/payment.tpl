@@ -36,13 +36,13 @@
       </div>
     </div>
     <!-- Amount row -->
-    <div class="row">
+    <div class="row" ng-hide="altcoin_waiting">
 
       <div class="col-xs-12">
         <!-- Status -->
         <h4 ng-init="init({$status|escape:'htmlall':'UTF-8'},
 '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
-'{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}')" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
+'{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}')" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
         <div class="value ng-binding" style="margin-bottom:10px;margin-top:10px" >
           <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >{l s='To pay, send exact amount of BTC to the given address' mod='blockonomics'}</h3>
         </div>
@@ -77,9 +77,30 @@ for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
           <label>{$value|escape:'htmlall':'UTF-8'}
             <small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small></label>
         </div>
+
+        {if $accept_altcoin}
+        <div class="bnomics-altcoin-pane">
+            <h4>{l s='OR you can' mod='blockonomics'}</h4>
+            <div>
+              <a ng-click="pay_altcoins()" href=""><img  style="margin: auto;" src="https://shapeshift.io/images/shifty/small_dark_altcoins.png"  class="ss-button"></a>
+              <div>
+                <h4>{l s='Ethereum, Bitcoin Cash, Dash and many others supported' mod='blockonomics'}</h4>
+              </div>
+            </div>
+        </div>
+        {/if}
       </div>
     </div>
-    <div class="row">
+
+    <div class="row" ng-show="altcoin_waiting" ng-cloak>
+      <div class="col-xs-12 altcoin-waiting">
+        <h4>{l s='Waiting for BTC payment from shapeshift altcoin conversion' mod='blockonomics'}</h4>
+        <div class="bnomics-spinner"></div>
+        <h4><a href="" ng-click="altcoin_waiting=false">{l s='Click here' mod='blockonomics'}</a>{l s=' to cancel and go back' mod='blockonomics'}</h4>
+      </div>
+    </div>
+
+    <div class="row" ng-hide="altcoin_waiting">
       <div class="input-group">
         <!-- Necessary to apply text transfrom as some styles will capitalize h4 leading to wrong address -->
         <span class="input-group-addon"><h4 style="text-transform:none">{$addr|escape:'htmlall':'UTF-8'}</h4></span>
@@ -88,3 +109,4 @@ for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
     <h3>Powered by blockonomics</h3>
   </div>
 </div>
+{/block}

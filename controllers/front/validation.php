@@ -113,7 +113,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
-            'redirect_link' => $redirect_link
+            'redirect_link' => $redirect_link,
+            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')
             )
         );
 

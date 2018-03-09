@@ -151,6 +151,8 @@ class Blockonomics extends PaymentModule
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+
+        Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
     }
 
@@ -317,6 +319,18 @@ class Blockonomics extends PaymentModule
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+        } elseif (Tools::getValue('updateAltcoin')) {
+            $accept_altcoins = false;
+            if(Tools::getValue('altcoins') == 'altcoins') {
+                $accept_altcoins = true;
+            }
+
+            Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
+        }
+
+        $altcoins_checked = '';
+        if(Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) {
+            $altcoins_checked = 'checked';
         }
 
         $this->smarty->assign(
@@ -326,7 +340,8 @@ class Blockonomics extends PaymentModule
             'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
             'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
             'token' => Tools::getAdminTokenLite("AdminOrders"),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/')
+            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+            'altcoins' => $altcoins_checked)
         );
 
 
