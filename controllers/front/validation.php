@@ -168,7 +168,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                                 $error_str = $blockonomics->l('There is a problem in the Callback URL. Make sure that you have set your Callback URL from the admin Blockonomics module configuration to your Merchants > Settings.');
                                 break;
                             case "This require you to add an xpub in your wallet watcher":
-                                $error_str = $blockonomics->l('There is a problem in the XPUB. Make sure that the you have added an address to Wallet Wathcer > Address Wathcer. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.');
+                                $error_str = $blockonomics->l('There is a problem in the XPUB. Make sure that the you have added an address to Wallet Watcher > Address Watcher. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.');
                                 break;
                             default:
                                 $error_str = $responseObj->message;
