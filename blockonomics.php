@@ -312,14 +312,13 @@ class Blockonomics extends PaymentModule
 
     public function getContent()
     {
-        if (Tools::getValue('updateApiKey')) {
-            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
-        } elseif (Tools::getValue('updateCallback')) {
+        if (Tools::getValue('updateCallback')) {
             //Generate new callback secret
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
-        } elseif (Tools::getValue('updateAltcoin')) {
+        } elseif (Tools::getValue('updateSettings')) {
+            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
             $accept_altcoins = false;
             if(Tools::getValue('altcoins') == 'altcoins') {
                 $accept_altcoins = true;

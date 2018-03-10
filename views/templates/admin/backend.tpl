@@ -45,12 +45,6 @@
 <div class="clear"></div>
 <br>
 
-<button name="updateApiKey" value="Save" type="submit">{l s='Save API Key' mod='blockonomics'}</button>
-<div class="clear"></div>
-<br>
-</form>
-
-<form action="{$request_uri|escape:'htmlall':'UTF-8'}" method="post">
 <div class="clear"></div>
 <br>
 
@@ -62,7 +56,7 @@
 <div class="clear"></div>
 <br>
 
-<button name="updateAltcoin" value="Save" type="submit">{l s='Save Altcoin selection' mod='blockonomics'}</button>
+<button name="updateSettings" value="Save" type="submit">{l s='Save' mod='blockonomics'}</button>
 <div class="clear"></div>
 <br>
 </form>
