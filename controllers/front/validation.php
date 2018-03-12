@@ -63,7 +63,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         // API Key not set
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $error_str = $blockonomics->l('API Key not set. Please login to Admin and go to Blockonomics module configuration to set you API Key.');
+            $error_str = $blockonomics->l('API Key not set. Please login to Admin and go to Blockonomics module configuration to set you API Key.', 'validation');
             $this->displayError($error_str, $blockonomics);
         }
 
@@ -127,9 +127,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
     private function displayError($error_str, $blockonomics) {
 
-        $unable_to_generate = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.').'</h4><p>'.$blockonomics->l('Note for site webmaster: ');
+        $unable_to_generate = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.', 'validation').'</h4><p>'.$blockonomics->l('Note for site webmaster: ', 'validation');
         
-        $troubleshooting_guide = '</p><p>'.$blockonomics->l('If problem persists, please consult ').'<a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">'.$blockonomics->l('this troubleshooting article').'</a></p>';
+        $troubleshooting_guide = '</p><p>'.$blockonomics->l('If problem persists, please consult ', 'validation').'<a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">'.$blockonomics->l('this troubleshooting article', 'validation').'</a></p>';
 
         $error_message = $unable_to_generate . $error_str . $troubleshooting_guide;
 
@@ -140,10 +140,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     private function checkForErrors($responseObj, $blockonomics) {
 
         if(!ini_get('allow_url_fopen')) {
-            $error_str = $blockonomics->l('The allow_url_fopen is not enabled, please enable this option to allow address generation.');
+            $error_str = $blockonomics->l('The allow_url_fopen is not enabled, please enable this option to allow address generation.', 'validation');
 
         } elseif(!isset($responseObj->response_code)) {
-            $error_str = $blockonomics->l('Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this.');
+            $error_str = $blockonomics->l('Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this.', 'validation');
 
         } else {
 
@@ -153,7 +153,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                     break;
 
                 case 'HTTP/1.1 401 Unauthorized': {
-                    $error_str = $blockonomics->l('API Key is incorrect. Make sure that the API key set in admin Blockonomics module configuration is correct.');
+                    $error_str = $blockonomics->l('API Key is incorrect. Make sure that the API key set in admin Blockonomics module configuration is correct.', 'validation');
                     break;
                 }
 
@@ -165,10 +165,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
                         switch ($error_code) {
                             case "Could not find matching xpub":
-                                $error_str = $blockonomics->l('There is a problem in the Callback URL. Make sure that you have set your Callback URL from the admin Blockonomics module configuration to your Merchants > Settings.');
+                                $error_str = $blockonomics->l('There is a problem in the Callback URL. Make sure that you have set your Callback URL from the admin Blockonomics module configuration to your Merchants > Settings.', 'validation');
                                 break;
                             case "This require you to add an xpub in your wallet watcher":
-                                $error_str = $blockonomics->l('There is a problem in the XPUB. Make sure that the you have added an address to Wallet Watcher > Address Watcher. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.');
+                                $error_str = $blockonomics->l('There is a problem in the XPUB. Make sure that the you have added an address to Wallet Watcher > Address Watcher. If you have added an address make sure that it is an XPUB address and not a Bitcoin address.', 'validation');
                                 break;
                             default:
                                 $error_str = $responseObj->message;
