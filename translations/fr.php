@@ -47,3 +47,4 @@ $_MODULE['<{blockonomics}prestashop>invoice_b06c5ecc37b9cd61a0cab0534ed1f15d'] =
 $_MODULE['<{blockonomics}prestashop>invoice_19f6928f876d94988ddb92c6516016b6'] = 'Le montant payé ne correspond pas à la valeur du panier';
 $_MODULE['<{blockonomics}prestashop>payment-return_88526efe38fd18179a127024aba8c1d7'] = 'Votre commande sur %s est terminée.';
 $_MODULE['<{blockonomics}prestashop>payment-return_d720f4b31c72f552bb47294af95e3dce'] = 'Votre commande sera envoyée dès que votre paiement sera confirmé par le réseau Bitcoin';
+$_MODULE['<{blockonomics}prestashop>payment-selection_575792812af3733426415dc226913037'] = 'Payer en Bitcoin';
