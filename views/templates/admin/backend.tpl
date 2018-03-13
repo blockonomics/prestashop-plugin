@@ -45,7 +45,18 @@
 <div class="clear"></div>
 <br>
 
-<button name="updateApiKey" value="Save" type="submit">{l s='Save' mod='blockonomics'}</button>
+<div class="clear"></div>
+<br>
+
+<!-- Altcoin configuration -->
+<h3>{l s='Altcoins ' mod='blockonomics'}:</h3>
+<h4>{l s='Accept Altcoin Payments (Using Shapeshift) ' mod='blockonomics'}</h4>
+<input name="altcoins" type="checkbox" value="altcoins" {$altcoins|escape:'htmlall':'UTF-8'}>
+<br>
+<div class="clear"></div>
+<br>
+
+<button name="updateSettings" value="Save" type="submit">{l s='Save' mod='blockonomics'}</button>
 <div class="clear"></div>
 <br>
 </form>
