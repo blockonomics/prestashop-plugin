@@ -172,11 +172,6 @@ class Blockonomics extends PaymentModule
         return true;
     }
 
-    public function hookPaymentReturn($params)
-    {
-        return $this->display(__FILE__, 'payment-return.tpl');
-    }
-
     // Display payment
     public function hookPaymentOptions($params)
     {
@@ -225,7 +220,7 @@ class Blockonomics extends PaymentModule
 
         //Generate new address for this invoice
         $context = stream_context_create($options);
-        $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
+        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
         $responseObj = Tools::jsonDecode($contents);
         
         //Create response object if it does not exist
