@@ -125,8 +125,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
-    private function displayError($error_str, $blockonomics) {
-
+    private function displayError($error_str, $blockonomics)
+    {
         $unable_to_generate = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.', 'validation').'</h4><p>'.$blockonomics->l('Note for site webmaster: ', 'validation');
         
         $troubleshooting_guide = '</p><p>'.$blockonomics->l('If problem persists, please consult ', 'validation').'<a href="https://blockonomics.freshdesk.com/support/solutions/articles/33000215104-troubleshooting-unable-to-generate-new-address" target="_blank">'.$blockonomics->l('this troubleshooting article', 'validation').'</a></p>';
@@ -137,32 +137,20 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         die();
     }
 
-    private function checkForErrors($responseObj, $blockonomics) {
-
-        if(!ini_get('allow_url_fopen')) {
-            $error_str = $blockonomics->l('The allow_url_fopen is not enabled, please enable this option to allow address generation.', 'validation');
-
-        } elseif(!isset($responseObj->response_code)) {
+    private function checkForErrors($responseObj, $blockonomics)
+    {
+        if (!isset($responseObj->response_code)) {
             $error_str = $blockonomics->l('Your webhost is blocking outgoing HTTPS connections. Blockonomics requires an outgoing HTTPS POST (port 443) to generate new address. Check with your webhosting provider to allow this.', 'validation');
-
         } else {
-
             switch ($responseObj->response_code) {
-
-                case 'HTTP/1.1 200 OK':
+                case 200:
                     break;
-
-                case 'HTTP/1.1 401 Unauthorized': {
+                case 401:
                     $error_str = $blockonomics->l('API Key is incorrect. Make sure that the API key set in admin Blockonomics module configuration is correct.', 'validation');
                     break;
-                }
-
-                case 'HTTP/1.1 500 Internal Server Error': {
-
-                    if(isset($responseObj->message)) {
-
+                case 500:
+                    if (isset($responseObj->message)) {
                         $error_code = $responseObj->message;
-
                         switch ($error_code) {
                             case "Could not find matching xpub":
                                 $error_str = $blockonomics->l('There is a problem in the Callback URL. Make sure that you have set your Callback URL from the admin Blockonomics module configuration to your Merchants > Settings.', 'validation');
@@ -178,15 +166,14 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                         $error_str = $responseObj->response_code;
                         break;
                     }
-                }
-
+                    //no break here as if/else handles that
                 default:
-                    $error_str = $responseObj->response_code;
+                    $error_str = 'HTTP Status code: '.$responseObj->response_code;
                     break;
             }
         }
 
-        if(isset($error_str)) {
+        if (isset($error_str)) {
             $this->displayError($error_str, $blockonomics);
         }
     }
