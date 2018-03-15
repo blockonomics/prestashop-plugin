@@ -153,6 +153,8 @@ class Blockonomics extends PaymentModule
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+
+        Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
     }
 
@@ -180,7 +182,6 @@ class Blockonomics extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-
         $payment_options = array($this->getBTCPaymentOption());
         return $payment_options;
     }
@@ -212,15 +213,21 @@ class Blockonomics extends PaymentModule
             'http' => array(
                 'header'  => array('Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),'Content-type: application/x-www-form-urlencoded'),
                 'method'  => 'POST',
-                'content' => ''
+                'content' => '',
+                'ignore_errors' => true
             )
         );
 
         //Generate new address for this invoice
         $context = stream_context_create($options);
-        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
-        $addressObj = Tools::jsonDecode($contents);
-        return $addressObj->address;
+        $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
+        $responseObj = Tools::jsonDecode($contents);
+        
+        //Create response object if it does not exist
+        if (!isset($responseObj)) $responseObj = new stdClass();
+        $responseObj->{'response_code'} = $http_response_header[0];
+
+        return $responseObj;
     }
 
     public function getContext()
@@ -241,7 +248,6 @@ class Blockonomics extends PaymentModule
             }
         }
     }
-
 
     //Add Bitcoin invoice to pdf invoice
     public function hookDisplayPDFInvoice($params)
@@ -276,6 +282,7 @@ class Blockonomics extends PaymentModule
 
         $tx_status = (int)($b_order[0]['status']);
 
+
         if ($tx_status == -1) {
             $status = 'Payment Not Received.';
         } elseif ($tx_status == 0) {
@@ -300,13 +307,24 @@ class Blockonomics extends PaymentModule
 
     public function getContent()
     {
-        if (Tools::getValue('updateApiKey')) {
-            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
-        } elseif (Tools::getValue('updateCallback')) {
+        if (Tools::getValue('updateCallback')) {
             //Generate new callback secret
             $secret = md5(uniqid(rand(), true));
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
             Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
+        } elseif (Tools::getValue('updateSettings')) {
+            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
+            $accept_altcoins = false;
+            if(Tools::getValue('altcoins') == 'altcoins') {
+                $accept_altcoins = true;
+            }
+
+            Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
+        }
+
+        $altcoins_checked = '';
+        if(Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) {
+            $altcoins_checked = 'checked';
         }
 
         $this->smarty->assign(
@@ -316,7 +334,8 @@ class Blockonomics extends PaymentModule
             'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
             'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
             'token' => Tools::getAdminTokenLite("AdminOrders"),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/')
+            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+            'altcoins' => $altcoins_checked)
         );
 
 
