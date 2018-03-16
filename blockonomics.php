@@ -209,23 +209,27 @@ class Blockonomics extends PaymentModule
 
     public function getNewAddress()
     {
-        $options = array(
-            'http' => array(
-                'header'  => array('Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),'Content-type: application/x-www-form-urlencoded'),
-                'method'  => 'POST',
-                'content' => '',
-                'ignore_errors' => true
-            )
-        );
+        $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
 
-        //Generate new address for this invoice
-        $context = stream_context_create($options);
-        $contents = file_get_contents(Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET'), false, $context);
-        $responseObj = Tools::jsonDecode($contents);
-        
-        //Create response object if it does not exist
-        if (!isset($responseObj)) $responseObj = new stdClass();
-        $responseObj->{'response_code'} = $http_response_header[0];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),
+            'Content-type: application/x-www-form-urlencoded'
+            ));
+
+        $data = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $responseObj = Tools::jsonDecode($data);
+        if (!isset($responseObj)) {
+            $responseObj = new stdClass();
+        }
+        $responseObj->{'response_code'} = $httpcode;
 
         return $responseObj;
     }
@@ -315,7 +319,7 @@ class Blockonomics extends PaymentModule
         } elseif (Tools::getValue('updateSettings')) {
             Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
             $accept_altcoins = false;
-            if(Tools::getValue('altcoins') == 'altcoins') {
+            if (Tools::getValue('altcoins') == 'altcoins') {
                 $accept_altcoins = true;
             }
 
@@ -323,7 +327,7 @@ class Blockonomics extends PaymentModule
         }
 
         $altcoins_checked = '';
-        if(Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) {
+        if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) {
             $altcoins_checked = 'checked';
         }
 
