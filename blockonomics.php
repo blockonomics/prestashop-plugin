@@ -216,6 +216,7 @@ class Blockonomics extends PaymentModule
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),
             'Content-type: application/x-www-form-urlencoded'
