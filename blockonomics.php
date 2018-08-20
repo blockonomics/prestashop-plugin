@@ -317,25 +317,23 @@ class Blockonomics extends PaymentModule
 
     public function getContent()
     {
-        if (Tools::getValue('updateCallback')) {
-            //Generate new callback secret
-            $secret = md5(uniqid(rand(), true));
-            Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-            Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
-        } elseif (Tools::getValue('updateSettings')) {
+      $output = '';
+       if (Tools::isSubmit("testSetup")) {
+            $output = $this->displayConfirmation($this->l('Setup updated'));
+        } 
+        elseif (Tools::isSubmit('updateSettings')) {
             Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
             $accept_altcoins = false;
             if (Tools::getValue('altcoins') == 'altcoins') {
                 $accept_altcoins = true;
             }
-
             Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
+            $output = $this->displayConfirmation($this->l('Setttings Saved'));
         }
 
         $altcoins_checked = '';
-        if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) {
+        if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) 
             $altcoins_checked = 'checked';
-        }
 
         $this->smarty->assign(
             array(
@@ -349,6 +347,6 @@ class Blockonomics extends PaymentModule
         );
 
 
-        return $this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        return $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl');
     }
 }

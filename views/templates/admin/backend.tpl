@@ -18,33 +18,29 @@
  *}
 
 <h2>{$name|escape:'htmlall':'UTF-8'}</h2>
-<form action="{$request_uri|escape:'htmlall':'UTF-8'}" method="post">
-<div class="clear"></div>
-<br>
 <!--Call back url -->
-<h3>{l s='HTTP CallBack URL ' mod='blockonomics'}:</h3>
-<h4>{l s='Copy this url and set in ' mod='blockonomics'}<a href="https://www.blockonomics.co/merchants">Merchant Setup</a></h4>
-<input readonly name="callBackUrl" type="text" value="{$callback_url|escape:'htmlall':'UTF-8'}">
-<br>
-<div class="clear"></div>
-<br>
-<button name="updateCallback" value="Update" type="submit">{l s='Update Callback With New Secret' mod='blockonomics'}</button>
-<div class="clear"></div>
-<br>
-</form>
 
 <form action="{$request_uri|escape:'htmlall':'UTF-8'}" method="post">
 <div class="clear"></div>
 <br>
-
+{if !$api_key}
+<h3>{l s='You are few clicks away from accepting bitcoin payments'
+mod='blockonomics'}</h3> 
+<h3>Click on <b>Get Started for Free</b> on <a
+href="https://wwww.blockonomics.co/merchants">Blockonomics Merchants</a>, complete the
+wizard and copy the API Key when shown here
+</h3>
+{/if}
+<div class="clear"></div>
 <!-- API Key configuration -->
 <h3>{l s='API key ' mod='blockonomics'}:</h3>
-<h4>{l s='Generate from ' mod='blockonomics'} <a href="https://www.blockonomics.co/blockonomics">Wallet Watcher</a> &gt; Settings </h4>
 <input name="apiKey" type="text" value="{$api_key|escape:'htmlall':'UTF-8'}">
 <br>
 <div class="clear"></div>
 <br>
 
+<h3>{l s='HTTP CallBack URL' mod='blockonomics'} ⟳ :</h3>
+<h4>{$callback_url|escape:'htmlall':'UTF-8'}</h4>
 <div class="clear"></div>
 <br>
 
@@ -57,6 +53,7 @@
 <br>
 
 <button name="updateSettings" value="Save" type="submit">{l s='Save' mod='blockonomics'}</button>
+<button name="testSetup" value="Test Setup" type="submit">{l s='Test Setup' mod='blockonomics'}</button>
 <div class="clear"></div>
 <br>
 </form>
