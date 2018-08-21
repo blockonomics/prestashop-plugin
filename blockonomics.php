@@ -330,6 +330,9 @@ class Blockonomics extends PaymentModule
 				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
 				$output = $this->displayConfirmation($this->l('Setttings Saved'));
 			}
+			elseif (Tools::isSubmit('generateNewURL')) {
+				$this->generatenewCallback();
+			}
 
 			$altcoins_checked = '';
 			if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) 
@@ -365,9 +368,8 @@ class Blockonomics extends PaymentModule
             'type' => 'text',
             'label' => $this->l('API Key'),
             'name' => 'BLOCKONOMICS_API_KEY',
-            'size' => 20,
+            'size' => 10,
             'required' => true,
-            'value' => 'test'
           )
         ),
         'submit' => array(
@@ -384,10 +386,10 @@ class Blockonomics extends PaymentModule
         ),
         'input' => array(
           array(
-            'type' => 'Free',
+            'type' => 'free',
             'label' => $this->l('HTTP CALLBACK URL'),
-            'name' => 'MYMODULE_NAME',
-            'size' => 20,
+            'name' => 'callbackURL',
+            'class' => 'readonly'
           )
         ),
         'submit' => array(
@@ -428,7 +430,19 @@ class Blockonomics extends PaymentModule
 
       // Load current value
       $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
-
+      $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+      if (!$callbackurl)
+      {
+				generatenewCallback();
+        $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+      }
+      $helper->fields_value['callbackURL'] = $callbackurl;
       return $helper->generateForm($fields_form);
+    }
+
+    public function generatenewCallback(){
+        $secret = md5(uniqid(rand(), true)); 
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
     }
 }
