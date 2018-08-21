@@ -316,37 +316,119 @@ class Blockonomics extends PaymentModule
     }
 
     public function getContent()
+		{
+			$output = '';
+			if (Tools::isSubmit("testSetup")) {
+				$output = $this->displayConfirmation($this->l('Setup updated'));
+			} 
+			elseif (Tools::isSubmit('updateSettings')) {
+				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
+				$accept_altcoins = false;
+				if (Tools::getValue('altcoins') == 'altcoins') {
+					$accept_altcoins = true;
+				}
+				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
+				$output = $this->displayConfirmation($this->l('Setttings Saved'));
+			}
+
+			$altcoins_checked = '';
+			if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) 
+				$altcoins_checked = 'checked';
+
+			$this->smarty->assign(
+				array(
+					'name' => $this->displayName.$this->id,
+					'request_uri' => $_SERVER['REQUEST_URI'],
+					'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
+					'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
+					'token' => Tools::getAdminTokenLite("AdminOrders"),
+					'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+					'altcoins' => $altcoins_checked)
+				);
+
+
+			return $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl').$this->displayForm();
+		}
+
+    public function displayForm()
     {
-      $output = '';
-       if (Tools::isSubmit("testSetup")) {
-            $output = $this->displayConfirmation($this->l('Setup updated'));
-        } 
-        elseif (Tools::isSubmit('updateSettings')) {
-            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('apiKey'));
-            $accept_altcoins = false;
-            if (Tools::getValue('altcoins') == 'altcoins') {
-                $accept_altcoins = true;
-            }
-            Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
-            $output = $this->displayConfirmation($this->l('Setttings Saved'));
-        }
+      // Get default language
+      $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
-        $altcoins_checked = '';
-        if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) 
-            $altcoins_checked = 'checked';
+      // Init Fields form array
+      $fields_form[0]['form'] = array(
+        'legend' => array(
+          'title' => $this->l('Settings'),
+        ),
+        'input' => array(
+          array(
+            'type' => 'text',
+            'label' => $this->l('API Key'),
+            'name' => 'BLOCKONOMICS_API_KEY',
+            'size' => 20,
+            'required' => true,
+            'value' => 'test'
+          )
+        ),
+        'submit' => array(
+          'title' => $this->l('Save'),
+          'name'  => 'updateSettings',
+          'class' => 'btn btn-default pull-right'
+        )
+      );
 
-        $this->smarty->assign(
-            array(
-            'name' => $this->displayName.$this->id,
-            'request_uri' => $_SERVER['REQUEST_URI'],
-            'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
-            'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
-            'token' => Tools::getAdminTokenLite("AdminOrders"),
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-            'altcoins' => $altcoins_checked)
+      // Init Fields form array
+      $fields_form[1]['form'] = array(
+        'legend' => array(
+          'title' => $this->l('Store Info'),
+        ),
+        'input' => array(
+          array(
+            'type' => 'Free',
+            'label' => $this->l('HTTP CALLBACK URL'),
+            'name' => 'MYMODULE_NAME',
+            'size' => 20,
+          )
+        ),
+        'submit' => array(
+          'title' => $this->l('Generate New Callback URL'),
+          'name' =>  $this->l('generateNewURL'),
+          'class' => 'btn btn-default pull-right'
+        )
+      );
+      $helper = new HelperForm();
+
+      // Module, token and currentIndex
+      $helper->module = $this;
+      $helper->name_controller = $this->name;
+      $helper->token = Tools::getAdminTokenLite('AdminModules');
+      $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+
+      // Language
+      $helper->default_form_language = $default_lang;
+      $helper->allow_employee_form_lang = $default_lang;
+
+      // Title and toolbar
+      $helper->title = $this->displayName;
+      $helper->show_toolbar = true;        // false -> remove toolbar
+      $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
+      $helper->submit_action = 'submit'.$this->name;
+      $helper->toolbar_btn = array(
+        'save' =>
+        array(
+          'desc' => $this->l('Save'),
+          'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
+          '&token='.Tools::getAdminTokenLite('AdminModules'),
+          ),
+          'back' => array(
+            'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
+            'desc' => $this->l('Back to list')
+          )
         );
 
+      // Load current value
+      $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
 
-        return $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl');
+      return $helper->generateForm($fields_form);
     }
 }
