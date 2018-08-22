@@ -50,11 +50,12 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
         $BLOCKONOMICS_NEW_ADDRESS_URL = $BLOCKONOMICS_BASE_URL.'/api/new_address';
         $BLOCKONOMICS_PRICE_URL = $BLOCKONOMICS_BASE_URL.'/api/price?currency=';
-
+        $BLOCKONOMICS_GET_CALLBACKS_URL = $BLOCKONOMICS_BASE_URL.'/api/address?&no_balance=true&only_xpub=true&get_callback=true'; 
         Configuration::updateValue('BLOCKONOMICS_BASE_URL', $BLOCKONOMICS_BASE_URL);
         Configuration::updateValue('BLOCKONOMICS_PRICE_URL', $BLOCKONOMICS_PRICE_URL);
         Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_URL', $BLOCKONOMICS_NEW_ADDRESS_URL);
         Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
+        Configuration::updateValue('BLOCKONOMICS_GET_CALLBACKS_URL', $BLOCKONOMICS_GET_CALLBACKS_URL);
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l('API Key is not provided to communicate with Blockonomics');
@@ -237,6 +238,82 @@ class Blockonomics extends PaymentModule
         return $responseObj;
     }
 
+    public function doCurlCall($url, $is_post=false)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if ($is_post)
+        {
+          curl_setopt($ch, CURLOPT_POST, 1);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, "");
+        }
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),
+            'Content-type: application/x-www-form-urlencoded'
+          ));
+
+        $data = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $responseObj = Tools::jsonDecode($data);
+        if (!isset($responseObj)) {
+            $responseObj = new stdClass();
+        }
+        $responseObj->{'response_code'} = $httpcode;
+
+        return $responseObj;
+    }
+
+    public function testSetup()
+    {
+      $error_str = '';
+      $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
+      $response = $this->doCurlCall($url); 
+
+      if (!isset($response->response_code)) {
+        $error_str = $this->l('Your server is blocking outgoing HTTPS calls');
+      }
+
+      if ($response->response_code==401)
+        $error_str = $this->l('API Key is incorrect');
+      elseif ($response_code->response_code!=200)  
+        $error_str = $responseObj->message;
+
+
+      $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+      if (count($response) == 0)
+      {
+        $error_str = $this->l('You have not entered an xpub');
+      }
+      elseif (count($response) == 1)
+      {
+        if(!$response[0]->callback || $response[0]->callback == null)
+        {
+          //No callback set, go ahead and set callback
+        }
+        if($response[0]->callback != $callback_url)
+        {
+          // Check if only secret differs
+          if(strpos($response[0]->callback, $callback_url) != false)
+          {
+            //Update_callback
+          }
+        }
+      }
+      else 
+      {
+        // Check if callback url is set
+        foreach ($response as $resObj)
+          if($resObj->callback == $callback_url)
+            return "";
+        $error_str = $this->l("Your have existing callback URL of another website. Please consult on how to integrate multiple websites");
+      }
+      return $error_str;
+    } 
+
     public function getContext()
     {
         return $this->context;
@@ -318,8 +395,13 @@ class Blockonomics extends PaymentModule
     public function getContent()
 		{
 			$output = '';
-			if (Tools::isSubmit("testSetup")) {
-				$output = $this->displayConfirmation($this->l('Setup updated'));
+      if (Tools::isSubmit("testSetup")) {
+        $error_str = $this->testSetup();
+        if ($error_str)
+          $output = $this->displayError($error_str);
+          //TODO: Add link to troubleshooting article
+        else
+          $output = $this->displayConfirmation($this->l('Setup is all done!'));
 			} 
 			elseif (Tools::isSubmit('updateSettings')) {
 				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
