@@ -257,12 +257,10 @@ class Blockonomics extends PaymentModule
         $data = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
-        $responseObj = Tools::jsonDecode($data);
-        if (!isset($responseObj)) {
-            $responseObj = new stdClass();
-        }
-        $responseObj->{'response_code'} = $httpcode;
+    
+        $responseObj = new stdClass();
+        $responseObj->data = Tools::jsonDecode($data);
+        $responseObj->response_code = $httpcode;
 
         return $responseObj;
     }
@@ -273,31 +271,30 @@ class Blockonomics extends PaymentModule
       $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
       $response = $this->doCurlCall($url); 
 
+      $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+      
+      //TODO: Check This: WE should actually check code for timeout
       if (!isset($response->response_code)) {
         $error_str = $this->l('Your server is blocking outgoing HTTPS calls');
       }
-
-      if ($response->response_code==401)
+      elseif ($response->response_code==401)
         $error_str = $this->l('API Key is incorrect');
-      elseif ($response_code->response_code!=200)  
-        $error_str = $responseObj->message;
-
-
-      $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
-      if (count($response) == 0)
+      elseif ($response->response_code!=200)  
+        $error_str = $response->data;
+      elseif (!isset($response->data) || count($response->data) == 0)
       {
         $error_str = $this->l('You have not entered an xpub');
       }
-      elseif (count($response) == 1)
+      elseif (count($response->data) == 1)
       {
-        if(!$response[0]->callback || $response[0]->callback == null)
+        if(!$response->data[0]->callback || $response->data[0]->callback == null)
         {
           //No callback set, go ahead and set callback
         }
-        if($response[0]->callback != $callback_url)
+        if($response->data[0]->callback != $callback_url)
         {
           // Check if only secret differs
-          if(strpos($response[0]->callback, $callback_url) != false)
+          if(strpos($response->data[0]->callback, $callback_url) != false)
           {
             //Update_callback
           }
@@ -306,10 +303,10 @@ class Blockonomics extends PaymentModule
       else 
       {
         // Check if callback url is set
-        foreach ($response as $resObj)
+        foreach ($response->data as $resObj)
           if($resObj->callback == $callback_url)
             return "";
-        $error_str = $this->l("Your have existing callback URL of another website. Please consult on how to integrate multiple websites");
+        $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
       }
       return $error_str;
     } 
@@ -398,8 +395,10 @@ class Blockonomics extends PaymentModule
       if (Tools::isSubmit("testSetup")) {
         $error_str = $this->testSetup();
         if ($error_str)
-          $output = $this->displayError($error_str);
-          //TODO: Add link to troubleshooting article
+        {
+          $error_str = $error_str."</br>".$this->l('For more information please consult this ')."<a target='_blank' href='https://blockonomics.freshdesk.com/solution/articles/33000215104-troubleshooting-unable-to-generate-new-address'>".$this->l('troubleshooting article')."</a>"; 
+          $output =$this->displayError($error_str);
+        }
         else
           $output = $this->displayConfirmation($this->l('Setup is all done!'));
 			} 
