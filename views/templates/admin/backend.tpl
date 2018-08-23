@@ -16,7 +16,6 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  *}
-{if !$api_key}
 <div class="alert alert-info">
 <p><strong>{l s="You are few clicks away from accepting bitcoin payments"}</strong></p>
 </br>
@@ -25,4 +24,3 @@ href="https://wwww.blockonomics.co/merchants">Blockonomics
 Merchants</a></strong>,
 complete the wizard and copy the API Key when shown here</p>
 </div>
-{/if}

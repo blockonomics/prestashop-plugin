@@ -399,34 +399,16 @@ class Blockonomics extends PaymentModule
 			} 
 			elseif (Tools::isSubmit('updateSettings')) {
 				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
-				$accept_altcoins = false;
-				if (Tools::getValue('altcoins') == 'altcoins') {
-					$accept_altcoins = true;
-				}
-				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
 				$output = $this->displayConfirmation($this->l('Setttings Saved, click on Test Setup to verify installation'));
 			}
 			elseif (Tools::isSubmit('generateNewURL')) {
 				$this->generatenewCallback();
 			}
+      
+      if (!Configuration::get('BLOCKONOMICS_API_KEY'))
+        $output = $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl');
 
-			$altcoins_checked = '';
-			if (Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')) 
-				$altcoins_checked = 'checked';
-
-			$this->smarty->assign(
-				array(
-					'name' => $this->displayName.$this->id,
-					'request_uri' => $_SERVER['REQUEST_URI'],
-					'api_key' => Configuration::get('BLOCKONOMICS_API_KEY'),
-					'callback_url' => Configuration::get('BLOCKONOMICS_CALLBACK_URL'),
-					'token' => Tools::getAdminTokenLite("AdminOrders"),
-					'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-					'altcoins' => $altcoins_checked)
-				);
-
-
-			return $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl').$this->displayForm();
+			return $output.$this->displayForm();
 		}
 
     public function displayForm()
