@@ -205,19 +205,18 @@ class Blockonomics extends PaymentModule
     {
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $options = array( 'http' => array( 'method'  => 'GET') );
-        $context = stream_context_create($options);
-        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_PRICE_URL').$currency->iso_code, false, $context);
-        $priceObj = Tools::jsonDecode($contents);
-        return $priceObj->price;
+        $url = Configuration::get('BLOCKONOMICS_PRICE_URL').$currency->iso_code;
+        return $this->doCurlCall($url)->data->price;
     }
 
 
-    public function getNewAddress()
+    public function getNewAddress($test_mode=false)
     {
-        $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+      $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+      if ($test_mode)
+        $url=$url."&reset=1";
 
-        return $this->doCurlCall($url, 'dummy');
+      return $this->doCurlCall($url, 'dummy');
     }
 
     public function doCurlCall($url, $post_content='')
@@ -300,6 +299,14 @@ class Blockonomics extends PaymentModule
             return "";
         $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
       }
+      if (!$error_str)
+      {
+        //Everything OK ! Test address generation
+        $response=$this->getNewAddress(true);
+        if ($response->response_code!=200)
+          $error_str = $response->data->message;
+      }
+
       return $error_str;
     } 
 
