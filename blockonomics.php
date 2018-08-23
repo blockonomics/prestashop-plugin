@@ -219,28 +219,7 @@ class Blockonomics extends PaymentModule
     {
         $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization: Bearer '.Configuration::get('BLOCKONOMICS_API_KEY'),
-            'Content-type: application/x-www-form-urlencoded'
-            ));
-
-        $data = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $responseObj = Tools::jsonDecode($data);
-        if (!isset($responseObj)) {
-            $responseObj = new stdClass();
-        }
-        $responseObj->{'response_code'} = $httpcode;
-
-        return $responseObj;
+        return $this->doCurlCall($url, 'dummy');
     }
 
     public function doCurlCall($url, $post_content='')
@@ -299,7 +278,7 @@ class Blockonomics extends PaymentModule
           $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
           $this->doCurlCall($set_callback_url, $post_content);  
         }
-        if($response->data[0]->callback != $callback_url)
+        elseif($response->data[0]->callback != $callback_url)
         {
           // Check if only secret differs
           $base_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php';
@@ -408,6 +387,7 @@ class Blockonomics extends PaymentModule
 		{
 			$output = '';
       if (Tools::isSubmit("testSetup")) {
+				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
         $error_str = $this->testSetup();
         if ($error_str)
         {
