@@ -51,11 +51,14 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_NEW_ADDRESS_URL = $BLOCKONOMICS_BASE_URL.'/api/new_address';
         $BLOCKONOMICS_PRICE_URL = $BLOCKONOMICS_BASE_URL.'/api/price?currency=';
         $BLOCKONOMICS_GET_CALLBACKS_URL = $BLOCKONOMICS_BASE_URL.'/api/address?&no_balance=true&only_xpub=true&get_callback=true'; 
+        $BLOCKONOMICS_SET_CALLBACK_URL = $BLOCKONOMICS_BASE_URL.'/api/update_callback';
+
         Configuration::updateValue('BLOCKONOMICS_BASE_URL', $BLOCKONOMICS_BASE_URL);
         Configuration::updateValue('BLOCKONOMICS_PRICE_URL', $BLOCKONOMICS_PRICE_URL);
         Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_URL', $BLOCKONOMICS_NEW_ADDRESS_URL);
         Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
         Configuration::updateValue('BLOCKONOMICS_GET_CALLBACKS_URL', $BLOCKONOMICS_GET_CALLBACKS_URL);
+        Configuration::updateValue('BLOCKONOMICS_SET_CALLBACK_URL', $BLOCKONOMICS_SET_CALLBACK_URL);
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l('API Key is not provided to communicate with Blockonomics');
@@ -168,6 +171,8 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
         Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
+        Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
+        Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
         return true;
     }
 
@@ -238,15 +243,15 @@ class Blockonomics extends PaymentModule
         return $responseObj;
     }
 
-    public function doCurlCall($url, $is_post=false)
+    public function doCurlCall($url, $post_content='')
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        if ($is_post)
+        if ($post_content)
         {
           curl_setopt($ch, CURLOPT_POST, 1);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, "");
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $post_content);
         }
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -289,15 +294,25 @@ class Blockonomics extends PaymentModule
       {
         if(!$response->data[0]->callback || $response->data[0]->callback == null)
         {
-          //No callback set, go ahead and set callback
+          //No callback URL set, set one 
+          $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
+          $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
+          $this->doCurlCall($set_callback_url, $post_content);  
         }
         if($response->data[0]->callback != $callback_url)
         {
           // Check if only secret differs
-          if(strpos($response->data[0]->callback, $callback_url) != false)
+          $base_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php';
+          if(strpos($response->data[0]->callback, $base_url) !== false)
           {
-            //Update_callback
+            //Looks like the user regenrated callback by mistake
+            //Just force Update_callback on server
+            $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
+            $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
+            $this->doCurlCall($set_callback_url, $post_content);  
           }
+          else
+            $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
         }
       }
       else 
