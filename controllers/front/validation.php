@@ -68,7 +68,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $responseObj = $blockonomics->getNewAddress();
 
-        if (!$responseObj->data || !$responseObj->data->adddress)
+        if (!$responseObj->data || !$responseObj->data->address)
             $this->displayError($blockonomics);
 
         $new_address = $responseObj->data->address;
