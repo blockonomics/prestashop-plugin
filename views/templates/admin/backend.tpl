@@ -21,7 +21,7 @@
 <p><strong>{l s="You are few clicks away from accepting bitcoin payments"}</strong></p>
 </br>
 <p>Click on <strong>Get Started for Free</strong> on <strong><a
-href="https://wwww.blockonomics.co/merchants">Blockonomics
+href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics
 Merchants</a></strong>,
 complete the wizard and copy the API Key when shown here</p>
 </div>
