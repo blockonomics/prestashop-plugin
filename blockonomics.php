@@ -404,7 +404,7 @@ class Blockonomics extends PaymentModule
 					$accept_altcoins = true;
 				}
 				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', $accept_altcoins);
-				$output = $this->displayConfirmation($this->l('Setttings Saved, click on Test Setup to verify installation'));
+				$output = $this->displayConfirmation($this->l('Settings Saved, click on Test Setup to verify installation'));
 			}
 			elseif (Tools::isSubmit('generateNewURL')) {
 				$this->generatenewCallback();
