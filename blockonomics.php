@@ -408,7 +408,7 @@ class Blockonomics extends PaymentModule
 			elseif (Tools::isSubmit('updateSettings')) {
 				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
 				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
-				$output = $this->displayConfirmation($this->l('Setttings Saved, click on Test Setup to verify installation'));
+				$output = $this->displayConfirmation($this->l('Settings Saved, click on Test Setup to verify installation'));
 			}
 			elseif (Tools::isSubmit('generateNewURL')) {
 				$this->generatenewCallback();
