@@ -12,10 +12,9 @@ Installation
 - [Installation Video Tutorial](https://www.youtube.com/watch?v=zgbgVOcjw0c)
 - Upload blockonomics.zip from [releases](https://github.com/blockonomics/prestashop-plugin/releases) using Modules and Services > Add new Module.
 - Locate the module in Admin > modules list (search author blockonomics) and click on Install
-- Complete [blockonomics merchant wizard](https://www.blockonomics.co/merchants) 
-- Get API key from Wallet Watcher > Settings
-- Put this API key in prestashop module 
-- Copy callback url from prestashop module and set it in blockonomics merchant tab
+- Complete [blockonomics merchant wizard](https://www.blockonomics.co/merchants) to get API Key
+- Put shown API key in prestashop module and *Save* settings
+- Click on *Test Setup* to make sure everything is working 
 - Try checkout product , and you will see pay with bitcoin option. Use bitcoin to pay and enjoy !
 
 Languages
