@@ -9,7 +9,7 @@ Features
 
 Installation
 -----------------
-- [Installation Video Tutorial](https://www.youtube.com/watch?v=NlfsejbkLNk)
+- [Installation Video Tutorial](https://www.youtube.com/watch?v=zgbgVOcjw0c)
 - Upload blockonomics.zip from [releases](https://github.com/blockonomics/prestashop-plugin/releases) using Modules and Services > Add new Module.
 - Locate the module in Admin > modules list (search author blockonomics) and click on Install
 - Complete [blockonomics merchant wizard](https://www.blockonomics.co/merchants) 
