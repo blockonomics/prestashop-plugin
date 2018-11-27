@@ -33,13 +33,17 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/bootstrap.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.min.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-resource.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
+        /* $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js'); */
+        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/reconnecting-websocket.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/order.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/cryptofont/cryptofont.min.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/icons/icons.css');
     }
     public function postProcess()
     {
@@ -98,7 +102,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
       ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)"
         );
 
-        $redirect_link = '/index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
+        $redirect_link = Tools::getHttpHost(true, true).__PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
 
         $this->context->smarty->assign(
             array(
@@ -106,6 +110,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'status' => -1,
             'addr' => $new_address,
             'txid' => "",
+            'uuid' => Tools::getValue('uuid'),
             'bits' => rtrim(sprintf('%.8f', $bits/1.0e8), '0'),
             'value' => (float)$total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
@@ -114,7 +119,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')
+            'blockonomics_altcoins' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
+            'blockonomics_timeperiod' => 10,
+            'altcoin_ctrl_url' => $this->context->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
             )
         );
 

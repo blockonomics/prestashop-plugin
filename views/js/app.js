@@ -1,63 +1,310 @@
-/**
- * 2011-2016 Blockonomics
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@blockonomics.co so we can send you a copy immediately.
- *
- * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2011-2016 Blockonomics
- * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- * International Registered Trademark & Property of Blockonomics
- */
+service = angular.module("shoppingcart.services", ["ngResource"]);
 
-app = angular.module("blockonomics-invoice", ["monospaced.qrcode"]);
-
-app.config(function ($interpolateProvider) {
-
-    $interpolateProvider.startSymbol('//');
-    $interpolateProvider.endSymbol('//');
-})
-
-app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope) {
-    var totalProgress = 100;
-    var totalTime = 10*60; //10m
-    $scope.progress = totalProgress;
-    $scope.clock = totalTime;
-
-    $scope.tick = function() {
-        $scope.clock = $scope.clock-1;
-        $scope.progress = Math.floor($scope.clock*totalProgress/totalTime);
-
-        if($scope.progress == 0){
-            //Refresh invoice page
-            $window.location.reload();
-        }
+service.factory('Order', function ($resource) {
+  var param = getParameterByNameBlocko('module');
+  if (param){
+    param = {
+      "module" : param, 
+      "controller" : "order", 
+      "fc" : "module"
     };
+  }
+  else
+    param = {};
+  var item = $resource(window.location.pathname, param);
+  return item;
+});
 
-    $scope.pay_altcoins = function() {
-        $scope.altcoin_waiting = true;
-        url = "https://shapeshift.io/shifty.html?destination=" + $scope.address + "&amount=" + $scope.satoshi + "&output=BTC";
-        window.open(url, '1418115287605','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+app = angular.module("shopping-cart-demo", ["monospaced.qrcode",  "shoppingcart.services"]);
+
+
+app.config(function ($compileProvider) {
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data|chrome-extension|bitcoin|ethereum|litecoin):/);
+  // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+});
+
+function getParameterByNameBlocko(name, url) {
+    if (!url) {
+      url = window.location.href;
     }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi){
 
-    $scope.address = invoice_addr;
-    $scope.satoshi = invoice_satoshi;
 
-    if(invoice_status == -1){
-        $scope.tick_interval  = $interval($scope.tick, 1000);
-        var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
-        ws.onmessage = function (evt) {
-            $window.location = final_url;
+app.controller('CheckoutController', function($scope, $interval, Order, $httpParamSerializer, $http,  $timeout) {
+  //get order id from url
+  $scope.address =  show_order;
+  var totalProgress = 100;
+  //blockonomics_time_period is defined on JS file as global var
+  var totalTime = blockonomics_time_period * 60;
+  var alt_totalTime = 0;
+  $scope.getJson = function(data){
+    return JSON.parse(data);
+  };
+
+  $scope.tick = function() {
+    $scope.clock = $scope.clock-1;
+    $scope.progress = Math.floor($scope.clock*totalProgress/totalTime);
+    if ($scope.clock < 0)
+    {
+      $scope.clock = 0;
+      //Order expired
+      $scope.order.status = -3;
+    }
+    $scope.progress = Math.floor($scope.clock*totalProgress/totalTime);
+  };
+  $scope.alt_tick = function() {
+    $scope.alt_clock = $scope.alt_clock-1;
+    $scope.alt_progress = Math.floor($scope.alt_clock*totalProgress/alt_totalTime);
+    if ($scope.alt_clock < 0)
+    {
+      $scope.alt_clock = 0;
+      //Order expired
+      $interval.cancel(interval);
+      $scope.order.altstatus = -3;
+    }
+    $scope.alt_progress = Math.floor($scope.alt_clock*totalProgress/alt_totalTime);
+  };
+  var interval;
+  var given_uuid=get_uuid;
+  var send_email = false;
+  $scope.altsymbol = 'ETH';
+  function checkOrder(uuid){
+    $http({
+          method: 'GET',
+          params: {'action': 'check_order', 'uuid': uuid},
+          url: my_ajax_object.ajax_url
+          }).then(function successCallback(response) {
+            if(response.data['status'] == "WAITING_FOR_DEPOSIT"){
+              $scope.order.altstatus = 0;
+            }
+            if(response.data['status'] == "DEPOSIT_RECEIVED"){
+              if(send_email == true){
+                var order_id = $scope.order.id_order;
+                var order_link = $scope.order.pagelink;
+                var order_coin = $scope.altcoinselect;
+                var order_coin_sym = $scope.order.altsymbol;
+                //Send Email
+                $http({
+                  method: 'GET',
+                  params: {'action': 'send_email', 'order_id':order_id, 'order_link':order_link, 'order_coin':order_coin, 'order_coin_sym':order_coin_sym},
+                  url: my_ajax_object.ajax_url
+                  });
+                send_email = false;
+              }
+              $scope.order.altstatus = 1;
+            }
+            if(response.data['status'] == "DEPOSIT_CONFIRMED"){
+              $scope.order.altstatus = 2;
+            }
+            if(response.data['status'] == "EXECUTED"){
+              $scope.order.altstatus = 3;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "REFUNDED"){
+              $scope.order.altstatus = -1;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "CANCELED"){
+              $scope.order.altstatus = -2;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "EXPIRED"){
+              $scope.order.altstatus = -3;
+              $interval.cancel(interval);
+            }
+            }, function errorCallback(response) {
+              //console.log(response);
+            });
+  }
+
+  $scope.pay_altcoins = function() {
+    $interval.cancel(interval);
+    $interval.cancel($scope.alt_tick_interval);
+    $scope.order.altaddress = '';
+    $scope.order.altamount = '';
+    $scope.order.altstatus = 0;
+    $scope.altcoin_waiting = true;
+    $scope.alt_clock = 1200;
+    send_email = true;
+    var altcoin = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
+    $scope.order.altsymbol = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
+    var amount = $scope.order.bits/1.0e8;
+    var address = $scope.order.address;
+    var order_id = $scope.order.id_order;
+    $http({
+    method: 'GET',
+    params: {'action': 'fetch_limit', 'altcoin': altcoin},
+    url: my_ajax_object.ajax_url
+    }).then(function successCallback(response) {
+      var alt_minimum = response.data['min'];
+      var alt_maximum = response.data['max'];
+      if(amount >= alt_minimum && amount <= alt_maximum){
+        $http({
+        method: 'GET',
+        params: {'action': 'create_order', 'altcoin': altcoin, 'amount': amount, 'address': address, 'order_id':order_id},
+        url: my_ajax_object.ajax_url
+        }).then(function successCallback(response) {
+          alt_totalTime = response.data['expires'];
+          $scope.alt_clock = response.data['expires'];
+          $scope.alt_tick_interval  = $interval($scope.alt_tick, 1000);
+          $scope.order.altaddress = response.data['deposit_address'];
+          if($scope.order.altsymbol == 'ETH'){
+            $scope.order.altaddress_link = 'https://etherscan.io/address/' + response.data['deposit_address'];
+          }
+          if($scope.order.altsymbol == 'LTC'){
+            $scope.order.altaddress_link = 'https://chainz.cryptoid.info/ltc/address.dws?' + response.data['deposit_address'];
+          }
+          $scope.order.altamount = response.data['order']['invoiced_amount'];
+          var uuid = response.data['order']['uuid'];
+          $scope.order.pagelink = window.location.href + '&uuid=' + uuid;
+          $scope.altuuid = uuid;
+            interval = $interval(function(response) {
+              checkOrder(uuid);
+            }, 10000);
+          }, function errorCallback(response) {
+            //console.log(response);
+          });
+      }else if(amount <= alt_minimum){
+        //Min/Max Error
+        $scope.order.altstatus = -4;
+        $scope.lowhigh = "low";
+      }else{
+        $scope.order.altstatus = -4;
+        $scope.lowhigh = "high";        
+      }
+      }, function errorCallback(response) {
+        //console.log(response);
+      });
+  }
+  function getAltKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+  function infoOrder(uuid) {
+    $scope.altuuid = uuid;
+    $http({
+    method: 'GET',
+    params: {'action': 'info_order', 'uuid': uuid},
+    url: my_ajax_object.ajax_url
+    }).then(function successCallback(response) {
+        $scope.order.altaddress = response.data['deposit_address'];
+        if(response.data['order']['from_currency'] == 'ETH'){
+          $scope.order.altaddress_link = 'https://etherscan.io/address/' + response.data['deposit_address'];
+        }
+        if(response.data['order']['from_currency'] == 'LTC'){
+          $scope.order.altaddress_link = 'https://chainz.cryptoid.info/ltc/address.dws?' + response.data['deposit_address'];
+        }
+        $scope.order.altamount = response.data['order']['invoiced_amount'];
+        var altsymbol = response.data['order']['from_currency'];
+        $scope.order.altsymbol = altsymbol;
+        $scope.altcoinselect = $scope.altcoins[altsymbol];
+        interval = $interval(function(response) {
+          checkOrder(uuid);
+        }, 10000);
+            if(response.data['status'] == "WAITING_FOR_DEPOSIT"){
+              $scope.order.altstatus = 0;
+            }
+            if(response.data['status'] == "DEPOSIT_RECEIVED"){
+              $scope.order.altstatus = 1;
+            }
+            if(response.data['status'] == "DEPOSIT_CONFIRMED"){
+              $scope.order.altstatus = 2;
+            }
+            if(response.data['status'] == "EXECUTED"){
+              $scope.order.altstatus = 3;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "REFUNDED"){
+              $scope.order.altstatus = -1;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "CANCELED"){
+              $scope.order.altstatus = -2;
+              $interval.cancel(interval);
+            }
+            if(response.data['status'] == "EXPIRED"){
+              $scope.order.altstatus = -3;
+              $interval.cancel(interval);
+            }
+      }, function errorCallback(response) {
+        //console.log(response);
+      });
+  }
+  if ( typeof $scope.address != 'undefined'){
+    Order.get({"get_order":$scope.address}, function(data){
+      $scope.order = data;
+      $scope.order.address = $scope.address;
+      $scope.order.altcoin = $scope.altcoin;
+      var order_id = $scope.order.id_order;
+      if(given_uuid!=''){
+        $scope.order.pagelink = window.location.href;
+        infoOrder(given_uuid);
+      }else{
+        //Listen on websocket for payment notification
+        //After getting notification,  refresh page
+        if($scope.order.status == -1){
+          var x = Date.now();
+          var xx = Math.floor(Date.now() / 1000);
+          $scope.clock = Math.floor($scope.order.timestamp) + totalTime - Math.floor(Date.now() / 1000); 
+          //Mark order as expired if we ran out of time
+          if ($scope.clock < 0)
+          {
+            $scope.order.status = -3;
+            return;
+          }
+          $scope.tick_interval  = $interval($scope.tick, 1000);
+          //Websocket
+          var ws = new ReconnectingWebSocket("wss://www.blockonomics.co/payment/" + $scope.order.address + "?timestamp=" + $scope.order.timestamp);
+          ws.onmessage = function (evt) {
+            ws.close();
+            $interval(function(){
+              //Redirect to order received page
+              window.location = finish_order_url;
+              //Wait for 2 seconds for order status
+                    //to update on server
+            }, 2000, 1);
+          }
         }
       }
-    }
+    });
+  }
+  $scope.copyshow = false;
+  //Order Form Copy To Clipboard
+  $scope.btc_address_click = function() {
+    var copyText = document.getElementById("bnomics-address-input");
+    copyText.select();
+    document.execCommand("copy");
+    //Open Message
+    $scope.copyshow = true;
+    $timeout(function() {
+        $scope.copyshow = false;
+     }, 2000); 
+  }
+  $scope.alt_address_click = function() {
+    var copyText = document.getElementById("bnomics-alt-address-input");
+    copyText.select();
+    document.execCommand("copy");  
+    $scope.copyshow = true;
+    $timeout(function() {
+        $scope.copyshow = false;
+     }, 2000); 
+  }
+
+  $scope.altcoins = {"ETH": "Ethereum", "LTC": "Litecoin"};
+
+  $scope.page_link_click = function() {
+    var copyText = document.getElementById("bnomics-page-link-input");
+    copyText.select();
+    document.execCommand("copy");  
+    $scope.copyshow = true;
+    $timeout(function() {
+        $scope.copyshow = false;
+     }, 2000); 
+  }
 });

@@ -19,7 +19,6 @@
  */
 
 require dirname(__FILE__).'/../../config/config.inc.php';
-require dirname(__FILE__).'/../../header.php';
 
 $secret = Tools::getValue('secret');
 $txid = Tools::getValue('txid');
@@ -51,4 +50,6 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             }
         }
     }
+}  else {
+  die();
 }
