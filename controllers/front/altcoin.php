@@ -115,15 +115,17 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
     {
       Mail::Send(
         (int)$order->id_lang,
-        'order_conf',
+        'contact',
         $subject,
-        $message,
+        array('{message}'=>$message,
+        '{email}'=>Configuration::get('PS_SHOP_EMAIL'),
+        '{order_name}'=>$order_id,
+        '{attached_file}'=>'None'
+      ),
         $customer->email,
-        $customer->firstname.' '.$customer->lastname,
         null,
         null,
-        null,
-        null, _PS_MAIL_DIR_, false, (int)$order->id_shop
+        null
       );
     }
   }

@@ -83,19 +83,20 @@
 				      <div class="bnomics-bg">
   		          <!-- Order Status -->
   		          <div class="bnomics-order-status-wrapper">
-  		            <span class="bnomics-order-status-title" ng-show="order.status == -1" ng-cloak >{l s='To confirm your order, please send the exact amount of ' mod='blockonomics'} <strong>BTC</strong> {l s=' to the given address' mod='blockonomics' }</span>
+  		            <span class="bnomics-order-status-title"
+ng-show="order.status == -1" ng-cloak >{l s='To confirm your order, please send
+the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given address' mod='blockonomics' }</span>
   		            <span class="warning bnomics-status-warning" ng-show="order.status == -3" ng-cloak>{l s='Payment Expired (Use the browser back button and try again)' mod='blockonomics' }</span>
   		            <span class="warning bnomics-status-warning" ng-show="order.status == -2" ng-cloak>{l s='Payment Error' mod='blockonomics' }</span>
   		            <span ng-show="order.status == 0" ng-cloak>{l s='Unconfirmed' mod='blockonomics' }</span>
   		            <span ng-show="order.status == 1" ng-cloak>{l s='Partially Confirmed' mod='blockonomics' }</span>
   		            <span ng-show="order.status >= 2" ng-cloak >{l s='Confirmed' mod='blockonomics' }</span>
   		          </div>
-                    <h4 class="bnomics-amount-title" for="invoice-amount">
+                    <label>
   				  	       {literal}{{order.bits/1.0e8}}{/literal} BTC
-                    </h4>
+                    </label>
                     <div class="bnomics-amount-wrapper">
-  				            <hr class="bnomics-amount-seperator"> ≈
-                      <span ng-cloak>{literal}{{order.value}}{/literal}</span>
+  				             ≈ <span ng-cloak>{literal}{{order.value}}{/literal}</span>
                       <small ng-cloak>{$currency_iso_code}</small>
                     </div>
   			      <!-- Bitcoin Address -->
@@ -165,9 +166,9 @@
                           <span class="bnomics-order-status-title" ng-show="order.altstatus == 0" ng-cloak >{l s='To confirm your order, please send the exact amount of ' mod='blockonomics'} 
 <strong>{literal}{{altcoinselect}}{/literal}</strong> {l s=' to the given address' mod='blockonomics' }</span>
                         </div>
-    	                  <h4 class="bnomics-amount-title" for="invoice-amount">
+    	                  <label>
     	                   {literal}{{order.altamount}} {{order.altsymbol}}{/literal}
-    	                  </h4>
+    	                  </label>
     	                  <!-- Alt Address -->
     	                  <div class="bnomics-address">
     	                    <input ng-click="alt_address_click()" id="bnomics-alt-address-input" class="bnomics-address-input" type="text" ng-value="order.altaddress" readonly="readonly">
