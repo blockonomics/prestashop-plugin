@@ -37,13 +37,12 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-resource.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        /* $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js'); */
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/reconnecting-websocket.min.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/order.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/cryptofont/cryptofont.min.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/icons/icons.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
     }
     public function postProcess()
     {
@@ -102,7 +101,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
       ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)"
         );
 
-        $redirect_link = Tools::getHttpHost(true, true).__PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
+        $redirect_link = '/index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
 
         $this->context->smarty->assign(
             array(
