@@ -46,13 +46,8 @@ class Blockonomics extends PaymentModule
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         //Include configuration from the local file.
-        /*
-        $BLOCKONOMICS_BASE_URL = 'http://localhost:8080';
-        $BLOCKONOMICS_WEBSOCKET_URL = 'ws://localhost:8080';
-        /*/
         $BLOCKONOMICS_BASE_URL = 'https://www.blockonomics.co';
         $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
-        //*/
         $BLOCKONOMICS_NEW_ADDRESS_URL = $BLOCKONOMICS_BASE_URL.'/api/new_address';
         $BLOCKONOMICS_PRICE_URL = $BLOCKONOMICS_BASE_URL.'/api/price?currency=';
         $BLOCKONOMICS_GET_CALLBACKS_URL = $BLOCKONOMICS_BASE_URL.'/api/address?&no_balance=true&only_xpub=true&get_callback=true'; 
