@@ -54,7 +54,7 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
   function save_uuid(){
     $addr = Tools::getValue('address');
     $uuid = Tools::getValue('uuid');
-    $order = Db::getInstance(_PS_USE_SQL_SLAVE_)->execute("UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET `uuid` = '".$uuid."' WHERE `addr` = '".pSQL($addr)."'");
+    $order = Db::getInstance(_PS_USE_SQL_SLAVE_)->execute("UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET `uuid` = '".pSQL($uuid)."' WHERE `addr` = '".pSQL($addr)."'");
   }
 
   function send_email(){
@@ -65,8 +65,8 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
     $order_coin = Tools::getValue('order_coin');
     $order_coin_sym = Tools::getValue('order_coin_sym');
     $order = new Order($order_id);
-    $subject = $order_coin . $blockonomics->l(' Payment Received', (int)$order->id_lang );
-    $message = $blockonomics->l('Your payment has been received. It will take a while for the network to confirm your order.<br>To view your payment status, copy and use the link below.<br>').'<a href="'.$order_link.'">'.$order_link.'</a>';
+    $subject = $order_coin . ' ' . $blockonomics->l('Refund', (int)$order->id_lang );
+    $message = $blockonomics->l('Your order couldn\'t be processed as you paid less than expected.<br>The amount you paid will be refunded.<br>Visit the link below to enter your refund address.').'<br><a href="'.$order_link.'">'.$order_link.'</a>';
 
     $id_customer=$order->id_customer;
     $customer= new Customer((int)$id_customer);
