@@ -20,7 +20,7 @@
   if (!defined('_PS_VERSION_'))
     exit;
 
-  function upgrade_module_1_7_9($object, $install = false)
+  function upgrade_module_1_7_6($object, $install = false)
   {
     updateDatabase();
     return true; //if there were no errors
