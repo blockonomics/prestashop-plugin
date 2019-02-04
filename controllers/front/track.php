@@ -94,12 +94,4 @@ class BlockonomicsTrackModuleFrontController extends ModuleFrontController
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
-    private function displayError($blockonomics)
-    {
-        $unable_to_generate = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.', 'validation').'</h4><p>'.$blockonomics->l('Please use Test Setup button in configuration to diagnose the error ', 'validation');
-
-        echo $unable_to_generate;
-        die();
-    }
-
 }

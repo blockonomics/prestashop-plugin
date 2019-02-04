@@ -41,17 +41,6 @@
   float:right;
 }
 
-.bnomics-altcoin-pane {
-  margin-top: 4.3em;
-}
-
-.bnomics-spinner {
-  margin: auto;
-  width: 60px;
-  height: 60px;
-  animation: rotate 1.4s infinite ease-in-out, background 1.4s infinite ease-in-out alternate;
-}
-
 .altcoin-td {
   width: 35%;
   border-left: 2px ridge;
@@ -83,8 +72,6 @@
     border: none;
   }
 }
-
-
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
