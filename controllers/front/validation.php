@@ -24,22 +24,55 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-/**
- * @since 1.5.0
- */
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
     public function setMedia()
     {
         parent::setMedia();
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/bootstrap.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
+        $this->registerStylesheet(
+            'mystyle1',
+            'modules/blockonomics/views/css/style.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
+            'mystyle2',
+            'modules/blockonomics/views/css/order.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
+            'myIcons',
+            'modules/blockonomics/views/css/icons/icons.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
+            'myCrypto',
+            'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
+            array('postion' => 'head')
+        );        
+        $this->registerJavascript(
+            'bootstrap',
+            'modules/blockonomics/views/js/bootstrap.js'
+        );
+        $this->registerJavascript(
+            'angular',
+            'modules/blockonomics/views/js/angular.js'
+        );
+        $this->registerJavascript(
+            'vendor',
+            'modules/blockonomics/views/js/vendors.min.js'
+        );
+        $this->registerJavascript(
+            'qrcode',
+            'modules/blockonomics/views/js/angular-qrcode.js'
+        );
+        $this->registerJavascript(
+            'angular-resource',
+            'modules/blockonomics/views/js/angular-resource.min.js'
+        );
+        $this->registerJavascript(
+            'app',
+            'modules/blockonomics/views/js/app.js'
+        );
     }
     public function postProcess()
     {
@@ -114,13 +147,14 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')
+            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
+            'ajax_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
             )
         );
 
 
 
-        $this->setTemplate('payment.tpl');
+        $this->setTemplate('module:blockonomics/views/templates/front/payment.tpl');
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }

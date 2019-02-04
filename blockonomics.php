@@ -22,6 +22,7 @@ if (!defined('_PS_VERSION_') or !defined('_CAN_LOAD_FILES_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class Blockonomics extends PaymentModule
 {
@@ -32,11 +33,12 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.6.6';
+        $this->version = '1.7.9';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
-        $this->display_column_left = false;
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->controllers = array('validation');
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
 
         parent::__construct();
@@ -72,8 +74,7 @@ class Blockonomics extends PaymentModule
             or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_0', 'Waiting for 2 Confirmations', null)
             or !$this->installOrder('BLOCKONOMICS_ORDER_STATUS_2', 'Bitcoin Payment Confirmed', null)
             or !$this->installDB()
-            or !$this->registerHook('payment')
-            or !$this->registerHook('paymentReturn')
+            or !$this->registerHook('paymentOptions')
             or !$this->registerHook('displayPDFInvoice')
             or !$this->registerHook('invoice')
         ) {
@@ -117,6 +118,7 @@ class Blockonomics extends PaymentModule
             return false;
         }
 
+
         Configuration::updateValue($key, (int) $orderState->id);
         return true;
     }
@@ -144,6 +146,7 @@ class Blockonomics extends PaymentModule
             value double(10,2) NOT NULL,
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
+            uuid varchar(255) NOT NULL,
             PRIMARY KEY (id),
         UNIQUE KEY order_table (addr))"
         );
@@ -176,13 +179,8 @@ class Blockonomics extends PaymentModule
         return true;
     }
 
-    public function hookPaymentReturn($params)
-    {
-        return $this->display(__FILE__, 'payment-return.tpl');
-    }
-
     // Display payment
-    public function hookPayment($params)
+    public function hookPaymentOptions($params)
     {
         if (!$this->active) {
             return;
@@ -191,35 +189,35 @@ class Blockonomics extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-
-        $this->smarty->assign(
-            array(
-            'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-            'this_path_ssl_validation' =>  $this->context->link->getModuleLink($this->name, 'validation', array(), true)
-            )
-        );
-
-        return $this->display(__FILE__, 'views/templates/hook/payment-selection.tpl');
+        $payment_options = array($this->getBTCPaymentOption());
+        return $payment_options;
     }
+
+    public function getBTCPaymentOption()
+    {
+        $offlineOption = new PaymentOption();
+        $offlineOption->setCallToActionText($this->l('Pay by bitcoin'))
+            ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true));
+        return $offlineOption;
+    }
+
 
     public function getBTCPrice($id_currency)
     {
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $options = array( 'http' => array( 'method'  => 'GET') );
-        $context = stream_context_create($options);
-        $contents = Tools::file_get_contents(Configuration::get('BLOCKONOMICS_PRICE_URL').$currency->iso_code, false, $context);
-        $priceObj = Tools::jsonDecode($contents);
-        return $priceObj->price;
+        $url = Configuration::get('BLOCKONOMICS_PRICE_URL').$currency->iso_code;
+        return $this->doCurlCall($url)->data->price;
     }
 
 
-    public function getNewAddress()
+    public function getNewAddress($test_mode=false)
     {
-        $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+      $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+      if ($test_mode)
+        $url=$url."&reset=1";
 
-        return $this->doCurlCall($url, 'dummy');
+      return $this->doCurlCall($url, 'dummy');
     }
 
     public function doCurlCall($url, $post_content='')
@@ -302,6 +300,14 @@ class Blockonomics extends PaymentModule
             return "";
         $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
       }
+      if (!$error_str)
+      {
+        //Everything OK ! Test address generation
+        $response=$this->getNewAddress(true);
+        if ($response->response_code!=200)
+          $error_str = $response->data->message;
+      }
+
       return $error_str;
     } 
 
@@ -333,19 +339,17 @@ class Blockonomics extends PaymentModule
 
         $b_order = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders WHERE `id_order` = ' .(int)$params['object']->id_order. '  LIMIT 1');
 
-        if ($b_order) {
-            $this->smarty->assign(
-                array(
-                'status' => (int)($b_order[0]['status']),
-                'addr' => $b_order[0]['addr'],
-                'txid' => $b_order[0]['txid'],
-                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-                'bits_payed' => $b_order[0]['bits_payed']
-                )
-            );
+        $this->smarty->assign(
+            array(
+            'status' => (int)($b_order[0]['status']),
+            'addr' => $b_order[0]['addr'],
+            'txid' => $b_order[0]['txid'],
+            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+            'bits_payed' => $b_order[0]['bits_payed']
+            )
+        );
 
-            return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
-        }
+        return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
     }
 
     //Display Invoice
@@ -357,34 +361,30 @@ class Blockonomics extends PaymentModule
         print_r($b_order);
         */
 
+        $tx_status = (int)($b_order[0]['status']);
 
-        if ($b_order) {
-            $tx_status = (int)($b_order[0]['status']);
 
-            if ($tx_status == -1) {
-                $status = 'Payment Not Received.';
-            } elseif ($tx_status == 0) {
-                $status = 'Waiting for 2 Confirmations.';
-            } else {
-                $status = 'Payment Confirmed.';
-            }
-            $this->smarty->assign(
-                array(
-                'status' => $status,
-                'addr' => $b_order[0]['addr'],
-                'txid' => $b_order[0]['txid'],
-                'bits' => $b_order[0]['bits'],
-                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-                'bits_payed' => $b_order[0]['bits_payed']
-                )
-            );
-
-            return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
+        if ($tx_status == -1) {
+            $status = 'Payment Not Received.';
+        } elseif ($tx_status == 0) {
+            $status = 'Waiting for 2 Confirmations.';
+        } else {
+            $status = 'Payment Confirmed.';
         }
+
+        $this->smarty->assign(
+            array(
+            'status' => $status,
+            'addr' => $b_order[0]['addr'],
+            'txid' => $b_order[0]['txid'],
+            'bits' => $b_order[0]['bits'],
+            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+            'bits_payed' => $b_order[0]['bits_payed']
+            )
+        );
+
+        return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
     }
-
-
-    
 
 
     
