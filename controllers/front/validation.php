@@ -37,13 +37,13 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-resource.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
+        // $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/reconnecting-websocket.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/order.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/cryptofont/cryptofont.min.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/icons/icons.css');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
+        // $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
     }
     public function postProcess()
     {
@@ -120,12 +120,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
             'blockonomics_altcoins' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
-            'blockonomics_timeperiod' => 10,
-            'altcoin_ctrl_url' => $this->context->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
+            'blockonomics_timeperiod' => 10
             )
         );
-
-
 
         $this->setTemplate('payment.tpl');
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));

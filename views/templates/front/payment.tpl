@@ -16,7 +16,6 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  *}
-
 {capture name=path}{l s='Bitcoin payment' mod='blockonomics'}{/capture}
 
 {assign var='current_step' value='payment'}
@@ -28,11 +27,13 @@
   <script>
       var blockonomics_time_period={$blockonomics_timeperiod|escape:'htmlall':'UTF-8'};
       var get_uuid="{$uuid|escape:'htmlall':'UTF-8'}";
-      var show_order="{$addr}";
+      var addr="{$addr}";
+      var id_order="{$id_order}";
+      var bits ="{$bits}";
+      var value ="{$value}";
+      var timestamp ="{$timestamp}";
       var finish_order_url = "{$redirect_link}";
-      var my_ajax_object = {
-          ajax_url : "{$altcoin_ctrl_url}"
-      };
+      var ajax_url = "{$altcoin_ctrl_url}";
   </script>
 
   <div ng-controller="CheckoutController">
@@ -59,19 +60,13 @@
       <div class="bnomics-order-panel">
         <div class="bnomics-order-info">
 
-          <div class="bnomics-bitcoin-pane" ng-hide="show_altcoin != 0" ng-init=
-					{if $uuid != "" }
-		     		"show_altcoin=1"
-		      {else}
-		    		"show_altcoin=0"
-					{/if}
-    	  >
+          <div class="bnomics-bitcoin-pane" ng-hide="show_altcoin != 0" ng-init="show_altcoin=0">
             <div class="bnomics-btc-info">
               <!-- QR and Amount -->
               <div class="bnomics-qr-code">
         				<div class="bnomics-qr">
-                          <a href="bitcoin:{literal}{{order.address}}?amount={{order.satoshi/1.0e8}}{/literal}">
-                            <qrcode data="bitcoin:{literal}{{order.address}}{/literal}?amount={literal}{{order.satoshi/1.0e8}}{/literal}" size="160" version="6">
+                          <a href="bitcoin:{literal}{{order.address}}?amount={{order.bits}}{/literal}">
+                            <qrcode data="bitcoin:{literal}{{order.address}}{/literal}?amount={literal}{{order.bits}}{/literal}" size="160" version="6">
                               <canvas class="qrcode"></canvas>
                             </qrcode>
                           </a>
@@ -84,7 +79,7 @@
   		          <!-- Order Status -->
   		          <div class="bnomics-order-status-wrapper">
   		            <span class="bnomics-order-status-title"
-ng-show="order.status == -1" ng-cloak >{l s='To confirm your order, please send
+ng-show="order.status == -1" ng-init="order.status=-1" ng-cloak >{l s='To confirm your order, please send
 the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given address' mod='blockonomics' }</span>
   		            <span class="warning bnomics-status-warning" ng-show="order.status == -3" ng-cloak>{l s='Payment Expired (Use the browser back button and try again)' mod='blockonomics' }</span>
   		            <span class="warning bnomics-status-warning" ng-show="order.status == -2" ng-cloak>{l s='Payment Error' mod='blockonomics' }</span>
@@ -93,7 +88,7 @@ the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given
   		            <span ng-show="order.status >= 2" ng-cloak >{l s='Confirmed' mod='blockonomics' }</span>
   		          </div>
                     <label>
-  				  	       {literal}{{order.bits/1.0e8}}{/literal} BTC
+  				  	       {literal}{{order.bits}}{/literal} BTC
                     </label>
                     <div class="bnomics-amount-wrapper">
   				             ≈ <span ng-cloak>{literal}{{order.value}}{/literal}</span>

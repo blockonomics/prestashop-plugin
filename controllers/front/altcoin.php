@@ -33,37 +33,26 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
   {
     $action = Tools::getValue('action');
 
-    if($action == 'check_order'){
-      $this->check_order();
+    if($action == 'fetch_order_id'){
+      $this->fetch_order_id();
+    } else if ($action == 'save_uuid') {
+      $this->save_uuid();
     } else if ($action == 'send_email') {
       $this->send_email();
-    } else if ($action == 'fetch_limit') {
-      $this->fetch_limit();
-    } else if ($action == 'create_order') {
-      $this->create_order();
-    } else if ($action == 'info_order') {
-      $this->info_order();
     }
-
     die();
   }
 
-  function fetch_limit(){
-    include_once dirname(__FILE__) . '/../../php' . DIRECTORY_SEPARATOR . 'Flyp.php';
-    $flypFrom           = Tools::getValue('altcoin');
-    $flypTo             = "BTC";
-    $flypme = new FlypMe();
-    $limits = $flypme->orderLimits($flypFrom, $flypTo);
-    if(isset($limits)){
-      echo Tools::jsonEncode($limits);
-    }
+  function fetch_order_id(){
+    $addr = Tools::getValue('address');
+    $order = Db::getInstance()->ExecuteS("SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `addr` = '".pSQL($addr)."' LIMIT 1");
+    $response->id = $order[0]['id_order'];
+    echo Tools::jsonEncode($response);
   }
 
-  function create_order(){
-    include_once dirname(__FILE__) . '/../../php' . DIRECTORY_SEPARATOR . 'Flyp.php';
-    $flypFrom           = Tools::getValue('altcoin');
-    $flypAmount         = Tools::getValue('amount');
-    $flypDestination    = Tools::getValue('address');
+  function save_uuid(){
+    $address           = Tools::getValue('address');
+    $uuid              = Tools::getValue('uuid');
     $flypTo             = "BTC";
     $prestashop_order_id = Tools::getValue('order_id');
     $flypme = new FlypMe();
@@ -74,26 +63,6 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
       if(isset($order->deposit_address)){
         echo Tools::jsonEncode($order);
       }
-    }
-  }
-
-  function check_order(){
-    include_once dirname(__FILE__) . '/../../php' . DIRECTORY_SEPARATOR . 'Flyp.php';
-    $flypID             = Tools::getValue('uuid');
-    $flypme = new FlypMe();
-    $order = $flypme->orderCheck($flypID);
-    if(isset($order)){
-      echo Tools::jsonEncode($order);
-    }
-  }
-
-  function info_order(){
-    include_once dirname(__FILE__) . '/../../php' . DIRECTORY_SEPARATOR . 'Flyp.php';
-    $flypID             = Tools::getValue('uuid');
-    $flypme = new FlypMe();
-    $order = $flypme->orderInfo($flypID);
-    if(isset($order)){
-      echo Tools::jsonEncode($order);
     }
   }
 
