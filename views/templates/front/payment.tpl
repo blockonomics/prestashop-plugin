@@ -21,6 +21,7 @@
 {block name="content"}
 <div class="form" ng-app="blockonomics-invoice">
   <script>var ajax_url = "{$ajax_url|escape:'htmlall':'UTF-8'}";</script>
+  <script>var track_url = "{$track_url|escape:'htmlall':'UTF-8'}";</script>
   <div class="invoice" ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
   '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
   '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}')">

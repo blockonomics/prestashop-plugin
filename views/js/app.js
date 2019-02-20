@@ -74,7 +74,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
   $scope.alt_track_url = function(uuid) {
       params = {};
       params.uuid = uuid;
-      url = window.location.pathname.replace("/blockonomics/validation", "/blockonomics/track");;
+      url = track_url;
       var serializedParams = $httpParamSerializer(params);
       if (serializedParams.length > 0) {
           url += ((url.indexOf('?') === -1) ? '?' : '&') + serializedParams;
