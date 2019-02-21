@@ -52,7 +52,7 @@ service.factory('AltcoinLimits', function($resource) {
     return rsc;
 });
 
-service.factory('PrestaAjax', function($resource) {
+service.factory('Ajax', function($resource) {
     var rsc = $resource(ajax_url);
     return rsc;
 });
@@ -65,7 +65,7 @@ app.config(function ($interpolateProvider) {
     $interpolateProvider.endSymbol('//');
 })
 
-app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout, PrestaAjax, AltcoinLimits, AltcoinNew, AltcoinAccept) {
+app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout, Ajax, AltcoinLimits, AltcoinNew, AltcoinAccept) {
     var totalProgress = 100;
     var totalTime = 10*60; //10m
     $scope.progress = totalProgress;
@@ -111,28 +111,37 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         create_order(altcoin, amount, address, order_id);
     }
 
-    //Altcoin Create
+    //Create the altcoin order
     function create_order(altcoin, amount, address, order_id) {
         (function(promises) {
             return new Promise((resolve, reject) => {
+                //Wait for both the altcoin limits and new altcoin order uuid
                 Promise.all(promises)
                     .then(values => {
-                        var alt_minimum = values[0]['min'];
-                        var alt_maximum = values[0]['max'];
-                        //Min/Max Check
-                        if (amount <= alt_minimum) {
+                        var alt_minimum = values[0].min;
+                        var alt_maximum = values[0].max;
+                        //Compare the min/max limits for altcoin payments with the order amount
+                        if(amount <= alt_minimum) {
+                            //Order amount too low for altcoin payment
                             window.location = $scope.alt_track_url('low');
-                        } else if (amount >= alt_maximum) {
+                        }else if(amount >= alt_maximum) {
+                            //Order amount too high for altcoin payment
                             window.location = $scope.alt_track_url('high');
-                        } else {
-                            PrestaAjax.get({
+                        }else{
+                            var uuid = values[1].order.uuid;
+                            //Save the altcoin uuid to database
+                            Ajax.get({
                                 action: 'save_uuid',
                                 address: values[1]['order']['destination'],
                                 uuid: values[1]['order']['uuid']
                             });
-                            window.location = $scope.alt_track_url(values[1]['order']['uuid']);
+                            //Accept the altcoin order using the uuid
+                            AltcoinAccept.save({
+                                    "uuid": uuid
+                                },function(order_accept) {
+                                    window.location = $scope.alt_track_url(values[1]['order']['uuid']);
+                                });
                         }
-                        resolve(values);
                     })
                     .catch(err => {
                         console.dir(err);
@@ -141,13 +150,13 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
             });
         })([
             new Promise((resolve, reject) => {
-                var response = AltcoinLimits.query({
-                    coin: altcoin
+                //Fetch altcoin min/max limits
+                AltcoinLimits.get({coin: altcoin},function(order_limits) {
+                    resolve(order_limits);
                 });
-                resolve(response);
             }),
             new Promise((resolve, reject) => {
-              console.log(amount);
+                //Create the new altcoin order
                 AltcoinNew.save({
                         "order": {
                             "from_currency": altcoin,
@@ -155,16 +164,10 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
                             "ordered_amount": amount,
                             "destination": address
                         }
-                    })
-                    .$promise.then(function(order_new) {
-                        console.log(order_new);
-                        AltcoinAccept.save({
-                                "uuid": order_new.order.uuid
-                            })
-                            .$promise.then(function(order_accept) {
-                                resolve(order_accept);
-                            })
-                    })
+                    },function(order_new) {
+                        //Resolve the new altcoin order uuid
+                        resolve(order_new);
+                    });
             })
         ]);
     }
@@ -207,7 +210,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
 });
 
 //AltcoinController
-app.controller('AltcoinController', function($scope, $interval, AltcoinCheck, AltcoinInfo, AltcoinAddRefund, PrestaAjax, $timeout) {
+app.controller('AltcoinController', function($scope, $interval, AltcoinCheck, AltcoinInfo, AltcoinAddRefund, Ajax, $timeout) {
     var totalProgress = 100;
     var alt_totalTime = 0;
     var interval;
@@ -227,7 +230,7 @@ app.controller('AltcoinController', function($scope, $interval, AltcoinCheck, Al
     };
 
     function sendEmail() {
-        PrestaAjax.get({
+        Ajax.get({
             action: 'send_email',
             order_id: $scope.id_order,
             order_link: $scope.pagelink,
@@ -314,7 +317,7 @@ app.controller('AltcoinController', function($scope, $interval, AltcoinCheck, Al
                 // Order.get({
                 //     "get_order": data.order.destination
                 // }, function(order) {
-                    PrestaAjax.get({
+                    Ajax.get({
                         action: 'fetch_order_id',
                         address: data.order.destination
                     })
