@@ -52,12 +52,10 @@ service.factory('AltcoinLimits', function($resource) {
     return rsc;
 });
 
-// service.factory('AltcoinAjax', function($resource) {
-//     var rsc = $resource(":ajax_url", {
-//         ajax_url: '@ajax_url'
-//     });
-//     return rsc;
-// });
+service.factory('AltcoinAjax', function($resource) {
+    var rsc = $resource(ajax_url);
+    return rsc;
+});
 
 app = angular.module("blockonomics-invoice", ["monospaced.qrcode",  "shoppingcart.services"]);
 
@@ -176,7 +174,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
 });
 
 //AltcoinController
-app.controller('AltcoinController', function($scope, $interval, $httpParamSerializer, AltcoinCheck, AltcoinInfo, AltcoinAddRefund, $timeout, AltcoinLimits, AltcoinNew, AltcoinAccept) {
+app.controller('AltcoinController', function($scope, $interval, $httpParamSerializer, AltcoinCheck, AltcoinInfo, AltcoinAddRefund, $timeout, AltcoinLimits, AltcoinNew, AltcoinAccept, AltcoinAjax) {
     var totalProgress = 100;
     var alt_totalTime = 0;
     var check_interval;
@@ -222,14 +220,13 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
     //Send altcoin refund email 
     function send_refund_email() {
-        // AltcoinAjax.get({
-        //     ajax_url: ajax_url,
-        //     action: 'send_email',
-        //     order_id: $scope.id_order,
-        //     order_link: $scope.pagelink,
-        //     order_coin: $scope.altcoinselect,
-        //     order_coin_sym: $scope.altsymbol
-        // });
+        AltcoinAjax.get({
+            action: 'send_email',
+            order_id: $scope.id_order,
+            order_link: $scope.pagelink,
+            order_coin: $scope.altcoinselect,
+            order_coin_sym: $scope.altsymbol
+        });
         send_email = false;
     }
 
@@ -333,12 +330,11 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                         }else{
                             var uuid = values[1].order.uuid;
                             //Save the altcoin uuid to database
-                            // AltcoinAjax.get({
-                            //     ajax_url: ajax_url,
-                            //     action: 'save_uuid',
-                            //     address: address,
-                            //     uuid: uuid
-                            // });
+                            AltcoinAjax.get({
+                                action: 'save_uuid',
+                                address: address,
+                                uuid: uuid
+                            });
                             $scope.altuuid = uuid;
                             $scope.refundlink = $scope.alt_refund_url(uuid);
                             //Accept the altcoin order using the uuid
