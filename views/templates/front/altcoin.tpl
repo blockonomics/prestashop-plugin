@@ -100,7 +100,7 @@
                   <!-- ADD_REFUND -->
                   <div class="bnomics-status-flex bnomics-altcoin-bg-color" ng-show="altstatus == 'add_refund'" ng-cloak >
                     <h4>{l s='Refund Required' mod='blockonomics' }</h4>
-                    <p>{l s='Your order couldn\'t be processed as you paid less than expected.' mod='blockonomics' }<br>{l s='The amount you paid will be refunded.' mod='blockonomics' }</p>
+                    <p>{l s='Your order couldn\'t be processed as you didn\'t pay the exact expected amount.' mod='blockonomics' }<br>{l s='The amount you paid will be refunded.' mod='blockonomics' }</p>
                     <h4><i class="material-icons bnomics-alt-icon">error</i></h4>
                     <p>{l s='Enter your refund address and click the button below to recieve your refund.' mod='blockonomics' }</p>
                     <input type="text" id="bnomics-refund-input" placeholder="//altsymbol// Address">
