@@ -93,6 +93,17 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         return final_url;
     }
 
+    //Decode the tracking url
+    $scope.alt_decode_url = function(url) {
+        var encodedStr = url;
+        var parser = new DOMParser;
+        var dom = parser.parseFromString(
+            '<!doctype html><body>' + encodedStr,
+            'text/html');
+        var decodedUrl = dom.body.textContent;
+        return decodedUrl;
+    }
+
     //Create url for altcoin payment
     $scope.alt_track_url = function(altcoin, amount, address, order_id) {
         params = {};
@@ -101,7 +112,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         params.amount = amount;
         params.address = address;
         params.order_id = order_id;
-        url = track_url;
+        url = $scope.alt_decode_url(track_url);
         var serializedParams = $httpParamSerializer(params);
         if (serializedParams.length > 0) {
             url += ((url.indexOf('?') === -1) ? '?' : '&') + serializedParams;
