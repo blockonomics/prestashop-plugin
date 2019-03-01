@@ -166,6 +166,20 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
           }
     }
 
+    //Pay with altcoin option selected
+    $scope.pay_with_alt = function() {
+        document.getElementById("bnomics-paywith-alt").classList.add("bnomics-paywith-selected");
+        document.getElementById("bnomics-paywith-btc").classList.remove("bnomics-paywith-selected");
+        $scope.show_altcoin=1;
+    }
+
+    //Pay with btc option selected
+    $scope.pay_with_btc = function() {
+        document.getElementById("bnomics-paywith-btc").classList.add("bnomics-paywith-selected");
+        document.getElementById("bnomics-paywith-alt").classList.remove("bnomics-paywith-selected");
+        $scope.show_altcoin=0;
+    }
+
     //Copy bitcoin address to clipboard
     $scope.btc_address_click = function() {
         var copyText = document.getElementById("bnomics-address-input");

@@ -30,8 +30,8 @@
       <div class="bnomics-payment-option" ng-hide="altcoin_waiting == 1 || order.altstatus == 1 || order.altstatus == 2 || order.altstatus == 3">
         <span class="bnomics-paywith-label" ng-cloak> {l s='Pay with' mod='blockonomics'}</span>
         <span>
-          <span class="bnomics-paywith-option bnomics-paywith-btc bnomics-paywith-selected" ng-click="show_altcoin=0">BTC</span>
-          <span class="bnomics-paywith-option bnomics-paywith-altcoin" ng-click="show_altcoin=1">Altcoins</span>     
+          <span id="bnomics-paywith-btc" class="bnomics-paywith-option bnomics-paywith-btc bnomics-paywith-selected" ng-click="pay_with_btc()">BTC</span>
+          <span id="bnomics-paywith-alt" class="bnomics-paywith-option bnomics-paywith-altcoin" ng-click="pay_with_alt()">Altcoins</span>
         </span>
       </div><br>
     {/if}
