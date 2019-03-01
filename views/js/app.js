@@ -487,20 +487,3 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         "LTC": "Litecoin"
     };
 });
-
-
-//Still Include this
-// service.factory('Order', function($resource) {
-//     //There are two styles of callback url in 
-//     //woocommerce, we have to support both
-//     //https://docs.woocommerce.com/document/wc_api-the-woocommerce-api-callback/
-//     var param = getParameterByNameBlocko('wc-api');
-//     if (param)
-//         param = {
-//             "wc-api": param
-//         };
-//     else
-//         param = {};
-//     var item = $resource(window.location.pathname, param);
-//     return item;
-// });
