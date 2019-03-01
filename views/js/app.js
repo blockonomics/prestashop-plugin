@@ -81,7 +81,8 @@ function getParameterByNameBlocko(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-//Decode url
+//Decode &amp; to & in url
+//https://stackoverflow.com/questions/3700326/decode-amp-back-to-in-javascript
 function alt_decode_url(url) {
     var encodedStr = url;
     var parser = new DOMParser;
