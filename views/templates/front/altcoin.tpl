@@ -82,9 +82,6 @@
                         <span class="ng-cloak bnomics-time-left" ng-hide="altstatus != 'waiting' || alt_clock <= 0">//alt_clock*1000 | date:'mm:ss' : 'UTC'// {l s='min left to pay your order' mod='blockonomics' }
                         </span>
                       </div>
-                      <div class="bnomics-altcoin-cancel">
-                        <a href="" ng-click="go_back()">{l s='Click here' mod='blockonomics' }</a> {l s='to go back' mod='blockonomics' }
-                      </div>
                       <!-- Blockonomics Credit -->
                       <div class="bnomics-powered-by">
                         {l s='Powered by' mod='blockonomics' } Blockonomics
@@ -138,7 +135,6 @@
                     <h4>{l s='Error' mod='blockonomics' }</h4>
                     <h4><i class="material-icons bnomics-alt-icon">error</i></h4>
                     <p>{l s='Order amount too' mod='blockonomics' } <strong>//lowhigh//</strong> {l s='for' mod='blockonomics' } //altsymbol// {l s='payment.' mod='blockonomics' }</p>
-                    <p><a href="" ng-click="go_back()">{l s='Click here' mod='blockonomics' }</a> {l s='to go back and use BTC to complete the payment.' mod='blockonomics' }</p>
                   </div>
                 </div>
               <!-- Blockonomics Credit -->

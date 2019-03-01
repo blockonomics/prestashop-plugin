@@ -135,7 +135,6 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         $interval.cancel($scope.alt_tick_interval);
         $scope.altaddress = '';  //  $scope.order.altaddress
         $scope.altamount = '';  //  $scope.order.altamount
-        $scope.altcoin_waiting = true;
         $scope.alt_clock = 600;
         send_email = true;
         var altcoin = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
@@ -144,7 +143,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         var address = $scope.address;
         var order_id = $scope.id_order;
         //Forward user to altcoin tracking page with details
-        window.location = $scope.alt_track_url(altcoin, amount, address, order_id);
+        window.open($scope.alt_track_url(altcoin, amount, address, order_id), '_blank');
     }
 
     //Fetch the altcoin symbol from name
@@ -464,11 +463,6 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                     info_order(uuid);
                 }
             });
-    }
-
-    //Go back to bitcoin payment page
-    $scope.go_back = function() {
-        window.history.back();
     }
 
     //Copy altcoin address to clipboard
