@@ -134,13 +134,13 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     //Pay with altcoin button clicked
     $scope.pay_altcoins = function() {
         $interval.cancel($scope.alt_tick_interval);
-        $scope.altaddress = '';  //  $scope.order.altaddress
-        $scope.altamount = '';  //  $scope.order.altamount
+        $scope.altaddress = ''; 
+        $scope.altamount = '';  
         $scope.alt_clock = 600;
         send_email = true;
         var altcoin = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
-        $scope.order.altsymbol = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
-        var amount = $scope.satoshi; //  $scope.order.satoshi / 1.0e8
+        $scope.altsymbol = getAltKeyByValue($scope.altcoins, $scope.altcoinselect);
+        var amount = $scope.satoshi; 
         var address = $scope.address;
         var order_id = $scope.id_order;
         //Forward user to altcoin tracking page with details
@@ -166,17 +166,18 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
           }
     }
 
-  //Copy bitcoin address to clipboard
-  $scope.btc_address_click = function() {
-      var copyText = document.getElementById("bnomics-address-input");
-      copyText.select();
-      document.execCommand("copy");
-      //Open Message
-      $scope.copyshow = true;
-      $timeout(function() {
+    //Copy bitcoin address to clipboard
+    $scope.btc_address_click = function() {
+        var copyText = document.getElementById("bnomics-address-input");
+        copyText.select();
+        document.execCommand("copy");
+        //Open Message
+        $scope.copyshow = true;
+        $timeout(function() {
           $scope.copyshow = false;
-      }, 2000);
-  }
+        }, 2000);
+    }
+    
     //Define supported altcoins
     $scope.altcoins = {
       "ETH": "Ethereum",
@@ -424,8 +425,8 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                         //Refund has been sent
                         update_altcoin_status('refunded-txid');
                         stop_interval();
-                        $scope.order.alttxid = data.txid;
-                        $scope.order.alturl = data.txurl;
+                        $scope.alttxid = data.txid;
+                        $scope.alturl = data.txurl;
                         break;
                     } else {
                         //Refund is being processed
