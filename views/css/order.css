@@ -98,6 +98,10 @@
   text-align: center;
 }
 
+.bnomics-amount-title {
+  margin: 10px 0;
+}
+
 .bnomics-address {
   position:relative;
   margin:auto !important;

@@ -30,6 +30,11 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->registerStylesheet(
+            'mystyle',
+            'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
             'mystyle1',
             'modules/blockonomics/views/css/style.css',
             array('postion' => 'head')
@@ -49,11 +54,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
             array('postion' => 'head')
         );        
-	$this->registerStylesheet(
-            'mystyle',
-            'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
-            array('postion' => 'head')
-        );
         $this->registerJavascript(
             'bootstrap',
             'modules/blockonomics/views/js/bootstrap.js'

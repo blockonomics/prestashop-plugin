@@ -30,6 +30,11 @@ class BlockonomicsTrackModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->registerStylesheet(
+            'mystyle',
+            'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
             'mystyle1',
             'modules/blockonomics/views/css/style.css',
             array('postion' => 'head')
