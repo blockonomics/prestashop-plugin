@@ -53,7 +53,7 @@ service.factory('AltcoinLimits', function($resource) {
 });
 
 service.factory('AltcoinAjax', function($resource) {
-    var rsc = $resource(ajax_url);
+    var rsc = $resource(alt_decode_url(ajax_url));
     return rsc;
 });
 
@@ -81,7 +81,18 @@ function getParameterByNameBlocko(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout, AltcoinLimits, AltcoinNew, AltcoinAccept) {
+//Decode url
+function alt_decode_url(url) {
+    var encodedStr = url;
+    var parser = new DOMParser;
+    var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+    var decodedUrl = dom.body.textContent;
+    return decodedUrl;
+}
+
+app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout) {
     var totalProgress = 100;
     var totalTime = 10*60; //10m
     $scope.progress = totalProgress;
@@ -93,17 +104,6 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         return final_url;
     }
 
-    //Decode the tracking url
-    $scope.alt_decode_url = function(url) {
-        var encodedStr = url;
-        var parser = new DOMParser;
-        var dom = parser.parseFromString(
-            '<!doctype html><body>' + encodedStr,
-            'text/html');
-        var decodedUrl = dom.body.textContent;
-        return decodedUrl;
-    }
-
     //Create url for altcoin payment
     $scope.alt_track_url = function(altcoin, amount, address, order_id) {
         params = {};
@@ -112,7 +112,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         params.amount = amount;
         params.address = address;
         params.order_id = order_id;
-        url = $scope.alt_decode_url(track_url);
+        url = alt_decode_url(track_url);
         var serializedParams = $httpParamSerializer(params);
         if (serializedParams.length > 0) {
             url += ((url.indexOf('?') === -1) ? '?' : '&') + serializedParams;
@@ -231,11 +231,11 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     //Send altcoin refund email 
     function send_refund_email() {
         AltcoinAjax.get({
-            action: 'send_email',
-            order_id: $scope.id_order,
-            order_link: $scope.pagelink,
-            order_coin: $scope.altcoinselect,
-            order_coin_sym: $scope.altsymbol
+            'action': 'send_email',
+            'order_id': $scope.id_order,
+            'order_link': $scope.pagelink,
+            'order_coin': $scope.altcoinselect,
+            'order_coin_sym': $scope.altsymbol
         });
         send_email = false;
     }
@@ -341,15 +341,22 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                             var uuid = values[1].order.uuid;
                             //Save the altcoin uuid to database
                             AltcoinAjax.get({
-                                action: 'save_uuid',
-                                address: address,
-                                uuid: uuid
+                                'action': 'save_uuid',
+                                'address': address,
+                                'uuid': uuid
+                            });
+                            //Fetch the order id
+                            AltcoinAjax.get({
+                                'action': 'fetch_order_id',
+                                'address': address
+                            },function(order_id) {
+                                $scope.id_order = order_id.id;
                             });
                             $scope.altuuid = uuid;
                             $scope.refundlink = $scope.alt_refund_url(uuid);
                             //Accept the altcoin order using the uuid
                             AltcoinAccept.save({
-                                    "uuid": uuid
+                                    'uuid': uuid
                                 },function(order_accept) {
                                     //Display altcoin order info
                                     $scope.altaddress = order_accept.deposit_address;
