@@ -249,7 +249,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         AltcoinAjax.get({
             'action': 'send_email',
             'order_id': $scope.id_order,
-            'order_link': $scope.pagelink,
+            'order_link': $scope.refundlink,
             'order_coin': $scope.altcoinselect,
             'order_coin_sym': $scope.altsymbol
         });
