@@ -22,7 +22,6 @@
 
 <div class="form" ng-app="blockonomics-invoice">
   <script>var ajax_url = "{$ajax_url|escape:'htmlall':'UTF-8'}";</script>
-  <script>var get_uuid = "{$uuid|escape:'htmlall':'UTF-8'}";</script>
   <div ng-controller="AltcoinController">
     <div class="bnomics-order-container" style="max-width: 700px;">
       <!-- Heading row -->
