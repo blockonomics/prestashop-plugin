@@ -323,6 +323,12 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
                 process_alt_response(data);
                 //Fetch the order id using bitcoin address
+                AltcoinAjax.get({
+                    'action': 'fetch_order_id',
+                    'address': data.deposit_address
+                },function(order_id) {
+                    $scope.id_order = order_id.id;
+                });
             });
     }
 
@@ -360,13 +366,6 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                                 'action': 'save_uuid',
                                 'address': address,
                                 'uuid': uuid
-                            });
-                            //Fetch the order id
-                            AltcoinAjax.get({
-                                'action': 'fetch_order_id',
-                                'address': address
-                            },function(order_id) {
-                                $scope.id_order = order_id.id;
                             });
                             $scope.altuuid = uuid;
                             $scope.refundlink = $scope.alt_refund_url(uuid);
