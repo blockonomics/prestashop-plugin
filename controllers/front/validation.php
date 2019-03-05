@@ -39,6 +39,21 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'modules/blockonomics/views/css/style.css',
             array('postion' => 'head')
         );
+        $this->registerStylesheet(
+            'mystyle2',
+            'modules/blockonomics/views/css/order.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
+            'myIcons',
+            'modules/blockonomics/views/css/icons/icons.css',
+            array('postion' => 'head')
+        );
+        $this->registerStylesheet(
+            'myCrypto',
+            'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
+            array('postion' => 'head')
+        );        
         $this->registerJavascript(
             'bootstrap',
             'modules/blockonomics/views/js/bootstrap.js'
@@ -56,17 +71,13 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'modules/blockonomics/views/js/angular-qrcode.js'
         );
         $this->registerJavascript(
+            'angular-resource',
+            'modules/blockonomics/views/js/angular-resource.min.js'
+        );
+        $this->registerJavascript(
             'app',
             'modules/blockonomics/views/js/app.js'
         );
-        //this->context->controller->addJS('/view/js/bootstrap.js');*/
-        /*$this->context->controller->addJS('module:blockonomics/views/js/angular.js');
-        $this->context->controller->addJS('module:blockonomics/views/js/app.js');
-        $this->context->controller->addJS('module:blockonomics/views/js/vendors.min.js');
-        $this->context->controller->addJS('module:blockonomics/views/js/angular-qrcode.js');
-        $this->context->controller->addJS('module:blockonomics/views/js/prestashop-ui-kit.js');
-        $this->context->controller->addCSS('module:blockonomics/views/css/style.css');
-        $this->context->controller->addCSS('module:blockonomics/views/css/bootstrap-prestashop-ui-kit.css');*/
     }
     public function postProcess()
     {
@@ -141,7 +152,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS')
+            'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
+	    'track_url' => Context::getContext()->link->getModuleLink($blockonomics->name,'track', array(), true),
+            'ajax_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
             )
         );
 
