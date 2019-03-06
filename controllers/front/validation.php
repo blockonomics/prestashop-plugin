@@ -154,7 +154,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
             'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
-        'track_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'track', array(), true),
+            'track_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'track', array(), true),
             'ajax_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
             )
         );

@@ -211,7 +211,7 @@ class Blockonomics extends PaymentModule
     }
 
 
-    public function getNewAddress($test_mode=false)
+    public function getNewAddress($test_mode = false)
     {
         $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
@@ -221,7 +221,7 @@ class Blockonomics extends PaymentModule
         return $this->doCurlCall($url, 'dummy');
     }
 
-    public function doCurlCall($url, $post_content='')
+    public function doCurlCall($url, $post_content = '')
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -417,67 +417,67 @@ class Blockonomics extends PaymentModule
 
         // Init Fields form array
         $fields_form[0]['form'] = array(
-        'legend' => array(
-          'title' => $this->l('Settings'),
-        ),
-        'input' => array(
-          array(
-            'type' => 'text',
-            'label' => $this->l('API Key'),
-            'name' => 'BLOCKONOMICS_API_KEY',
-            'size' => 10,
-            'required' => true,
-          ),
-                    array(
-                        'type'      => 'switch',                               // This is an <input type="checkbox"> tag.
-                        'label'     => $this->l('Altcoins Integration'),        // The <label> for this <input> tag.
-                        'desc'      => $this->l('Accept altcoins like ETH, LTC, BCH'),   // A help text, displayed right next to the <input> tag.
-                        'name'      => 'BLOCKONOMICS_ACCEPT_ALTCOINS',                              // The content of the 'id' attribute of the <input> tag.
-                        'required'  => true,                                  // If set to true, this option must be set.
-                        'class'     => 't',                                   // The content of the 'class' attribute of the <label> tag for the <input> tag.
-                        'is_bool'   => true,                                  // If set to true, this means you want to display a yes/no or true/false option.
-                        // The CSS styling will therefore use green mark for the option value '1', and a red mark for value '2'.
-                        // If set to false, this means there can be more than two radio buttons,
-                        // and the option label text will be displayed instead of marks.
-                        'values'    => array(                                 // $values contains the data itself.
-                            array(
-                                'id'    => 'active_on',                           // The content of the 'id' attribute of the <input> tag, and of the 'for' attribute for the <label> tag.
-                                'value' => 1,                                     // The content of the 'value' attribute of the <input> tag.
-                                'label' => $this->l('Enabled')                    // The <label> for this radio button.
+            'legend' => array(
+              'title' => $this->l('Settings'),
+            ),
+            'input' => array(
+              array(
+                'type' => 'text',
+                'label' => $this->l('API Key'),
+                'name' => 'BLOCKONOMICS_API_KEY',
+                'size' => 10,
+                'required' => true,
+              ),
+                        array(
+                            'type'      => 'switch',                               // This is an <input type="checkbox"> tag.
+                            'label'     => $this->l('Altcoins Integration'),        // The <label> for this <input> tag.
+                            'desc'      => $this->l('Accept altcoins like ETH, LTC, BCH'),   // A help text, displayed right next to the <input> tag.
+                            'name'      => 'BLOCKONOMICS_ACCEPT_ALTCOINS',                              // The content of the 'id' attribute of the <input> tag.
+                            'required'  => true,                                  // If set to true, this option must be set.
+                            'class'     => 't',                                   // The content of the 'class' attribute of the <label> tag for the <input> tag.
+                            'is_bool'   => true,                                  // If set to true, this means you want to display a yes/no or true/false option.
+                            // The CSS styling will therefore use green mark for the option value '1', and a red mark for value '2'.
+                            // If set to false, this means there can be more than two radio buttons,
+                            // and the option label text will be displayed instead of marks.
+                            'values'    => array(                                 // $values contains the data itself.
+                                array(
+                                    'id'    => 'active_on',                           // The content of the 'id' attribute of the <input> tag, and of the 'for' attribute for the <label> tag.
+                                    'value' => 1,                                     // The content of the 'value' attribute of the <input> tag.
+                                    'label' => $this->l('Enabled')                    // The <label> for this radio button.
+                                ),
+                                array(
+                                    'id'    => 'active_off',
+                                    'value' => 0,
+                                    'label' => $this->l('Disabled')
+                                )
                             ),
-                            array(
-                                'id'    => 'active_off',
-                                'value' => 0,
-                                'label' => $this->l('Disabled')
-                            )
-                        ),
-                    )),
-        'submit' => array(
-          'title' => $this->l('Save'),
-          'name'  => 'updateSettings',
-          'class' => 'btn btn-default pull-right'
-        )
-      );
+                        )),
+            'submit' => array(
+              'title' => $this->l('Save'),
+              'name'  => 'updateSettings',
+              'class' => 'btn btn-default pull-right'
+            )
+        );
 
         // Init Fields form array
         $fields_form[1]['form'] = array(
-        'legend' => array(
-          'title' => $this->l('Store Info'),
-        ),
-        'input' => array(
-          array(
-            'type' => 'free',
-            'label' => $this->l('HTTP CALLBACK URL'),
-            'name' => 'callbackURL',
-            'class' => 'readonly'
-          )
-        ),
-        'submit' => array(
-          'title' => $this->l('Test Setup'),
-          'name' =>  $this->l('testSetup'),
-          'class' => 'btn btn-default pull-right'
-        )
-      );
+            'legend' => array(
+              'title' => $this->l('Store Info'),
+            ),
+            'input' => array(
+              array(
+                'type' => 'free',
+                'label' => $this->l('HTTP CALLBACK URL'),
+                'name' => 'callbackURL',
+                'class' => 'readonly'
+              )
+            ),
+            'submit' => array(
+              'title' => $this->l('Test Setup'),
+              'name' =>  $this->l('testSetup'),
+              'class' => 'btn btn-default pull-right'
+            )
+        );
         $helper = new HelperForm();
 
         // Module, token and currentIndex
@@ -493,8 +493,8 @@ class Blockonomics extends PaymentModule
         // Title and toolbar
         $helper->title = $this->displayName;
         $helper->show_toolbar = true;        // false -> remove toolbar
-      $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
-      $helper->submit_action = 'submit'.$this->name;
+        $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
+        $helper->submit_action = 'submit'.$this->name;
         $helper->toolbar_btn = array(
         'save' =>
         array(
