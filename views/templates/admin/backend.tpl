@@ -17,7 +17,7 @@
  * International Registered Trademark & Property of Blockonomics
  *}
 <div class="alert alert-info">
-<p><strong>{l s="You are few clicks away from accepting bitcoin payments"}</strong></p>
+<p><strong>{l s="You are few clicks away from accepting bitcoin payments" mod='blockonomics'}</strong></p>
 </br>
 <p>Click on <strong>Get Started for Free</strong> on <strong><a
 href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics
