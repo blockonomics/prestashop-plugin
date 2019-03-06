@@ -17,32 +17,32 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  */
-  if (!defined('_PS_VERSION_'))
-    exit;
+  if (!defined('_PS_VERSION_')) {
+      exit;
+  }
 
   function upgrade_module_1_7_6($object, $install = false)
   {
-    updateDatabase();
-    return true; //if there were no errors
+      updateDatabase();
+      return true; //if there were no errors
   }
 
   //function used to upgrade the module table
-  function updateDatabase(){
-        $sql = 'DESCRIBE '._DB_PREFIX_.'blockonomics_bitcoin_orders';        
-        $columns = Db::getInstance()->executeS($sql);
-        $found = false;
-        foreach($columns as $col){
-            if($col['Field']=='uuid'){
-                $found = true;
-                break;
-            }
-        }
-        if(!$found){
-            if (!Db::getInstance()->execute('
+  function updateDatabase()
+  {
+      $sql = 'DESCRIBE '._DB_PREFIX_.'blockonomics_bitcoin_orders';
+      $columns = Db::getInstance()->executeS($sql);
+      $found = false;
+      foreach ($columns as $col) {
+          if ($col['Field']=='uuid') {
+              $found = true;
+              break;
+          }
+      }
+      if (!$found) {
+          if (!Db::getInstance()->execute('
                 ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `uuid` varchar(255) NOT NULL'));
-                return false;
-        }
-        return true;
-   }
-
-?>
+          return false;
+      }
+      return true;
+  }

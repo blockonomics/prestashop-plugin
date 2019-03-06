@@ -53,7 +53,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'myCrypto',
             'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
             array('postion' => 'head')
-        );        
+        );
         $this->registerJavascript(
             'bootstrap',
             'modules/blockonomics/views/js/bootstrap.js'
@@ -106,8 +106,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $responseObj = $blockonomics->getNewAddress();
 
-        if (!$responseObj->data || !$responseObj->data->address)
+        if (!$responseObj->data || !$responseObj->data->address) {
             $this->displayError($blockonomics);
+        }
 
         $new_address = $responseObj->data->address;
 
@@ -153,7 +154,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
             'accept_altcoin' => Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS'),
-	    'track_url' => Context::getContext()->link->getModuleLink($blockonomics->name,'track', array(), true),
+        'track_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'track', array(), true),
             'ajax_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
             )
         );
@@ -172,5 +173,4 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         echo $unable_to_generate;
         die();
     }
-
 }

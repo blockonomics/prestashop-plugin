@@ -52,7 +52,7 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
         $BLOCKONOMICS_NEW_ADDRESS_URL = $BLOCKONOMICS_BASE_URL.'/api/new_address';
         $BLOCKONOMICS_PRICE_URL = $BLOCKONOMICS_BASE_URL.'/api/price?currency=';
-        $BLOCKONOMICS_GET_CALLBACKS_URL = $BLOCKONOMICS_BASE_URL.'/api/address?&no_balance=true&only_xpub=true&get_callback=true'; 
+        $BLOCKONOMICS_GET_CALLBACKS_URL = $BLOCKONOMICS_BASE_URL.'/api/address?&no_balance=true&only_xpub=true&get_callback=true';
         $BLOCKONOMICS_SET_CALLBACK_URL = $BLOCKONOMICS_BASE_URL.'/api/update_callback';
 
         Configuration::updateValue('BLOCKONOMICS_BASE_URL', $BLOCKONOMICS_BASE_URL);
@@ -213,11 +213,12 @@ class Blockonomics extends PaymentModule
 
     public function getNewAddress($test_mode=false)
     {
-      $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-      if ($test_mode)
-        $url=$url."&reset=1";
+        $url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')."?match_callback=".Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        if ($test_mode) {
+            $url=$url."&reset=1";
+        }
 
-      return $this->doCurlCall($url, 'dummy');
+        return $this->doCurlCall($url, 'dummy');
     }
 
     public function doCurlCall($url, $post_content='')
@@ -225,10 +226,9 @@ class Blockonomics extends PaymentModule
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        if ($post_content)
-        {
-          curl_setopt($ch, CURLOPT_POST, 1);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $post_content);
+        if ($post_content) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_content);
         }
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -249,67 +249,59 @@ class Blockonomics extends PaymentModule
 
     public function testSetup()
     {
-      $error_str = '';
-      $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
-      $response = $this->doCurlCall($url); 
+        $error_str = '';
+        $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
+        $response = $this->doCurlCall($url);
 
-      $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+        $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
       
-      //TODO: Check This: WE should actually check code for timeout
-      if (!isset($response->response_code)) {
-        $error_str = $this->l('Your server is blocking outgoing HTTPS calls');
-      }
-      elseif ($response->response_code==401)
-        $error_str = $this->l('API Key is incorrect');
-      elseif ($response->response_code!=200)  
-        $error_str = $response->data;
-      elseif (!isset($response->data) || count($response->data) == 0)
-      {
-        $error_str = $this->l('You have not entered an xpub');
-      }
-      elseif (count($response->data) == 1)
-      {
-        if(!$response->data[0]->callback || $response->data[0]->callback == null)
-        {
-          //No callback URL set, set one 
-          $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
-          $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
-          $this->doCurlCall($set_callback_url, $post_content);  
-        }
-        elseif($response->data[0]->callback != $callback_url)
-        {
-          // Check if only secret differs
-          $base_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php';
-          if(strpos($response->data[0]->callback, $base_url) !== false)
-          {
-            //Looks like the user regenrated callback by mistake
-            //Just force Update_callback on server
-            $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
-            $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
-            $this->doCurlCall($set_callback_url, $post_content);  
-          }
-          else
+        //TODO: Check This: WE should actually check code for timeout
+        if (!isset($response->response_code)) {
+            $error_str = $this->l('Your server is blocking outgoing HTTPS calls');
+        } elseif ($response->response_code==401) {
+            $error_str = $this->l('API Key is incorrect');
+        } elseif ($response->response_code!=200) {
+            $error_str = $response->data;
+        } elseif (!isset($response->data) || count($response->data) == 0) {
+            $error_str = $this->l('You have not entered an xpub');
+        } elseif (count($response->data) == 1) {
+            if (!$response->data[0]->callback || $response->data[0]->callback == null) {
+                //No callback URL set, set one
+                $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
+                $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
+                $this->doCurlCall($set_callback_url, $post_content);
+            } elseif ($response->data[0]->callback != $callback_url) {
+                // Check if only secret differs
+                $base_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php';
+                if (strpos($response->data[0]->callback, $base_url) !== false) {
+                    //Looks like the user regenrated callback by mistake
+                    //Just force Update_callback on server
+                    $post_content = '{"callback": "'.$callback_url.'", "xpub": "'.$response->data[0]->address.'"}';
+                    $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
+                    $this->doCurlCall($set_callback_url, $post_content);
+                } else {
+                    $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
+                }
+            }
+        } else {
+            // Check if callback url is set
+            foreach ($response->data as $resObj) {
+                if ($resObj->callback == $callback_url) {
+                    return "";
+                }
+            }
             $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
         }
-      }
-      else 
-      {
-        // Check if callback url is set
-        foreach ($response->data as $resObj)
-          if($resObj->callback == $callback_url)
-            return "";
-        $error_str = $this->l("Your have an existing callback URL. Refer instructions on integrating multiple websites");
-      }
-      if (!$error_str)
-      {
-        //Everything OK ! Test address generation
-        $response=$this->getNewAddress(true);
-        if ($response->response_code!=200)
-          $error_str = $response->data->message;
-      }
+        if (!$error_str) {
+            //Everything OK ! Test address generation
+            $response=$this->getNewAddress(true);
+            if ($response->response_code!=200) {
+                $error_str = $response->data->message;
+            }
+        }
 
-      return $error_str;
-    } 
+        return $error_str;
+    }
 
     public function getContext()
     {
@@ -390,43 +382,41 @@ class Blockonomics extends PaymentModule
     
 
     public function getContent()
-		{
-			$output = '';
-      if (Tools::isSubmit("testSetup")) {
-        //Save current settings before testing setup
-				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
-				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
-        $error_str = $this->testSetup();
-        if ($error_str)
-        {
-          $error_str = $error_str."</br>".$this->l('For more information please consult this ')."<a target='_blank' href='https://blockonomics.freshdesk.com/solution/articles/33000215104-troubleshooting-unable-to-generate-new-address'>".$this->l('troubleshooting article')."</a>"; 
-          $output =$this->displayError($error_str);
+    {
+        $output = '';
+        if (Tools::isSubmit("testSetup")) {
+            //Save current settings before testing setup
+            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
+            Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
+            $error_str = $this->testSetup();
+            if ($error_str) {
+                $error_str = $error_str."</br>".$this->l('For more information please consult this ')."<a target='_blank' href='https://blockonomics.freshdesk.com/solution/articles/33000215104-troubleshooting-unable-to-generate-new-address'>".$this->l('troubleshooting article')."</a>";
+                $output =$this->displayError($error_str);
+            } else {
+                $output = $this->displayConfirmation($this->l('Setup is all done!'));
+            }
+        } elseif (Tools::isSubmit('updateSettings')) {
+            Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
+            Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
+            $output = $this->displayConfirmation($this->l('Settings Saved, click on Test Setup to verify installation'));
+        } elseif (Tools::isSubmit('generateNewURL')) {
+            $this->generatenewCallback();
         }
-        else
-          $output = $this->displayConfirmation($this->l('Setup is all done!'));
-			} 
-			elseif (Tools::isSubmit('updateSettings')) {
-				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
-				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
-				$output = $this->displayConfirmation($this->l('Settings Saved, click on Test Setup to verify installation'));
-			}
-			elseif (Tools::isSubmit('generateNewURL')) {
-				$this->generatenewCallback();
-			}
       
-      if (!Configuration::get('BLOCKONOMICS_API_KEY'))
-        $output = $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            $output = $output.$this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        }
 
-			return $output.$this->displayForm();
-		}
+        return $output.$this->displayForm();
+    }
 
     public function displayForm()
     {
-      // Get default language
-      $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        // Get default language
+        $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
-      // Init Fields form array
-      $fields_form[0]['form'] = array(
+        // Init Fields form array
+        $fields_form[0]['form'] = array(
         'legend' => array(
           'title' => $this->l('Settings'),
         ),
@@ -438,30 +428,30 @@ class Blockonomics extends PaymentModule
             'size' => 10,
             'required' => true,
           ),
-					array(
-						'type'      => 'switch',                               // This is an <input type="checkbox"> tag.
-						'label'     => $this->l('Altcoins Integration'),        // The <label> for this <input> tag.
-						'desc'      => $this->l('Accept altcoins like ETH, LTC, BCH'),   // A help text, displayed right next to the <input> tag.
-						'name'      => 'BLOCKONOMICS_ACCEPT_ALTCOINS',                              // The content of the 'id' attribute of the <input> tag.
-						'required'  => true,                                  // If set to true, this option must be set.
-						'class'     => 't',                                   // The content of the 'class' attribute of the <label> tag for the <input> tag.
-						'is_bool'   => true,                                  // If set to true, this means you want to display a yes/no or true/false option.
-						// The CSS styling will therefore use green mark for the option value '1', and a red mark for value '2'.
-						// If set to false, this means there can be more than two radio buttons,
-						// and the option label text will be displayed instead of marks.
-						'values'    => array(                                 // $values contains the data itself.
-							array(
-								'id'    => 'active_on',                           // The content of the 'id' attribute of the <input> tag, and of the 'for' attribute for the <label> tag.
-								'value' => 1,                                     // The content of the 'value' attribute of the <input> tag.   
-								'label' => $this->l('Enabled')                    // The <label> for this radio button.
-							),
-							array(
-								'id'    => 'active_off',
-								'value' => 0,
-								'label' => $this->l('Disabled')
-							)
-						),
-					)),
+                    array(
+                        'type'      => 'switch',                               // This is an <input type="checkbox"> tag.
+                        'label'     => $this->l('Altcoins Integration'),        // The <label> for this <input> tag.
+                        'desc'      => $this->l('Accept altcoins like ETH, LTC, BCH'),   // A help text, displayed right next to the <input> tag.
+                        'name'      => 'BLOCKONOMICS_ACCEPT_ALTCOINS',                              // The content of the 'id' attribute of the <input> tag.
+                        'required'  => true,                                  // If set to true, this option must be set.
+                        'class'     => 't',                                   // The content of the 'class' attribute of the <label> tag for the <input> tag.
+                        'is_bool'   => true,                                  // If set to true, this means you want to display a yes/no or true/false option.
+                        // The CSS styling will therefore use green mark for the option value '1', and a red mark for value '2'.
+                        // If set to false, this means there can be more than two radio buttons,
+                        // and the option label text will be displayed instead of marks.
+                        'values'    => array(                                 // $values contains the data itself.
+                            array(
+                                'id'    => 'active_on',                           // The content of the 'id' attribute of the <input> tag, and of the 'for' attribute for the <label> tag.
+                                'value' => 1,                                     // The content of the 'value' attribute of the <input> tag.
+                                'label' => $this->l('Enabled')                    // The <label> for this radio button.
+                            ),
+                            array(
+                                'id'    => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('Disabled')
+                            )
+                        ),
+                    )),
         'submit' => array(
           'title' => $this->l('Save'),
           'name'  => 'updateSettings',
@@ -469,8 +459,8 @@ class Blockonomics extends PaymentModule
         )
       );
 
-      // Init Fields form array
-      $fields_form[1]['form'] = array(
+        // Init Fields form array
+        $fields_form[1]['form'] = array(
         'legend' => array(
           'title' => $this->l('Store Info'),
         ),
@@ -488,24 +478,24 @@ class Blockonomics extends PaymentModule
           'class' => 'btn btn-default pull-right'
         )
       );
-      $helper = new HelperForm();
+        $helper = new HelperForm();
 
-      // Module, token and currentIndex
-      $helper->module = $this;
-      $helper->name_controller = $this->name;
-      $helper->token = Tools::getAdminTokenLite('AdminModules');
-      $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        // Module, token and currentIndex
+        $helper->module = $this;
+        $helper->name_controller = $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
 
-      // Language
-      $helper->default_form_language = $default_lang;
-      $helper->allow_employee_form_lang = $default_lang;
+        // Language
+        $helper->default_form_language = $default_lang;
+        $helper->allow_employee_form_lang = $default_lang;
 
-      // Title and toolbar
-      $helper->title = $this->displayName;
-      $helper->show_toolbar = true;        // false -> remove toolbar
+        // Title and toolbar
+        $helper->title = $this->displayName;
+        $helper->show_toolbar = true;        // false -> remove toolbar
       $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
       $helper->submit_action = 'submit'.$this->name;
-      $helper->toolbar_btn = array(
+        $helper->toolbar_btn = array(
         'save' =>
         array(
           'desc' => $this->l('Save'),
@@ -518,21 +508,21 @@ class Blockonomics extends PaymentModule
           )
         );
 
-      // Load current value
-      $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
-      $helper->fields_value['BLOCKONOMICS_ACCEPT_ALTCOINS'] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
-      $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
-      if (!$callbackurl)
-      {
-				generatenewCallback();
+        // Load current value
+        $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
+        $helper->fields_value['BLOCKONOMICS_ACCEPT_ALTCOINS'] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
         $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
-      }
-      $helper->fields_value['callbackURL'] = $callbackurl;
-      return $helper->generateForm($fields_form);
+        if (!$callbackurl) {
+            generatenewCallback();
+            $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+        }
+        $helper->fields_value['callbackURL'] = $callbackurl;
+        return $helper->generateForm($fields_form);
     }
 
-    public function generatenewCallback(){
-        $secret = md5(uniqid(rand(), true)); 
+    public function generatenewCallback()
+    {
+        $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
     }

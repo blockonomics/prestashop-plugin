@@ -246,10 +246,11 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
     //Send altcoin refund email 
     function send_refund_email() {
+        uuid = get_uuid();
         AltcoinAjax.get({
             'action': 'send_email',
             'order_id': $scope.id_order,
-            'order_link': $scope.refundlink,
+            'order_link': $scope.alt_refund_url(uuid),
             'order_coin': $scope.altcoinselect,
             'order_coin_sym': $scope.altsymbol
         });
@@ -296,7 +297,8 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     }
 
     //Check the altcoin payment status
-    function check_order(uuid) {
+    function check_order() {
+        uuid = get_uuid();
         var response = AltcoinCheck.save({
                 'uuid': uuid
             },function successCallback(data) {
@@ -320,6 +322,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                 $scope.altsymbol = altsymbol;
                 $scope.altcoinselect = $scope.altcoins[altsymbol];
                 $scope.spinner = false;
+                $scope.altuuid = uuid;
 
                 process_alt_response(data);
                 //Fetch the order id using bitcoin address
@@ -444,7 +447,6 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                     } else {
                         //Refund is being processed
                         wait_for_refund();
-                        $scope.altuuid = uuid;
                         update_altcoin_status('refunded');
                         break;
                     }
