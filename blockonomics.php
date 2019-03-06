@@ -513,7 +513,7 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_ACCEPT_ALTCOINS'] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
         $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         if (!$callbackurl) {
-            generatenewCallback();
+            $this->generatenewCallback();
             $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         }
         $helper->fields_value['callbackURL'] = $callbackurl;
