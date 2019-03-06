@@ -416,6 +416,7 @@ class Blockonomics extends PaymentModule
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
         // Init Fields form array
+        $fields_form = array();
         $fields_form[0]['form'] = array(
             'legend' => array(
               'title' => $this->l('Settings'),
