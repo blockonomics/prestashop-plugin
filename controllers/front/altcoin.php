@@ -46,9 +46,14 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
     public function fetchOrderId()
     {
         $addr = Tools::getValue('address');
-        $query = "SELECT * FROM "._DB_PREFIX_."blockonomics_bitcoin_orders WHERE `addr` = '".pSQL($addr)."' LIMIT 1";
+        $query =
+            "SELECT * FROM " .
+            _DB_PREFIX_ .
+            "blockonomics_bitcoin_orders WHERE `addr` = '" .
+            pSQL($addr) .
+            "' LIMIT 1";
         $order = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
-        $responseObj = new stdClass;
+        $responseObj = new stdClass();
         $responseObj->id = $order[0]['id_order'];
         echo Tools::jsonEncode($responseObj);
     }
@@ -57,7 +62,14 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
     {
         $addr = Tools::getValue('address');
         $uuid = Tools::getValue('uuid');
-        $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET `uuid` = '".pSQL($uuid)."' WHERE `addr` = '".pSQL($addr)."'";
+        $query =
+            "UPDATE " .
+            _DB_PREFIX_ .
+            "blockonomics_bitcoin_orders SET `uuid` = '" .
+            pSQL($uuid) .
+            "' WHERE `addr` = '" .
+            pSQL($addr) .
+            "'";
         Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($query);
     }
 
@@ -68,24 +80,34 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
         $order_link = Tools::getValue('order_link');
         $order_coin = Tools::getValue('order_coin');
         $order = new Order($order_id);
-        $subject = $order_coin . ' ' . $blockonomics->l('Refund', (int)$order->id_lang);
-        $message = $blockonomics->l('Your order couldn\'t be processed as you didn\'t pay the exact expected amount.').'<br>';
-        $message .= $blockonomics->l('The amount you paid will be refunded.').'<br>';
-        $message .= $blockonomics->l('Visit the link below to enter your refund address.').'<br>';
-        $message .= '<a href="'.$order_link.'">'.$order_link.'</a>';
-        $id_customer=$order->id_customer;
-        $customer= new Customer((int)$id_customer);
+        $subject =
+            $order_coin .
+            ' ' .
+            $blockonomics->l('Refund', (int) $order->id_lang);
+        $message =
+            $blockonomics->l(
+                'Your order couldn\'t be processed as you didn\'t pay the exact expected amount.'
+            ) . '<br>';
+        $message .=
+            $blockonomics->l('The amount you paid will be refunded.') . '<br>';
+        $message .=
+            $blockonomics->l(
+                'Visit the link below to enter your refund address.'
+            ) . '<br>';
+        $message .= '<a href="' . $order_link . '">' . $order_link . '</a>';
+        $id_customer = $order->id_customer;
+        $customer = new Customer((int) $id_customer);
 
         if (Validate::isEmail($customer->email)) {
             Mail::Send(
-                (int)$order->id_lang,
+                (int) $order->id_lang,
                 'contact',
                 $subject,
                 array(
-                    '{message}'=>$message,
-                    '{email}'=>Configuration::get('PS_SHOP_EMAIL'),
-                    '{order_name}'=>$order_id,
-                    '{attached_file}'=>'None'
+                    '{message}' => $message,
+                    '{email}' => Configuration::get('PS_SHOP_EMAIL'),
+                    '{order_name}' => $order_id,
+                    '{attached_file}' => 'None'
                 ),
                 $customer->email,
                 null,
