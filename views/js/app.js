@@ -221,9 +221,9 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     }
 
     //Create url for refund page
-    $scope.alt_refund_url = function(uuid) {
+    $scope.alt_refund_url = function() {
         params = {};
-        params.uuid = uuid;
+        params.uuid = get_uuid();
         url = window.location.pathname;
         var serializedParams = $httpParamSerializer(params);
         if (serializedParams.length > 0) {
@@ -246,13 +246,11 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
     //Send altcoin refund email 
     function send_refund_email() {
-        uuid = get_uuid();
         AltcoinAjax.get({
             'action': 'send_email',
             'order_id': $scope.id_order,
-            'order_link': $scope.alt_refund_url(uuid),
-            'order_coin': $scope.altcoinselect,
-            'order_coin_sym': $scope.altsymbol
+            'order_link': $scope.alt_refund_url(),
+            'order_coin': $scope.altcoinselect
         });
         send_email = false;
     }
@@ -287,7 +285,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         stop_interval();
         uuid = get_uuid();
         check_interval = $interval(function(response) {
-            check_order(uuid);
+            check_order();
         }, 10000);
     }
 

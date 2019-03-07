@@ -24,6 +24,8 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_1_7_6($object, $install = false)
 {
+    $object = $object;
+    $install = $install;
     updateDatabase();
     return true; //if there were no errors
 }

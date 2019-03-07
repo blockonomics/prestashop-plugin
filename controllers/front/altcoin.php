@@ -58,7 +58,7 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
         $addr = Tools::getValue('address');
         $uuid = Tools::getValue('uuid');
         $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET `uuid` = '".pSQL($uuid)."' WHERE `addr` = '".pSQL($addr)."'";
-        $order = Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($query);
+        Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($query);
     }
 
     public function sendEmail()
@@ -67,7 +67,6 @@ class BlockonomicsAltcoinModuleFrontController extends ModuleFrontController
         $order_id = Tools::getValue('order_id');
         $order_link = Tools::getValue('order_link');
         $order_coin = Tools::getValue('order_coin');
-        $order_coin_sym = Tools::getValue('order_coin_sym');
         $order = new Order($order_id);
         $subject = $order_coin . ' ' . $blockonomics->l('Refund', (int)$order->id_lang);
         $message = $blockonomics->l('Your order couldn\'t be processed as you didn\'t pay the exact expected amount.').'<br>';

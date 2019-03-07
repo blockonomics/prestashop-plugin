@@ -81,7 +81,6 @@ class BlockonomicsTrackModuleFrontController extends ModuleFrontController
     }
     public function postProcess()
     {
-        $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
 
