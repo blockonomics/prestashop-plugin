@@ -389,7 +389,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                                     //Update altcoin status to waiting
                                     update_altcoin_status('waiting');
                                     //Start checking the order status
-                                    start_check_order(uuid);
+                                    start_check_order();
                                 });
                         }
                     })
