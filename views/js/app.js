@@ -326,7 +326,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                 //Fetch the order id using bitcoin address
                 AltcoinAjax.get({
                     'action': 'fetch_order_id',
-                    'address': data.deposit_address
+                    'address': data.order.destination
                 },function(order_id) {
                     $scope.id_order = order_id.id;
                 });
