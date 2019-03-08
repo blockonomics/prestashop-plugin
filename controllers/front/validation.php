@@ -176,8 +176,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 "', 0)"
         );
 
-        $redirect_link =
-            '/index.php?controller=order-confirmation?id_cart=' .
+        $redirect_link = __PS_BASE_URI__ .
+            'index.php?controller=order-confirmation?id_cart=' .
             (int) $cart->id .
             '&id_module=' .
             (int) $blockonomics->id .
