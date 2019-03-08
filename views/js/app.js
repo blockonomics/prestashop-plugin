@@ -270,6 +270,16 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         return uuid;
     }
 
+    function get_order_id(address){
+        //Fetch the order id using bitcoin address
+        AltcoinAjax.get({
+            'action': 'fetch_order_id',
+            'address': address
+        },function(order_id) {
+            $scope.id_order = order_id.id;
+        });
+    }
+
     function wait_for_refund() {
         //Make sure only one interval is running
         stop_interval();
@@ -324,17 +334,14 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
                 process_alt_response(data);
                 //Fetch the order id using bitcoin address
-                AltcoinAjax.get({
-                    'action': 'fetch_order_id',
-                    'address': data.order.destination
-                },function(order_id) {
-                    $scope.id_order = order_id.id;
-                });
+                get_order_id(data.order.destination);
             });
     }
 
     //Create the altcoin order
     function create_order(altcoin, amount, address, order_id) {
+        //Fetch the order id using bitcoin address
+        get_order_id(address);
         (function(promises) {
             return new Promise((resolve, reject) => {
                 //Wait for both the altcoin limits and new altcoin order uuid
