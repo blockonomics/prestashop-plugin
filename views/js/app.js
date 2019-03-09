@@ -153,9 +153,10 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     }
 
     //Check if the bitcoin address is present
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi){
+    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id){
         $scope.address = invoice_addr;
         $scope.satoshi = invoice_satoshi;
+        $scope.id_order = order_id;
 
         if(invoice_status == -1){
             $scope.tick_interval  = $interval($scope.tick, 1000);
@@ -270,16 +271,6 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         return uuid;
     }
 
-    function get_order_id(address){
-        //Fetch the order id using bitcoin address
-        AltcoinAjax.get({
-            'action': 'fetch_order_id',
-            'address': address
-        },function(order_id) {
-            $scope.id_order = order_id.id;
-        });
-    }
-
     function wait_for_refund() {
         //Make sure only one interval is running
         stop_interval();
@@ -334,20 +325,23 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
 
                 process_alt_response(data);
                 //Fetch the order id using bitcoin address
-                get_order_id(data.order.destination);
+                AltcoinAjax.get({
+                    'action': 'fetch_order_id',
+                    'address': data.order.destination
+                },function(order_id) {
+                    $scope.id_order = order_id.id;
+                });
             });
     }
 
     //Create the altcoin order
     function create_order(altcoin, amount, address, order_id) {
-        //Fetch the order id using bitcoin address
-        get_order_id(address);
         (function(promises) {
             return new Promise((resolve, reject) => {
                 //Wait for both the altcoin limits and new altcoin order uuid
                 Promise.all(promises)
                     .then(values => {
-                        $scope.order_id = order_id;
+                        $scope.id_order = order_id;
                         //Hide the spinner
                         $scope.spinner = false;
                         var alt_minimum = values[0].min;
