@@ -35,7 +35,7 @@
       </div><br>
     {/if}
     <div class="bnomics-order-id">
-      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'} {$id_order|escape:'htmlall':'UTF-8'}</span>
+      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'}//id_order// </span>
     </div>
     <div class="bnomics-bitcoin-pane" ng-hide="show_altcoin != 0" ng-init="show_altcoin=0">
             <div class="bnomics-btc-info">
