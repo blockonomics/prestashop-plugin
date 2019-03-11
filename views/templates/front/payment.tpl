@@ -23,7 +23,7 @@
   <script>var track_url = "{$track_url|escape:'htmlall':'UTF-8'}";</script>
   <div class="invoice" ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
   '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
-  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}')">
+  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}', '{$id_order|escape:'htmlall':'UTF-8'}')">
   <div class="bnomics-order-container" style="max-width: 700px;">
     {if $accept_altcoin }
       <div class="bnomics-payment-option" ng-hide="altcoin_waiting == 1 || order.altstatus == 1 || order.altstatus == 2 || order.altstatus == 3">
@@ -35,7 +35,7 @@
       </div><br>
     {/if}
     <div class="bnomics-order-id">
-      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'} {$id_order|escape:'htmlall':'UTF-8'}</span>
+      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'}//id_order// </span>
     </div>
     <div class="bnomics-bitcoin-pane" ng-hide="show_altcoin != 0" ng-init="show_altcoin=0">
             <div class="bnomics-btc-info">

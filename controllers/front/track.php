@@ -53,7 +53,7 @@ class BlockonomicsTrackModuleFrontController extends ModuleFrontController
             'myCrypto',
             'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
             array('postion' => 'head')
-        );        
+        );
         $this->registerJavascript(
             'bootstrap',
             'modules/blockonomics/views/js/bootstrap.js'
@@ -81,22 +81,25 @@ class BlockonomicsTrackModuleFrontController extends ModuleFrontController
     }
     public function postProcess()
     {
-        $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
 
-        if(Tools::getValue('uuid')){
-            $this->context->smarty->assign(
-                array(
-                    'uuid' => Tools::getValue('uuid'),
-                    'ajax_url' => Context::getContext()->link->getModuleLink($blockonomics->name, 'altcoin', array(), true)
+        if (Tools::getValue('uuid')) {
+            $this->context->smarty->assign(array(
+                'uuid' => Tools::getValue('uuid'),
+                'ajax_url' => Context::getContext()->link->getModuleLink(
+                    $blockonomics->name,
+                    'altcoin',
+                    array(),
+                    true
                 )
-            );
+            ));
         }
 
-        $this->setTemplate('module:blockonomics/views/templates/front/altcoin.tpl');
+        $this->setTemplate(
+            'module:blockonomics/views/templates/front/altcoin.tpl'
+        );
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
-
 }

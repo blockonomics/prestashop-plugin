@@ -153,9 +153,10 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     }
 
     //Check if the bitcoin address is present
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi){
+    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id){
         $scope.address = invoice_addr;
         $scope.satoshi = invoice_satoshi;
+        $scope.id_order = order_id;
 
         if(invoice_status == -1){
             $scope.tick_interval  = $interval($scope.tick, 1000);
@@ -221,9 +222,9 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     }
 
     //Create url for refund page
-    $scope.alt_refund_url = function(uuid) {
+    $scope.alt_refund_url = function() {
         params = {};
-        params.uuid = uuid;
+        params.uuid = get_uuid();
         url = window.location.pathname;
         var serializedParams = $httpParamSerializer(params);
         if (serializedParams.length > 0) {
@@ -249,9 +250,8 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         AltcoinAjax.get({
             'action': 'send_email',
             'order_id': $scope.id_order,
-            'order_link': $scope.refundlink,
-            'order_coin': $scope.altcoinselect,
-            'order_coin_sym': $scope.altsymbol
+            'order_link': $scope.alt_refund_url(),
+            'order_coin': $scope.altcoinselect
         });
         send_email = false;
     }
@@ -286,7 +286,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
         stop_interval();
         uuid = get_uuid();
         check_interval = $interval(function(response) {
-            check_order(uuid);
+            check_order();
         }, 10000);
     }
 
@@ -296,7 +296,8 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     }
 
     //Check the altcoin payment status
-    function check_order(uuid) {
+    function check_order() {
+        uuid = get_uuid();
         var response = AltcoinCheck.save({
                 'uuid': uuid
             },function successCallback(data) {
@@ -320,12 +321,13 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                 $scope.altsymbol = altsymbol;
                 $scope.altcoinselect = $scope.altcoins[altsymbol];
                 $scope.spinner = false;
+                $scope.altuuid = uuid;
 
                 process_alt_response(data);
                 //Fetch the order id using bitcoin address
                 AltcoinAjax.get({
                     'action': 'fetch_order_id',
-                    'address': data.deposit_address
+                    'address': data.order.destination
                 },function(order_id) {
                     $scope.id_order = order_id.id;
                 });
@@ -339,7 +341,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                 //Wait for both the altcoin limits and new altcoin order uuid
                 Promise.all(promises)
                     .then(values => {
-                        $scope.order_id = order_id;
+                        $scope.id_order = order_id;
                         //Hide the spinner
                         $scope.spinner = false;
                         var alt_minimum = values[0].min;
@@ -388,7 +390,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                                     //Update altcoin status to waiting
                                     update_altcoin_status('waiting');
                                     //Start checking the order status
-                                    start_check_order(uuid);
+                                    start_check_order();
                                 });
                         }
                     })
@@ -444,7 +446,6 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
                     } else {
                         //Refund is being processed
                         wait_for_refund();
-                        $scope.altuuid = uuid;
                         update_altcoin_status('refunded');
                         break;
                     }

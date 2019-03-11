@@ -1,4 +1,5 @@
-{*
+<?php
+/**
  * 2011-2016 Blockonomics
  *
  * NOTICE OF LICENSE
@@ -15,12 +16,14 @@
  * @copyright 2011-2016 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
- *}
-<div class="alert alert-info">
-<p><strong>{l s="You are few clicks away from accepting bitcoin payments" mod='blockonomics'}</strong></p>
-</br>
-<p>Click on <strong>Get Started for Free</strong> on <strong><a
-href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics
-Merchants</a></strong>,
-complete the wizard and copy the API Key when shown here</p>
-</div>
+ */
+
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+    
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+    
+header("Location: ../");
+exit;

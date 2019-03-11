@@ -28,7 +28,7 @@
       <div class="bnomics-order-heading">
         <div class="bnomics-order-heading-wrapper">
           <div class="bnomics-order-id">
-            <span class="bnomics-order-number" ng-cloak> {l s='Order #' mod='blockonomics'} //id_order//</span>
+            <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'}//id_order//</span>
           </div>
         </div>
       </div>
