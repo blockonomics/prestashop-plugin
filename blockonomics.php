@@ -458,26 +458,28 @@ class Blockonomics extends PaymentModule
         print_r($b_order);
         */
 
-        $tx_status = (int) $b_order[0]['status'];
+        if($b_order){
+            $tx_status = (int) $b_order[0]['status'];
 
-        if ($tx_status == -1) {
-            $status = 'Payment Not Received.';
-        } elseif ($tx_status == 0) {
-            $status = 'Waiting for 2 Confirmations.';
-        } else {
-            $status = 'Payment Confirmed.';
+            if ($tx_status == -1) {
+                $status = 'Payment Not Received.';
+            } elseif ($tx_status == 0) {
+                $status = 'Waiting for 2 Confirmations.';
+            } else {
+                $status = 'Payment Confirmed.';
+            }
+
+            $this->smarty->assign(array(
+                'status' => $status,
+                'addr' => $b_order[0]['addr'],
+                'txid' => $b_order[0]['txid'],
+                'bits' => $b_order[0]['bits'],
+                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+                'bits_payed' => $b_order[0]['bits_payed']
+            ));
+
+            return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
         }
-
-        $this->smarty->assign(array(
-            'status' => $status,
-            'addr' => $b_order[0]['addr'],
-            'txid' => $b_order[0]['txid'],
-            'bits' => $b_order[0]['bits'],
-            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'bits_payed' => $b_order[0]['bits_payed']
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
     }
 
     public function getContent()
