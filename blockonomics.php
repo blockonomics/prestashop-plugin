@@ -458,7 +458,7 @@ class Blockonomics extends PaymentModule
         print_r($b_order);
         */
 
-        if($b_order){
+        if ($b_order) {
             $tx_status = (int) $b_order[0]['status'];
 
             if ($tx_status == -1) {
