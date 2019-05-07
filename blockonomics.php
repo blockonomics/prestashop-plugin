@@ -184,6 +184,7 @@ class Blockonomics extends PaymentModule
                 "blockonomics_bitcoin_orders (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             id_order INT UNSIGNED NOT NULL,
+            id_cart INT UNSIGNED NOT NULL,
             timestamp INT(8) NOT NULL,
             addr varchar(255) NOT NULL,
             txid varchar(255) NOT NULL,
