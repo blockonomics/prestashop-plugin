@@ -204,6 +204,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'accept_altcoin' => Configuration::get(
                 'BLOCKONOMICS_ACCEPT_ALTCOINS'
             ),
+            'timeperiod' => Configuration::get(
+                'BLOCKONOMICS_TIMEPERIOD'
+            ),
             'track_url' => Context::getContext()->link->getModuleLink(
                 $blockonomics->name,
                 'track',

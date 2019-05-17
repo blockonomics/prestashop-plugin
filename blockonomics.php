@@ -198,6 +198,7 @@ class Blockonomics extends PaymentModule
 
         //Blockonimcs basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
+        Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
 
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
@@ -226,6 +227,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
+        Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
@@ -522,6 +524,10 @@ class Blockonomics extends PaymentModule
                 'BLOCKONOMICS_ACCEPT_ALTCOINS',
                 Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS')
             );
+            Configuration::updateValue(
+                'BLOCKONOMICS_TIMEPERIOD',
+                Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
+            );
             $output = $this->displayConfirmation(
                 $this->l(
                     'Settings Saved, click on Test Setup to verify installation'
@@ -564,7 +570,7 @@ class Blockonomics extends PaymentModule
                     'label' => $this->l('Altcoins Integration'), // The <label> for this <input> tag.
                     'desc' => $this->l('Accept altcoins like ETH, LTC, BCH'), // Displayed next to the <input> tag.
                     'name' => 'BLOCKONOMICS_ACCEPT_ALTCOINS', // The content of the 'id' attribute of the <input> tag.
-                    'required' => true, // If set to true, this option must be set.
+                    'required' => false, // If set to true, this option must be set.
                     'class' => 't', // The content of the 'class' attribute of the <label> tag for the <input> tag.
                     'is_bool' => true, // If set to true, this means you want to display a yes/no or true/false option.
                     // The CSS will therefore use green mark for the option value '1', and a red mark for value '2'.
@@ -583,6 +589,14 @@ class Blockonomics extends PaymentModule
                             'label' => $this->l('Disabled')
                         )
                     )
+                ),
+                array(
+                    'type' => 'html',
+                    'label' => $this->l('Time Period'),
+                    'desc' => $this->l('Countdown timer on payment page (in minutes)'),
+                    'name' => 'BLOCKONOMICS_TIMEPERIOD',
+                    'required' => false,
+                    'html_content' => '<select name="BLOCKONOMICS_TIMEPERIOD" style="max-width:250px;"><option value="10">10</option><option value="15">15</option><option value="30">30</option></select>'
                 )
             ),
             'submit' => array(
@@ -657,6 +671,9 @@ class Blockonomics extends PaymentModule
         $helper->fields_value[
             'BLOCKONOMICS_ACCEPT_ALTCOINS'
         ] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
+        $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
+            'BLOCKONOMICS_TIMEPERIOD'
+        );
         $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         if (!$callbackurl) {
             $this->generatenewCallback();
