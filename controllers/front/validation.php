@@ -130,6 +130,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $bits = (int) ((1.0e8 * $total) / $price);
 
+        if (!extension_loaded ( 'intl' )){
+            $this->displayExtError($blockonomics);
+        }
+
         $mailVars = array(
             '{bitcoin_address}' => $new_address,
             '{bits}' => $bits / 1.0e8,
@@ -245,4 +249,23 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         echo $unable_to_generate;
         die();
     }
+
+    private function displayExtError($blockonomics)
+    {
+        $missing_extension =
+            '<h4>' .
+            $blockonomics->l(
+                'Missing PHP Extension.',
+                'validation'
+            ) .
+            '</h4><p>' .
+            $blockonomics->l(
+                'Please install the missing php-intl extension',
+                'validation'
+            );
+
+        echo $missing_extension;
+        die();
+    }
+
 }
