@@ -591,12 +591,20 @@ class Blockonomics extends PaymentModule
                     )
                 ),
                 array(
-                    'type' => 'html',
+                    'type' => 'select',
                     'label' => $this->l('Time Period'),
-                    'desc' => $this->l('Countdown timer on payment page (in minutes)'),
                     'name' => 'BLOCKONOMICS_TIMEPERIOD',
+                    'desc' => $this->l('Countdown timer on payment page'),
                     'required' => false,
-                    'html_content' => '<select name="BLOCKONOMICS_TIMEPERIOD" style="max-width:250px;"><option value="10">10</option><option value="15">15</option><option value="30">30</option></select>'
+                    'options' => array(
+                    'query' => array(
+                        array('key' => '10', 'name' => '10 minutes'),
+                        array('key' => '15', 'name' => '15 minutes'),
+                        array('key' => '30', 'name' => '30 minutes'),
+                    ),
+                        'id' => 'key',
+                        'name' => 'name'
+                    )
                 )
             ),
             'submit' => array(
