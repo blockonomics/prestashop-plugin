@@ -600,6 +600,8 @@ class Blockonomics extends PaymentModule
                     'query' => array(
                         array('key' => '10', 'name' => '10 minutes'),
                         array('key' => '15', 'name' => '15 minutes'),
+                        array('key' => '20', 'name' => '20 minutes'),
+                        array('key' => '25', 'name' => '25 minutes'),
                         array('key' => '30', 'name' => '30 minutes'),
                     ),
                         'id' => 'key',
