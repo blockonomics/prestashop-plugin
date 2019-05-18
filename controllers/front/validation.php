@@ -130,7 +130,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $bits = (int) ((1.0e8 * $total) / $price);
 
-        if (!extension_loaded ( 'intl' )){
+        if (!extension_loaded('intl')) {
             $this->displayExtError($blockonomics);
         }
 
@@ -267,5 +267,4 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         echo $missing_extension;
         die();
     }
-
 }
