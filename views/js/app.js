@@ -95,9 +95,9 @@ function alt_decode_url(url) {
 
 app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout) {
     var totalProgress = 100;
-    var totalTime = 10*60; //10m
+    var totalTime = 0;
     $scope.progress = totalProgress;
-    $scope.clock = totalTime;
+    
     $scope.copyshow = false;
 
     //Create url when the order is received 
@@ -153,10 +153,12 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     }
 
     //Check if the bitcoin address is present
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id){
+    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id, timeperiod){
         $scope.address = invoice_addr;
         $scope.satoshi = invoice_satoshi;
         $scope.id_order = order_id;
+        totalTime = timeperiod*60; //10m
+        $scope.clock = totalTime;
 
         if(invoice_status == -1){
             $scope.tick_interval  = $interval($scope.tick, 1000);

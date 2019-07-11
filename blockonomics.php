@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.7';
+        $this->version = '1.7.8';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -198,6 +198,7 @@ class Blockonomics extends PaymentModule
 
         //Blockonimcs basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
+        Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
 
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
@@ -226,6 +227,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
+        Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
@@ -522,6 +524,10 @@ class Blockonomics extends PaymentModule
                 'BLOCKONOMICS_ACCEPT_ALTCOINS',
                 Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS')
             );
+            Configuration::updateValue(
+                'BLOCKONOMICS_TIMEPERIOD',
+                Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
+            );
             $output = $this->displayConfirmation(
                 $this->l(
                     'Settings Saved, click on Test Setup to verify installation'
@@ -564,7 +570,7 @@ class Blockonomics extends PaymentModule
                     'label' => $this->l('Altcoins Integration'), // The <label> for this <input> tag.
                     'desc' => $this->l('Accept altcoins like ETH, LTC, BCH'), // Displayed next to the <input> tag.
                     'name' => 'BLOCKONOMICS_ACCEPT_ALTCOINS', // The content of the 'id' attribute of the <input> tag.
-                    'required' => true, // If set to true, this option must be set.
+                    'required' => false, // If set to true, this option must be set.
                     'class' => 't', // The content of the 'class' attribute of the <label> tag for the <input> tag.
                     'is_bool' => true, // If set to true, this means you want to display a yes/no or true/false option.
                     // The CSS will therefore use green mark for the option value '1', and a red mark for value '2'.
@@ -582,6 +588,24 @@ class Blockonomics extends PaymentModule
                             'value' => 0,
                             'label' => $this->l('Disabled')
                         )
+                    )
+                ),
+                array(
+                    'type' => 'select',
+                    'label' => $this->l('Time Period'),
+                    'name' => 'BLOCKONOMICS_TIMEPERIOD',
+                    'desc' => $this->l('Countdown timer on payment page'),
+                    'required' => false,
+                    'options' => array(
+                    'query' => array(
+                        array('key' => '10', 'name' => '10 minutes'),
+                        array('key' => '15', 'name' => '15 minutes'),
+                        array('key' => '20', 'name' => '20 minutes'),
+                        array('key' => '25', 'name' => '25 minutes'),
+                        array('key' => '30', 'name' => '30 minutes'),
+                    ),
+                        'id' => 'key',
+                        'name' => 'name'
                     )
                 )
             ),
@@ -657,6 +681,9 @@ class Blockonomics extends PaymentModule
         $helper->fields_value[
             'BLOCKONOMICS_ACCEPT_ALTCOINS'
         ] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
+        $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
+            'BLOCKONOMICS_TIMEPERIOD'
+        );
         $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         if (!$callbackurl) {
             $this->generatenewCallback();
