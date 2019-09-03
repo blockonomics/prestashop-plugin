@@ -45,7 +45,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
   $order_id = -1;
 
   //Update status and txid for transaction
-  if ($status == 0 || $status == 2) {
+  if ($status >= 0) {
     $blockonomics_order = Db::getInstance()->ExecuteS(
       "SELECT * FROM " .
       _DB_PREFIX_ .
@@ -53,11 +53,8 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
       pSQL($addr) .
       "' LIMIT 1"
     );
-
     if ($blockonomics_order) {
-
-      if( $blockonomics_order[0]['id_order'] == -1 || 
-      $blockonomics_order[0]['id_order'] == 0 )
+      if( $blockonomics_order[0]['id_order'] == -1 || $blockonomics_order[0]['id_order'] == 0 )
       {
         $cart = new Cart((int) $blockonomics_order[0]['id_cart']);
 
@@ -122,7 +119,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
       //Update order status
       $order = new Order($order_id);
 
-      if ($status == 0) {
+      if ($status <= 1) {
         $order->setCurrentState(
           Configuration::get('BLOCKONOMICS_ORDER_STATUS_0')
         );

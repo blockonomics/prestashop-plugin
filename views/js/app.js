@@ -93,7 +93,7 @@ function alt_decode_url(url) {
     return decodedUrl;
 }
 
-app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout) {
+app.controller("CheckoutController", function($window, $scope, $location, $interval, $rootScope, $httpParamSerializer, $timeout,AltcoinAjax) {
     var totalProgress = 100;
     var totalTime = 10*60; //10m
     $scope.progress = totalProgress;
@@ -152,6 +152,22 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         return Object.keys(object).find(key => object[key] === value);
     }
 
+    function replaceUrlParam(finalUrl,paramName, paramValue){
+        var url = finalUrl;
+
+        if (paramValue == null) {
+            paramValue = '';
+        }
+
+        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+        if (url.search(pattern)>=0) {
+            return url.replace(pattern,'$1' + paramValue + '$2');
+        }
+
+        url = url.replace(/[?#]$/,'');
+        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+    }
+
     //Check if the bitcoin address is present
     $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id){
         $scope.address = invoice_addr;
@@ -162,7 +178,18 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
             $scope.tick_interval  = $interval($scope.tick, 1000);
             var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
             ws.onmessage = function (evt) {
-                $window.location = final_url;
+                //Ensure callback arrives first 
+                setTimeout(function(){
+                    //Fetch the order id using bitcoin address
+                    AltcoinAjax.get({
+                        'action': 'fetch_order_id',
+                        'address': $scope.address
+                    },function(order_id) {
+                        //fetch order confirmation url
+                        var newurl = replaceUrlParam(final_url,'id_order',order_id.id);
+                        $window.location = newurl;
+                    });
+                }, 1000);
             }
           }
     }
