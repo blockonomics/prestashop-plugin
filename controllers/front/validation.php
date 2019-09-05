@@ -137,8 +137,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         // Create backup cart
         $old_cart_secure_key = $cart->secure_key;
         $old_cart_customer_id = (int)$cart->id_customer;
-        $cart->id_customer = 0;
-        $cart->save();
         $cart_products = $cart->getProducts();
         $new_cart = new Cart();
         $new_cart->id_lang = $this->context->language->id;
@@ -146,6 +144,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $new_cart->add();
         foreach ($cart_products as $product) {
             $new_cart->updateQty((int) $product['quantity'], (int) $product['id_product'], (int) $product['id_product_attribute']);
+        }
+        if ($this->context->cookie->id_guest) {
+            $guest = new Guest($this->context->cookie->id_guest);
+            $new_cart->mobile_theme = $guest->mobile_theme;
         }
 
         // Validate the order
@@ -155,7 +157,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             '{track_url}' =>
                 Tools::getHttpHost(true, true) .
                 __PS_BASE_URI__ .
-                'index.php?controller=order-confirmation?id_cart=' .
+                'index.php?controller=order-confirmation&id_cart=' .
                 (int) $cart->id .
                 '&id_module=' .
                 (int) $blockonomics->id .
@@ -179,10 +181,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         );
 
         // Add the backup cart to user
-        if ($this->context->cookie->id_guest) {
-            $guest = new Guest($this->context->cookie->id_guest);
-            $new_cart->mobile_theme = $guest->mobile_theme;
-        }
         $new_cart->id_customer = $old_cart_customer_id;
         $new_cart->save();
         if ($new_cart->id) {
