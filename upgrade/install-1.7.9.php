@@ -43,7 +43,7 @@ function updateDatabase()
         }
     }
     if (!$found) {
-        $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `id_cart` varchar(255) NOT NULL';
+        $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `id_cart` INT UNSIGNED NOT NULL';
         if (!Db::getInstance()->execute($query)) {
             return false;
         }
