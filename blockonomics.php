@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.8';
+        $this->version = '1.7.9';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -185,13 +185,13 @@ class Blockonomics extends PaymentModule
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             id_order INT UNSIGNED NOT NULL,
             timestamp INT(8) NOT NULL,
-            addr varchar(255) NOT NULL,
-            txid varchar(255) NOT NULL,
+            addr varchar(191) NOT NULL,
+            txid varchar(191) NOT NULL,
             status int(8) NOT NULL,
             value double(10,2) NOT NULL,
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
-            uuid varchar(255) NOT NULL,
+            uuid varchar(191) NOT NULL,
             PRIMARY KEY (id),
         UNIQUE KEY order_table (addr))"
         );
