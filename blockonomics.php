@@ -466,7 +466,7 @@ class Blockonomics extends PaymentModule
 
             if ($tx_status == -1) {
                 $status = 'Payment Not Received.';
-            } elseif ($tx_status == 0) {
+            } elseif ($tx_status == 0 || $tx_status == 1) {
                 $status = 'Waiting for 2 Confirmations.';
             } else {
                 $status = 'Payment Confirmed.';
