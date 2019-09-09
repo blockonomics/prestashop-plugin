@@ -65,9 +65,9 @@ the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given
                   <span ng-show="order.status >= 2" ng-cloak >{l s='Confirmed' mod='blockonomics' }</span>
                 </div>
                     <div class="bnomics-amount-wrapper">
-                      <h4 class="bnomics-amount-title">
+                      <h1 class="bnomics-amount-title">
                         {$bits|escape:'htmlall':'UTF-8'} BTC
-                      </h4>
+                      </h1>
                     </div>
                     <label>
                        ≈ <span ng-cloak>{$value|escape:'htmlall':'UTF-8'}</span>
