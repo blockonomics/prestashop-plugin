@@ -192,6 +192,7 @@ class Blockonomics extends PaymentModule
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
             uuid varchar(191) NOT NULL,
+            id_cart INT UNSIGNED NOT NULL,
             PRIMARY KEY (id),
         UNIQUE KEY order_table (addr))"
         );
@@ -465,7 +466,7 @@ class Blockonomics extends PaymentModule
 
             if ($tx_status == -1) {
                 $status = 'Payment Not Received.';
-            } elseif ($tx_status == 0) {
+            } elseif ($tx_status == 0 || $tx_status == 1) {
                 $status = 'Waiting for 2 Confirmations.';
             } else {
                 $status = 'Payment Confirmed.';

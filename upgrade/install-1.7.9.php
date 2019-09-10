@@ -45,5 +45,20 @@ function updateDatabase()
     if (!Db::getInstance()->execute($query)) {
         return false;
     }
+    $sql = 'DESCRIBE '._DB_PREFIX_.'blockonomics_bitcoin_orders';
+    $columns = Db::getInstance()->executeS($sql);
+    $found = false;
+    foreach ($columns as $col) {
+        if ($col['Field']=='id_cart') {
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `id_cart` INT UNSIGNED NOT NULL';
+        if (!Db::getInstance()->execute($query)) {
+            return false;
+        }
+    }
     return true;
 }
