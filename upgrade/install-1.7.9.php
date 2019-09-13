@@ -33,6 +33,18 @@ function upgrade_module_1_7_9($object, $install = false)
 //function used to upgrade the module table
 function updateDatabase()
 {
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` MODIFY `addr` varchar(191) NOT NULL';
+    if (!Db::getInstance()->execute($query)) {
+        return false;
+    }
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` MODIFY `uuid` varchar(191) NOT NULL';
+    if (!Db::getInstance()->execute($query)) {
+        return false;
+    }
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` MODIFY `txid` varchar(191) NOT NULL';
+    if (!Db::getInstance()->execute($query)) {
+        return false;
+    }
     $sql = 'DESCRIBE '._DB_PREFIX_.'blockonomics_bitcoin_orders';
     $columns = Db::getInstance()->executeS($sql);
     $found = false;
