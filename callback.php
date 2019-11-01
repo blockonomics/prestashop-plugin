@@ -33,7 +33,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     if (!$kernel) {
             require_once _PS_ROOT_DIR_.'/app/AppKernel.php';
             $kernel = new \AppKernel('prod', false);
-            $kernel->boot(); 
+            $kernel->boot();
     }
     //Update status and txid for transaction
     $query =
@@ -60,22 +60,22 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
         );
         if ($order) {
             if ($order[0]['id_cart']) {
-              //Delete backup cart
-              $delete_cart =
+                    //Delete backup cart
+                    $delete_cart =
                     "DELETE FROM " .
                     _DB_PREFIX_ .
                     "cart WHERE id_cart = '" .
                     $order[0]['id_cart'] . "'";
-              Db::getInstance()->Execute($delete_cart);
-              //Remove id_cart from order
-              $remove_cart =
+                    Db::getInstance()->Execute($delete_cart);
+                    //Remove id_cart from order
+                    $remove_cart =
                   "UPDATE " .
                   _DB_PREFIX_ .
                   "blockonomics_bitcoin_orders SET id_cart=''" .
                   " WHERE addr='" .
                   pSQL($addr) .
                   "'";
-              Db::getInstance()->Execute($remove_cart);
+                  Db::getInstance()->Execute($remove_cart);
             }
             //Update order status
             $o = new Order($order[0]['id_order']);
