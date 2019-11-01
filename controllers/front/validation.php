@@ -145,7 +145,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         foreach ($cart_products as $product) {
             $new_cart->
                 updateQty(
-                (int) $product['quantity'], (int) $product['id_product'], (int) $product['id_product_attribute']
+                    (int) $product['quantity'], 
+				    (int) $product['id_product'], 
+				    (int) $product['id_product_attribute']
                 );
         }
         if ($this->context->cookie->id_guest) {
