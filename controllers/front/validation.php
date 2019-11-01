@@ -144,7 +144,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $new_cart->add();
         foreach ($cart_products as $product) {
             $new_cart->
-			updateQty((int) $product['quantity'], (int) $product['id_product'], (int) $product['id_product_attribute']);
+                updateQty((int) $product['quantity'], (int) $product['id_product'], (int) $product['id_product_attribute']);
         }
         if ($this->context->cookie->id_guest) {
             $guest = new Guest($this->context->cookie->id_guest);
@@ -195,7 +195,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             "INSERT INTO " .
                 _DB_PREFIX_ .
                 "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
-				"addr, txid, status,value, bits, bits_payed) VALUES
+                "addr, txid, status,value, bits, bits_payed) VALUES
                 ('" .
                 (int) $blockonomics->currentOrder .
                 "','" .
