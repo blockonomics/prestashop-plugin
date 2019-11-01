@@ -59,7 +59,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 "' LIMIT 1"
         );
         if ($order) {
-            if($order[0]['id_cart']){
+            if ($order[0]['id_cart']) {
               //Delete backup cart
               $delete_cart =
                     "DELETE FROM " .
