@@ -29,7 +29,6 @@ $addr = Tools::getValue('addr');
 //Match secret for callback
 if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
      // Update kernel initialization for Prestashop 1.7.6.1
-    global $kernel;
     if (!$kernel) {
             require_once _PS_ROOT_DIR_.'/app/AppKernel.php';
             $kernel = new \AppKernel('prod', false);
