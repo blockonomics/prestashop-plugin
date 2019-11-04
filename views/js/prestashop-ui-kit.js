@@ -1,6 +1,6 @@
 /*!
 * Prestige v1.0.0 (http://getbootstrap.com)
-* Copyright 2015-2015
+* Copyright 2015-2019
 * Copy License
 */
 
