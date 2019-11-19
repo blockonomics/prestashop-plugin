@@ -66,6 +66,10 @@ class Blockonomics extends PaymentModule
             '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
         $BLOCKONOMICS_SET_CALLBACK_URL =
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
+        $BLOCKONOMICS_TEMP_API_KEY_URL = 
+            $BLOCKONOMICS_BASE_URL . '/api/temp_wallet';
+        $BLOCKONOMICS_TEMP_WITHDRAW_URL = 
+            $BLOCKONOMICS_BASE_URL . '/api/temp_withdraw_request';
 
         Configuration::updateValue(
             'BLOCKONOMICS_BASE_URL',
@@ -90,6 +94,14 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue(
             'BLOCKONOMICS_SET_CALLBACK_URL',
             $BLOCKONOMICS_SET_CALLBACK_URL
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_TEMP_API_KEY_URL',
+            $BLOCKONOMICS_TEMP_API_KEY_URL
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_TEMP_WITHDRAW_URL',
+            $BLOCKONOMICS_TEMP_WITHDRAW_URL
         );
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -204,15 +216,24 @@ class Blockonomics extends PaymentModule
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+        $callback_url = Tools::getHttpHost(true, true) .
+            __PS_BASE_URI__ .
+            'modules/' .
+            $this->name .
+            '/callback.php?secret=' .
+            $secret;
         Configuration::updateValue(
             'BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'modules/' .
-                $this->name .
-                '/callback.php?secret=' .
-                $secret
+            $callback_url
         );
+
+        // Setup temp wallet
+        $response = $this->get_temp_api_key($callback_url);
+        if ($response->response_code == 200)
+        {
+            Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
+            Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
+        }
 
         Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
@@ -229,6 +250,8 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
+        Configuration::deleteByName('BLOCKONOMICS_TEMP_API_KEY');
+        Configuration::deleteByName('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
@@ -236,6 +259,8 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
+        Configuration::deleteByName('BLOCKONOMICS_TEMP_API_KEY_URL');
+        Configuration::deleteByName('BLOCKONOMICS_TEMP_WITHDRAW_URL');
         return true;
     }
 
@@ -396,6 +421,10 @@ class Blockonomics extends PaymentModule
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
+            $message = $this->make_withdraw();
+            if ($message) {
+                $error_str .= $message;
+            }
         }
 
         return $error_str;
@@ -538,11 +567,41 @@ class Blockonomics extends PaymentModule
             $this->generatenewCallback();
         }
 
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $output =
-                $output .
-                $this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        $total_received = Configuration::get(
+            'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
+        ) / 1.0e8;
+        $api_key = Configuration::get(
+            'BLOCKONOMICS_API_KEY'
+        );
+        $temp_api_key = Configuration::get(
+            'BLOCKONOMICS_TEMP_API_KEY'
+        );
+        if ($temp_api_key && !$api_key && !($total_received > 0)){
+            $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: 0 BTC)</p>
+                            <p>We are using a temporary wallet on Blockonomics to receive your payments.</p>
+                            <p>To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]</p></div>';
         }
+        else if ($temp_api_key && $total_received > 0){
+            $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: <?php echo "$total_received"; ?> BTC)</p>';
+            if (!$api_key){
+                $output .= '<p> To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]
+                            </p></div>';
+            }
+            else{
+                $output .= '<p> To withdraw, Click on <b>Test Setup</b></p></div>';
+            }
+        }
+        else if ($api_key){
+            $output .= '<div class="alert alert-info"><p><b>Your wallet</b></p>
+                            <p>Payments will go directly to the wallet which your setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw</p></div>';
+        }
+        else{
+            $output .= '<div class="alert alert-danger"><p><b>ERROR:</b> No wallet set up</p></div>';
+        }
+        // if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+        //     $output .=
+        //         $this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        // }
 
         return $output . $this->displayForm();
     }
@@ -707,5 +766,52 @@ class Blockonomics extends PaymentModule
                 '/callback.php?secret=' .
                 $secret
         );
+    }
+
+    public function get_temp_api_key($callback_url)
+    {
+        $url = Configuration::get(
+            'BLOCKONOMICS_TEMP_API_KEY_URL'
+        );
+        $body = json_encode(array('callback' => $callback_url));
+        $response = $this->doCurlCall($url, $body);
+        $responseObj = $response->data;
+        $responseObj->{'response_code'} = $response->response_code;
+        return $responseObj;
+    }
+
+    public function make_withdraw()
+    {
+        $api_key = Configuration::get(
+            'BLOCKONOMICS_API_KEY'
+        );
+        $temp_api_key = Configuration::get(
+            'BLOCKONOMICS_TEMP_API_KEY'
+        );
+        if (!$api_key || !$temp_api_key || $temp_api_key == $api_key) {
+            return null;
+        }
+        $temp_withdraw_amount = Configuration::get(
+            'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
+        );
+        if ($temp_withdraw_amount > 0)
+        {
+            $url = Configuration::get(
+                'BLOCKONOMICS_TEMP_WITHDRAW_URL'
+            ) .'?tempkey='.$temp_api_key;
+            $response = $this->doCurlCall($url);
+            $response_code = $response->response_code;
+            if ($response_code != 200)
+            {
+                $message = $this->l('Error while making withdraw: '.$response->data->message);
+                return $message;
+            }
+            Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null);
+            Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
+            $message = $this->l('Your funds withdraw request has been submitted. Please check your Blockonomics registered emailid for details');
+            return $message;
+        }
+        //Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null); ??
+        return null;
     }
 }
