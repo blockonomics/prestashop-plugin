@@ -598,10 +598,6 @@ class Blockonomics extends PaymentModule
         else{
             $output .= '<div class="alert alert-danger"><p><b>ERROR:</b> No wallet set up</p></div>';
         }
-        // if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-        //     $output .=
-        //         $this->display(__FILE__, 'views/templates/admin/backend.tpl');
-        // }
 
         return $output . $this->displayForm();
     }
@@ -803,7 +799,7 @@ class Blockonomics extends PaymentModule
             $response_code = $response->response_code;
             if ($response_code != 200)
             {
-                $message = $this->l('Error while making withdraw: '.$response->data->message);
+                $message = $this->l('Error while making withdraw: ') .$response->data->message;
                 return $message;
             }
             Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null);
