@@ -104,7 +104,7 @@ class Blockonomics extends PaymentModule
             $BLOCKONOMICS_TEMP_WITHDRAW_URL
         );
 
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+        if (!Configuration::get('BLOCKONOMICS_API_KEY') && !Configuration::get('BLOCKONOMICS_TEMP_API_KEY')) {
             $this->warning = $this->l(
                 'API Key is not provided to communicate with Blockonomics'
             );
@@ -294,6 +294,16 @@ class Blockonomics extends PaymentModule
         return $offlineOption;
     }
 
+    public function getApiKey()
+    {
+        $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
+        if (!$api_key)
+        {
+            $api_key = Configuration::get('BLOCKONOMICS_TEMP_API_KEY');
+        }
+        return $api_key;
+    }
+
     public function getBTCPrice($id_currency)
     {
         //Getting price
@@ -328,7 +338,7 @@ class Blockonomics extends PaymentModule
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Authorization: Bearer ' .
-                Configuration::get('BLOCKONOMICS_API_KEY'),
+                $this->getApiKey(),
             'Content-type: application/x-www-form-urlencoded'
         ));
 
@@ -570,9 +580,7 @@ class Blockonomics extends PaymentModule
         $total_received = Configuration::get(
             'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
         ) / 1.0e8;
-        $api_key = Configuration::get(
-            'BLOCKONOMICS_API_KEY'
-        );
+        $api_key = $this->getApiKey();
         $temp_api_key = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY'
         );
@@ -778,9 +786,7 @@ class Blockonomics extends PaymentModule
 
     public function make_withdraw()
     {
-        $api_key = Configuration::get(
-            'BLOCKONOMICS_API_KEY'
-        );
+        $api_key = $this->getApiKey();
         $temp_api_key = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY'
         );

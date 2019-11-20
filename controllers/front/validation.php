@@ -109,7 +109,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
 
         // API Key not set
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+        if (!Configuration::get('BLOCKONOMICS_API_KEY') && !Configuration::get('BLOCKONOMICS_TEMP_API_KEY')) {
             $this->displayError($blockonomics);
         }
 
