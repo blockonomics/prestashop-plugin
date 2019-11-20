@@ -26,6 +26,12 @@
 
 class BlockonomicsTrackModuleFrontController extends ModuleFrontController
 {
+
+    public function getLayout()
+    {
+        return 'module:blockonomics/views/templates/layouts/litemode.tpl';
+    }
+    
     public function setMedia()
     {
         parent::setMedia();
