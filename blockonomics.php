@@ -580,7 +580,9 @@ class Blockonomics extends PaymentModule
         $total_received = Configuration::get(
             'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
         ) / 1.0e8;
-        $api_key = $this->getApiKey();
+        $api_key = Configuration::get(
+            'BLOCKONOMICS_API_KEY'
+        );
         $temp_api_key = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY'
         );
