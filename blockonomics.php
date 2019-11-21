@@ -792,7 +792,8 @@ class Blockonomics extends PaymentModule
             }
             Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null);
             Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
-            $message = $this->l('Your funds withdraw request has been submitted. Please check your Blockonomics registered emailid for details');
+            $message = $this->l('Your funds withdraw request has been submitted. ');
+            $message .= $this->l('Please check your Blockonomics registered emailid for details.');
             return $message;
         }
         //Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null); ??

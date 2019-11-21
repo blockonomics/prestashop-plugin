@@ -25,7 +25,7 @@
         </p>
     </div>
 {elseif $temp_api_key && $total_received > 0}
-	<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: {$total_received} BTC)</p>
+	<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: {$total_received|escape:'html_all':'utf-8'} BTC)</p>
     {if !$api_key}
 	    <p>
 	    	To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]

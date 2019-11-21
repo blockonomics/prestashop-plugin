@@ -98,7 +98,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 $temp_api_key = Configuration::get(
                     'BLOCKONOMICS_TEMP_API_KEY'
                 );
-                if($temp_api_key && !$api_key) {
+                if ($temp_api_key && !$api_key) {
                     $current_temp_amount = Configuration::get(
                         'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
                     );
