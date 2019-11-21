@@ -66,9 +66,9 @@ class Blockonomics extends PaymentModule
             '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
         $BLOCKONOMICS_SET_CALLBACK_URL =
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
-        $BLOCKONOMICS_TEMP_API_KEY_URL = 
+        $BLOCKONOMICS_TEMP_API_KEY_URL =
             $BLOCKONOMICS_BASE_URL . '/api/temp_wallet';
-        $BLOCKONOMICS_TEMP_WITHDRAW_URL = 
+        $BLOCKONOMICS_TEMP_WITHDRAW_URL =
             $BLOCKONOMICS_BASE_URL . '/api/temp_withdraw_request';
 
         Configuration::updateValue(
@@ -228,9 +228,8 @@ class Blockonomics extends PaymentModule
         );
 
         // Setup temp wallet
-        $response = $this->get_temp_api_key($callback_url);
-        if ($response->response_code == 200)
-        {
+        $response = $this->getTempApiKey($callback_url);
+        if ($response->response_code == 200) {
             Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
             Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
         }
@@ -297,8 +296,7 @@ class Blockonomics extends PaymentModule
     public function getApiKey()
     {
         $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
-        if (!$api_key)
-        {
+        if (!$api_key) {
             $api_key = Configuration::get('BLOCKONOMICS_TEMP_API_KEY');
         }
         return $api_key;
@@ -431,7 +429,7 @@ class Blockonomics extends PaymentModule
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
-            $message = $this->make_withdraw();
+            $message = $this->makeWithdraw();
             if ($message) {
                 $error_str .= $message;
             }
@@ -586,26 +584,22 @@ class Blockonomics extends PaymentModule
         $temp_api_key = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY'
         );
-        if ($temp_api_key && !$api_key && !($total_received > 0)){
+        if ($temp_api_key && !$api_key && !($total_received > 0)) {
             $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: 0 BTC)</p>
                             <p>We are using a temporary wallet on Blockonomics to receive your payments.</p>
                             <p>To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]</p></div>';
-        }
-        else if ($temp_api_key && $total_received > 0){
+        } elseif ($temp_api_key && $total_received > 0) {
             $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: <?php echo "$total_received"; ?> BTC)</p>';
-            if (!$api_key){
+            if (!$api_key) {
                 $output .= '<p> To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]
                             </p></div>';
-            }
-            else{
+            } else {
                 $output .= '<p> To withdraw, Click on <b>Test Setup</b></p></div>';
             }
-        }
-        else if ($api_key){
+        } elseif ($api_key) {
             $output .= '<div class="alert alert-info"><p><b>Your wallet</b></p>
                             <p>Payments will go directly to the wallet which your setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw</p></div>';
-        }
-        else{
+        } else {
             $output .= '<div class="alert alert-danger"><p><b>ERROR:</b> No wallet set up</p></div>';
         }
 
@@ -774,7 +768,7 @@ class Blockonomics extends PaymentModule
         );
     }
 
-    public function get_temp_api_key($callback_url)
+    public function getTempApiKey($callback_url)
     {
         $url = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY_URL'
@@ -786,7 +780,7 @@ class Blockonomics extends PaymentModule
         return $responseObj;
     }
 
-    public function make_withdraw()
+    public function makeWithdraw()
     {
         $api_key = $this->getApiKey();
         $temp_api_key = Configuration::get(
@@ -798,15 +792,13 @@ class Blockonomics extends PaymentModule
         $temp_withdraw_amount = Configuration::get(
             'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
         );
-        if ($temp_withdraw_amount > 0)
-        {
+        if ($temp_withdraw_amount > 0) {
             $url = Configuration::get(
                 'BLOCKONOMICS_TEMP_WITHDRAW_URL'
             ) .'?tempkey='.$temp_api_key;
             $response = $this->doCurlCall($url);
             $response_code = $response->response_code;
-            if ($response_code != 200)
-            {
+            if ($response_code != 200) {
                 $message = $this->l('Error while making withdraw: ') .$response->data->message;
                 return $message;
             }
