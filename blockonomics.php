@@ -584,24 +584,12 @@ class Blockonomics extends PaymentModule
         $temp_api_key = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY'
         );
-        if ($temp_api_key && !$api_key && !($total_received > 0)) {
-            $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: 0 BTC)</p>
-                            <p>We are using a temporary wallet on Blockonomics to receive your payments.</p>
-                            <p>To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]</p></div>';
-        } elseif ($temp_api_key && $total_received > 0) {
-            $output .= '<div class="alert alert-info"><p><b>Blockonomics Wallet</b> (Balance: <?php echo "$total_received"; ?> BTC)</p>';
-            if (!$api_key) {
-                $output .= '<p> To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]
-                            </p></div>';
-            } else {
-                $output .= '<p> To withdraw, Click on <b>Test Setup</b></p></div>';
-            }
-        } elseif ($api_key) {
-            $output .= '<div class="alert alert-info"><p><b>Your wallet</b></p>
-                            <p>Payments will go directly to the wallet which your setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw</p></div>';
-        } else {
-            $output .= '<div class="alert alert-danger"><p><b>ERROR:</b> No wallet set up</p></div>';
-        }
+        $this->context->smarty->assign(array(
+            'total_received' => $total_received,
+            'api_key' => $api_key,
+            'temp_api_key' => $temp_api_key
+        ));
+        $output .= $this->display(__FILE__, 'views/templates/admin/backend.tpl');
 
         return $output . $this->displayForm();
     }
