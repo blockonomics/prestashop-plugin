@@ -782,7 +782,7 @@ class Blockonomics extends PaymentModule
             $url = Configuration::get(
                 'BLOCKONOMICS_TEMP_WITHDRAW_URL'
             ) .'?tempkey='.$temp_api_key;
-            $response = $this->doCurlCall($url);
+            $response = $this->doCurlCall($url, 'dummy');
             $response_code = $response->response_code;
             if ($response_code != 200) {
                 $error = $this->l('Error while making withdraw: ') .$response->data->message;
