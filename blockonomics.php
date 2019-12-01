@@ -429,10 +429,6 @@ class Blockonomics extends PaymentModule
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
-            $message = $this->makeWithdraw();
-            if ($message) {
-                $error_str .= $message;
-            }
         }
 
         return $error_str;
@@ -549,9 +545,11 @@ class Blockonomics extends PaymentModule
                     "</a>";
                 $output = $this->displayError($error_str);
             } else {
-                $output = $this->displayConfirmation(
-                    $this->l('Setup is all done!')
-                );
+                $output = $this->displayConfirmation( $this->l('Setup is all done!') );
+                $withdraw = $this->makeWithdraw();
+                if ($withdraw) {
+                    $output .= $withdraw;
+                };
             }
         } elseif (Tools::isSubmit('updateSettings')) {
             Configuration::updateValue(
@@ -787,14 +785,14 @@ class Blockonomics extends PaymentModule
             $response = $this->doCurlCall($url);
             $response_code = $response->response_code;
             if ($response_code != 200) {
-                $message = $this->l('Error while making withdraw: ') .$response->data->message;
-                return $message;
+                $error = $this->l('Error while making withdraw: ') .$response->data->message;
+                return $this->displayError($error);
             }
             Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null);
             Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
             $message = $this->l('Your funds withdraw request has been submitted. ');
             $message .= $this->l('Please check your Blockonomics registered emailid for details.');
-            return $message;
+            return $this->displayConfirmation($message);
         }
         //Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', null); ??
         return null;
