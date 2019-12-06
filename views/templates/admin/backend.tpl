@@ -38,7 +38,7 @@
     <div class="alert alert-info">
     	<p><b>Your wallet</b></p>
         <p>
-        	Payments will go directly to the wallet which your setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw
+        	Payments will go directly to the wallet which you setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw
        	</p>
     </div>
 {else}
