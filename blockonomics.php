@@ -545,7 +545,7 @@ class Blockonomics extends PaymentModule
                     "</a>";
                 $output = $this->displayError($error_str);
             } else {
-                $output = $this->displayConfirmation( $this->l('Setup is all done!') );
+                $output = $this->displayConfirmation($this->l('Setup is all done!'));
                 $withdraw = $this->makeWithdraw();
                 if ($withdraw) {
                     $output .= $withdraw;
