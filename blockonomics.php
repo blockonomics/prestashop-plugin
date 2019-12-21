@@ -573,21 +573,7 @@ class Blockonomics extends PaymentModule
             $this->generatenewCallback();
         }
 
-        $total_received = Configuration::get(
-            'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
-        ) / 1.0e8;
-        $api_key = Configuration::get(
-            'BLOCKONOMICS_API_KEY'
-        );
-        $temp_api_key = Configuration::get(
-            'BLOCKONOMICS_TEMP_API_KEY'
-        );
-        $this->context->smarty->assign(array(
-            'total_received' => $total_received,
-            'api_key' => $api_key,
-            'temp_api_key' => $temp_api_key
-        ));
-        $output .= $this->display(__FILE__, 'views/templates/admin/backend.tpl');
+        //$output .= $this->display(__FILE__, 'views/templates/admin/backend.tpl');
 
         return $output . $this->displayForm();
     }
@@ -669,15 +655,21 @@ class Blockonomics extends PaymentModule
             ),
             'input' => array(
                 array(
-                    'type' => 'free',
+                    'type' => 'text',
                     'label' => $this->l('HTTP CALLBACK URL'),
                     'name' => 'callbackURL',
+                    'readonly' => 'readonly'
+                ),
+                array(
+                    'type' => 'free',
+                    'label' => $this->l('Destination BTC wallet for payments'),
+                    'name' => 'destinationWallet',
                     'class' => 'readonly'
                 )
             ),
             'submit' => array(
                 'title' => $this->l('Test Setup'),
-                'name' => $this->l('testSetup'),
+                'name' => 'testSetup',
                 'class' => 'btn btn-default pull-right'
             )
         );
@@ -736,6 +728,42 @@ class Blockonomics extends PaymentModule
             $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         }
         $helper->fields_value['callbackURL'] = $callbackurl;
+        // Check the linked wallet
+        $total_received = Configuration::get(
+            'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
+        ) / 1.0e8;
+        $api_key = Configuration::get(
+            'BLOCKONOMICS_API_KEY'
+        );
+        $temp_api_key = Configuration::get(
+            'BLOCKONOMICS_TEMP_API_KEY'
+        );
+        if ($temp_api_key && !$api_key && !($total_received > 0)){
+            $wallet_message = '<p><b>Blockonomics Wallet</b> (Balance: 0 BTC)</p>
+                <p>We are using a temporary wallet on Blockonomics to receive your payments.</p>
+                <p>
+                    To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]
+                </p>';
+        }elseif ($temp_api_key && $total_received > 0) {
+            $wallet_message = '<p><b>Blockonomics Wallet</b> (Balance: '.$total_received.' BTC)</p>';
+            if (!$api_key) {
+                $wallet_message .= '<p>
+                        To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-payments-on-woocommerce-using-blockonomics-f18661819a62">Blog Instructions</a>]
+                    </p>';
+            }else{
+                $wallet_message .= '<p>
+                        To withdraw, Click on <b>Test Setup</b>
+                    </p>';
+            }
+        }elseif ($api_key) {
+            $wallet_message = '<p><b>Your wallet</b></p>
+                <p>
+                    Payments will go directly to the wallet which your setup on <a href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics</a>. There is no need for withdraw
+                </p>';
+        }else{
+            $wallet_message = '<p><b>ERROR:</b> No wallet set up</p>';
+        }
+        $helper->fields_value['destinationWallet'] = $wallet_message;
         return $helper->generateForm($fields_form);
     }
 
