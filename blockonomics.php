@@ -742,13 +742,13 @@ class Blockonomics extends PaymentModule
             $wallet_message = '<p><b>Blockonomics Wallet</b> (Balance: 0 BTC)</p>
                 <p>We are using a temporary wallet on Blockonomics to receive your payments.</p>
                 <p>
-                    To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-on-prestashop-6b900396c85f">Blog Instructions</a>]
+                    To receive payments directly to your wallet (recommended) -> Follow Wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a> and enter the APIKey above [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-on-prestashop-6b900396c85f">Blog Instructions</a>]
                 </p>';
         }elseif ($temp_api_key && $total_received > 0) {
             $wallet_message = '<p><b>Blockonomics Wallet</b> (Balance: '.$total_received.' BTC)</p>';
             if (!$api_key) {
                 $wallet_message .= '<p>
-                        To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey below [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-on-prestashop-6b900396c85f">Blog Instructions</a>]
+                        To withdraw, follow wizard by clicking on <i>Get Started for Free</i> on <a href="https://www.blockonomics.co/merchants" target="_blank">Merchants</a>, then enter the APIKey above [<a href="https://blog.blockonomics.co/how-to-accept-bitcoin-on-prestashop-6b900396c85f">Blog Instructions</a>]
                     </p>';
             }else{
                 $wallet_message .= '<p>
