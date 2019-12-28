@@ -212,6 +212,9 @@ class Blockonomics extends PaymentModule
         //Blockonimcs basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
+        Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
+        Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
+        Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         
         $api_key = $this->getApiKey();
         
@@ -241,7 +244,6 @@ class Blockonomics extends PaymentModule
                 Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
             }
         }
-        Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
     }
 
