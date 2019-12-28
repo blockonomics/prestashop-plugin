@@ -212,28 +212,35 @@ class Blockonomics extends PaymentModule
         //Blockonimcs basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
+        
+        $api_key = $this->getApiKey();
+        
+        // getApiKey() will return api key or temp api key
+        // if both are null, generate new blockonomics guest account with temporary wallet
+        // temp wallet will be used with temp api key
+        if (!$api_key)
+        {
+            //Generate callback secret
+            $secret = md5(uniqid(rand(), true));
+            Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+            $callback_url = Tools::getHttpHost(true, true) .
+                __PS_BASE_URI__ .
+                'modules/' .
+                $this->name .
+                '/callback.php?secret=' .
+                $secret;
+            Configuration::updateValue(
+                'BLOCKONOMICS_CALLBACK_URL',
+                $callback_url
+            );
 
-        //Generate callback secret
-        $secret = md5(uniqid(rand(), true));
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        $callback_url = Tools::getHttpHost(true, true) .
-            __PS_BASE_URI__ .
-            'modules/' .
-            $this->name .
-            '/callback.php?secret=' .
-            $secret;
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            $callback_url
-        );
-
-        // Setup temp wallet
-        $response = $this->getTempApiKey($callback_url);
-        if ($response->response_code == 200) {
-            Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
-            Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
+            // Setup temp wallet
+            $response = $this->getTempApiKey($callback_url);
+            if ($response->response_code == 200) {
+                Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
+                Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
+            }
         }
-
         Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
     }
