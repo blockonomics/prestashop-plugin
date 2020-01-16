@@ -216,25 +216,12 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', 0);
         Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
 
-        //Generate callback secret
-        $secret = md5(uniqid(rand(), true));
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        $callback_url = Tools::getHttpHost(true, true) .
-            __PS_BASE_URI__ .
-            'modules/' .
-            $this->name .
-            '/callback.php?secret=' .
-            $secret;
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            $callback_url
-        );
+        //Generate callback secret + url
+        $this->generatenewCallback();
 
         // Setup temp wallet
-        $response = $this->getTempApiKey($callback_url);
-        if ($response->response_code == 200) {
-            Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
-        }
+        $this->setupTempWallet();
+
         return true;
     }
 
@@ -729,6 +716,11 @@ class Blockonomics extends PaymentModule
         }
         $helper->fields_value['callbackURL'] = $callbackurl;
         // Check the linked wallet
+        $api_key = $this->getApiKey();
+        if (!$api_key)
+        {
+            $this->setupTempWallet();
+        }
         $total_received = Configuration::get(
             'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
         ) / 1.0e8;
@@ -782,8 +774,17 @@ class Blockonomics extends PaymentModule
         );
     }
 
-    public function getTempApiKey($callback_url)
+    public function setupTempWallet()
     {
+        $response = $this->getTempApiKey();
+        if ($response->response_code == 200) {
+            Configuration::updateValue('BLOCKONOMICS_TEMP_API_KEY', $response->apikey);
+        }
+    }
+
+    public function getTempApiKey()
+    {
+        $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         $url = Configuration::get(
             'BLOCKONOMICS_TEMP_API_KEY_URL'
         );
