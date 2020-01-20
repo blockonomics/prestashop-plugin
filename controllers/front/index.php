@@ -1,6 +1,7 @@
 <?php
 /**
- * 2011-2016 Blockonomics
+{*
+ * 2011 Blockonomics
  *
  * NOTICE OF LICENSE
  *
@@ -13,7 +14,7 @@
  * to license@blockonomics.co so we can send you a copy immediately.
  *
  * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2011-2016 Blockonomics
+ * @copyright 2011 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  */
