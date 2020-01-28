@@ -1,5 +1,5 @@
 /**
- * 2011-2016 Blockonomics
+ * 2011-2020 Blockonomics
  *
  * NOTICE OF LICENSE
  *
