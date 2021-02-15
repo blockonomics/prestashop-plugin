@@ -208,7 +208,7 @@ app.controller('AltcoinController', function($scope, $interval, $httpParamSerial
     var alt_totalTime = 0;
     var check_interval;
     var send_email = false;
-    $scope.altsymbol = 'ETH';
+    $scope.altsymbol = getParameterByNameBlocko("altcoin");
     var address_present = false;
     $scope.copyshow = false;
     $scope.spinner = true;
