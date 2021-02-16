@@ -91,20 +91,6 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 } else {
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
-                // Keep track of funds in temp wallet
-                $api_key = Configuration::get(
-                    'BLOCKONOMICS_API_KEY'
-                );
-                $temp_api_key = Configuration::get(
-                    'BLOCKONOMICS_TEMP_API_KEY'
-                );
-                if ($temp_api_key && !$api_key) {
-                    $current_temp_amount = Configuration::get(
-                        'BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT'
-                    );
-                    $new_temp_amount = $current_temp_amount + $order[0]['bits_payed'];
-                    Configuration::updateValue('BLOCKONOMICS_TEMP_WITHDRAW_AMOUNT', $new_temp_amount);
-                }
             }
         }
     }
