@@ -18,7 +18,7 @@
  */
 service = angular.module("shoppingcart.services", ["ngResource"]);
 
-app = angular.module("blockonomics-invoice", ["monospaced.qrcode",  "shoppingcart.services"]);
+app = angular.module("BlockonomicsApp", ["monospaced.qrcode",  "shoppingcart.services"]);
 
 app.config(function($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data|chrome-extension|bitcoin):/);
@@ -34,8 +34,6 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     var totalProgress = 100;
     var totalTime = 0;
     $scope.progress = totalProgress;
-    
-    $scope.copyshow = false;
 
     //Create url when the order is received 
     $scope.finish_order_url = function() {
@@ -46,9 +44,9 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     $scope.tick = function() {
         $scope.clock = $scope.clock-1;
         $scope.progress = Math.floor($scope.clock*totalProgress/totalTime);
-        if($scope.progress == 0){
-            //Refresh invoice page
-            $window.location.reload();
+        if($scope.progress <= 0){
+            //Expired status
+            $scope.status = -3;
         }
     };
 
@@ -59,8 +57,8 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         $scope.id_order = order_id;
         totalTime = timeperiod*60; //10m
         $scope.clock = totalTime;
-
-        if(invoice_status == -1){
+        $scope.status = invoice_status;
+        if($scope.status == -1){
             $scope.tick_interval  = $interval($scope.tick, 1000);
             var ws = new WebSocket(base_websocket_url+"/payment/" + invoice_addr + "?timestamp=" + invoice_timestamp);
             ws.onmessage = function (evt) {
@@ -69,16 +67,58 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
           }
     }
 
+    function select_text(divid)
+    {
+        var selection = window.getSelection();
+        var div = document.createRange();
+
+        div.setStartBefore(document.getElementById(divid));
+        div.setEndAfter(document.getElementById(divid)) ;
+        selection.removeAllRanges();
+        selection.addRange(div);
+    }
+
+    function copy_to_clipboard(divid)
+    {
+        var textarea = document.createElement('textarea');
+        textarea.id = 'temp_element';
+        textarea.style.height = 0;
+        document.body.appendChild(textarea);
+        textarea.value = document.getElementById(divid).innerText;
+        var selector = document.querySelector('#temp_element');
+        selector.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        select_text(divid);
+
+        if (divid == "bnomics-address-copy") {
+            $scope.address_copyshow = true;
+            $timeout(function() {
+                $scope.address_copyshow = false;
+                //Close copy to clipboard message after 2 sec
+            }, 2000);
+        }else{
+            $scope.amount_copyshow = true;
+            $timeout(function() {
+                $scope.amount_copyshow = false;
+                //Close copy to clipboard message after 2 sec
+            }, 2000);            
+        }
+    }
+
     //Copy bitcoin address to clipboard
-    $scope.btc_address_click = function() {
-        var copyText = document.getElementById("bnomics-address-input");
-        copyText.select();
-        document.execCommand("copy");
-        //Open Message
-        $scope.copyshow = true;
-        $timeout(function() {
-          $scope.copyshow = false;
-        }, 2000);
+    $scope.blockonomics_address_click = function() {
+        copy_to_clipboard("bnomics-address-copy");
+    }
+
+    //Copy bitcoin amount to clipboard
+    $scope.blockonomics_amount_click = function() {
+        copy_to_clipboard("bnomics-amount-copy");
+    }
+    //Reload the page if user clicks try again after the order expires
+    $scope.try_again_click = function() {
+        location.reload();
     }
     
 });
