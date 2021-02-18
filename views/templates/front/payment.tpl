@@ -20,24 +20,14 @@
 
 {block name="content"}
 <div class="form" ng-app="blockonomics-invoice">
-  <script>var track_url = "{$track_url|escape:'htmlall':'UTF-8'}";</script>
   <div class="invoice" ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
   '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
   '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}', '{$id_order|escape:'htmlall':'UTF-8'}', {$timeperiod|escape:'htmlall':'UTF-8'})">
   <div class="bnomics-order-container" style="max-width: 700px;">
-    {if $accept_altcoin }
-      <div class="bnomics-payment-option" ng-hide="altcoin_waiting == 1 || order.altstatus == 1 || order.altstatus == 2 || order.altstatus == 3">
-        <span class="bnomics-paywith-label" ng-cloak> {l s='Pay with' mod='blockonomics'}</span>
-        <span>
-          <span id="bnomics-paywith-btc" class="bnomics-paywith-option bnomics-paywith-btc bnomics-paywith-selected" ng-click="pay_with_btc()">BTC</span>
-          <span id="bnomics-paywith-alt" class="bnomics-paywith-option bnomics-paywith-altcoin" ng-click="pay_with_alt()">Altcoins</span>
-        </span>
-      </div><br>
-    {/if}
     <div class="bnomics-order-id">
-      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'}//id_order// </span>
+      <span class="bnomics-order-number" ng-cloak> {l s='Order#' mod='blockonomics'}[[id_order]] </span>
     </div>
-    <div class="bnomics-bitcoin-pane" ng-hide="show_altcoin != 0" ng-init="show_altcoin=0">
+    <div class="bnomics-bitcoin-pane">
             <div class="bnomics-btc-info">
               <!-- QR and Amount -->
               <div class="bnomics-qr-code">
@@ -82,10 +72,10 @@ the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given
             <!-- Countdown Timer -->
                 <div ng-cloak ng-hide="order.status != -1" class="bnomics-progress-bar-wrapper">
                   <div class="bnomics-progress-bar-container">
-                    <div class="bnomics-progress-bar" style="width://progress//%"></div>
+                    <div class="bnomics-progress-bar" style="width:[[progress]]%"></div>
                   </div>
                 </div>
-                <span class="ng-cloak bnomics-time-left" ng-hide="order.status != -1">//clock*1000 | date:'mm:ss' : 'UTC'// min left to pay your order</span>
+                <span class="ng-cloak bnomics-time-left" ng-hide="order.status != -1">[[clock*1000 | date:'mm:ss' : 'UTC']] min left to pay your order</span>
               </div>
         <!-- Blockonomics Credit -->
             <div class="bnomics-powered-by">
@@ -94,25 +84,6 @@ the exact amount of ' mod='blockonomics'} <label>BTC</label> {l s=' to the given
               </div>
             </div>
     </div>
-          {if $accept_altcoin }
-          <div class="bnomics-altcoin-pane" ng-hide="show_altcoin != 1">
-            <div class="bnomics-altcoin-bg">
-                <div class="bnomics-altcoin-bg-color" ng-hide="altcoin_waiting" ng-cloak>
-                   <div class="bnomics-altcoin-info-wrapper">
-                    <span class="bnomics-altcoin-info" >{l s='Select your preferred ' mod='blockonomics'} <strong>Altcoin</strong> {l s=' then click on the button below.' mod='blockonomics' }</span>
-                   </div>
-                   </br>
-                   <!-- Coin Select -->
-                   <div class="bnomics-address">
-                     <select ng-model="altcoinselect" ng-options="x for (x, y) in altcoins" ng-init="altcoinselect='Ethereum'"></select>
-                   </div>
-                   <div class="bnomics-altcoin-button-wrapper">
-                    <a ng-click="pay_altcoins()" href=""><button><i class="cf cf-eth" ></i> {l s='Pay with' mod='blockonomics' } //altcoinselect//</button></a>
-                   </div>
-                </div>
-            </div>
-          </div>
-          {/if}
     </div>
   </div>
 </div>

@@ -35,23 +35,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             array('postion' => 'head')
         );
         $this->registerStylesheet(
-            'mystyle1',
-            'modules/blockonomics/views/css/style.css',
-            array('postion' => 'head')
-        );
-        $this->registerStylesheet(
             'mystyle2',
             'modules/blockonomics/views/css/order.css',
-            array('postion' => 'head')
-        );
-        $this->registerStylesheet(
-            'myIcons',
-            'modules/blockonomics/views/css/icons/icons.css',
-            array('postion' => 'head')
-        );
-        $this->registerStylesheet(
-            'myCrypto',
-            'modules/blockonomics/views/css/cryptofont/cryptofont.min.css',
             array('postion' => 'head')
         );
         $this->registerJavascript(
@@ -240,23 +225,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'accept_altcoin' => Configuration::get(
-                'BLOCKONOMICS_ACCEPT_ALTCOINS'
-            ),
             'timeperiod' => Configuration::get(
                 'BLOCKONOMICS_TIMEPERIOD'
-            ),
-            'track_url' => Context::getContext()->link->getModuleLink(
-                $blockonomics->name,
-                'track',
-                array(),
-                true
-            ),
-            'ajax_url' => Context::getContext()->link->getModuleLink(
-                $blockonomics->name,
-                'altcoin',
-                array(),
-                true
             )
         ));
 
