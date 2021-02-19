@@ -20,12 +20,10 @@
 
 {block name="content"}
 
-<div id="time_period" data-time_period="{$timeperiod|escape:'htmlall':'UTF-8'}"></div>
-
 <div ng-app="BlockonomicsApp">
   <div ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
   '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
-  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}', '{$id_order|escape:'htmlall':'UTF-8'}', {$timeperiod|escape:'htmlall':'UTF-8'})">
+  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', {$timeperiod|escape:'htmlall':'UTF-8'})">
     <div class="bnomics-order-container">
       <!-- Heading row -->
       <div class="bnomics-order-heading">

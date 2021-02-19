@@ -51,10 +51,7 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
     };
 
     //Check if the bitcoin address is present
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi, order_id, timeperiod){
-        $scope.address = invoice_addr;
-        $scope.satoshi = invoice_satoshi;
-        $scope.id_order = order_id;
+    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, timeperiod){;
         totalTime = timeperiod*60; //10m
         $scope.clock = totalTime;
         $scope.status = invoice_status;
