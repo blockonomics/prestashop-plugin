@@ -1,5 +1,5 @@
 {*
- * 2011-2016 Blockonomics
+ * 2011-2019 Blockonomics
  *
  * NOTICE OF LICENSE
  *
@@ -12,12 +12,12 @@
  * to license@blockonomics.co so we can send you a copy immediately.
  *
  * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2011-2016 Blockonomics
+ * @copyright 2011-2019 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  *}
 <div class="alert alert-info">
-<p><strong>{l s="You are few clicks away from accepting bitcoin payments"}</strong></p>
+<p><strong>{l s="You are few clicks away from accepting bitcoin payments" mod='blockonomics'}</strong></p>
 </br>
 <p>Click on <strong>Get Started for Free</strong> on <strong><a
 href="https://www.blockonomics.co/merchants" target="_blank">Blockonomics

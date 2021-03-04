@@ -1,5 +1,5 @@
 {*
- * 2011-2016 Blockonomics
+ * 2011 Blockonomics
  *
  * NOTICE OF LICENSE
  *
@@ -12,106 +12,96 @@
  * to license@blockonomics.co so we can send you a copy immediately.
  *
  * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2011-2016 Blockonomics
+ * @copyright 2011 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  *}
+{extends $layout}
 
-{capture name=path}{l s='Bitcoin payment' mod='blockonomics'}{/capture}
+{block name="content"}
 
-{assign var='current_step' value='payment'}
-
-{include file="$tpl_dir./order-steps.tpl"}
-
-
-<div class="form" ng-app="blockonomics-invoice">
-  <div class="col-lg-7 col-md-12 col-lg-offset-3 col-md-offset-0 invoice" ng-controller="CheckoutController">
-    <!-- heading row -->
-    <div class="row">
-      <h4> {l s='Order#' mod='blockonomics'} {$id_order|escape:'htmlall':'UTF-8'}</h4>
-      <span ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" class="invoice-heading-right" >//clock*1000 | date:'mm:ss' : 'UTC'//</span>
-      <div class="progress" ng-hide="{$status|escape:'htmlall':'UTF-8'} != -1">
-        <progress class="progress progress-primary" max="100" value="//progress//">
-        </progress>
-      </div>
-    </div>
-    <!-- Amount row -->
-    <div ng-hide="altcoin_waiting">
-      <div class="row">
-
-        <div class="col-xs-12">
-          <!-- Status -->
-          <h4 ng-init="init({$status|escape:'htmlall':'UTF-8'},
+<div ng-app="BlockonomicsApp">
+  <div ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
   '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
-  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', '{$bits|escape:'htmlall':'UTF-8'}')" ng-show="{$status|escape:'htmlall':'UTF-8'} >= 0" for="invoice-amount" style="margin-top:15px;" >Status</h4>
-          <div class="value ng-binding" style="margin-bottom:10px;margin-top:10px" >
-            <h3 ng-show="{$status|escape:'htmlall':'UTF-8'} == -1" >{l s='To pay, send exact amount of BTC to the given address' mod='blockonomics'}</h3>
+  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', {$timeperiod|escape:'htmlall':'UTF-8'})">
+    <div class="bnomics-order-container">
+      <!-- Heading row -->
+      <div class="bnomics-order-heading">
+        <div class="bnomics-order-heading-wrapper">
+          <div class="bnomics-order-id">
+            <span class="bnomics-order-number" ng-cloak>{l s='Order #' mod='blockonomics' }{$id_order|escape:'htmlall':'UTF-8'}</span>
           </div>
         </div>
       </div>
-      <div class="row">
-
-        <div class="col-md-6 invoice-amount">
-          <!-- address-->
-          <div class="row">
-            <h4 class="col-md-6 col-xs-12" style="margin-bottom:15px;margin-top:15px;"
-  for="btn-address">{l s='Bitcoin Address' mod='blockonomics'}</h4>
-          </div>
-
-          <!-- QR Code -->
-          <div class="row qr-code-box">
-            <div class="col-md-5 col-sm-12 qr-code">
-              <div class="qr-enclosure">
-                <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}"> 
-                  <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="200">
-                  <canvas class="qrcode"></canvas>
-                  </qrcode></a>
+      <!-- Payment Expired -->
+      <div class="bnomics-order-expired-wrapper" ng-show="status == -3" ng-cloak>
+        <h2>{l s='Payment Expired' mod='blockonomics' }</h2><br>
+        <p><a ng-click="try_again_click()">{l s='Click here to try again' mod='blockonomics' }</a></p>
+      </div>
+      <!-- Payment Error -->
+      <div class="bnomics-order-error-wrapper" ng-show="status == -2" ng-cloak>
+        <h2>{l s='Paid order BTC amount is less than expected. Contact merchant' mod='blockonomics' }</h2>
+      </div>
+      <!-- Blockonomics Checkout Panel -->
+      <div class="bnomics-order-panel" ng-show="status == -1" ng-cloak>
+        <div class="bnomics-order-info">
+          <div class="bnomics-bitcoin-pane">
+            <div class="bnomics-btc-info">
+              <!-- Left Side -->
+              <!-- QR and Open in wallet -->
+              <div class="bnomics-qr-code">
+                <div class="bnomics-qr">
+                  <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">
+                    <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="160" version="6">
+                      <canvas class="qrcode"></canvas>
+                    </qrcode>
+                  </a>
+                </div>
+                <div class="bnomics-qr-code-hint"><a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">{l s='Open in wallet' mod='blockonomics' }</a></div>
+              </div>
+              <!-- Right Side -->
+              <div class="bnomics-amount">
+                <div class="bnomics-bg">
+                  <!-- Order Amounts -->
+                  <div class="bnomics-amount">
+                    <div class="bnomics-amount-text" ng-hide="amount_copyshow" ng-cloak>{l s='To pay, send exactly this BTC amount' mod='blockonomics' }</div>
+                    <div class="bnomics-copy-amount-text" ng-show="amount_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
+                    <ul ng-click="blockonomics_amount_click()" id="bnomics-amount-input" class="bnomics-amount-input">
+                        <li id="bnomics-amount-copy">{$bits|escape:'htmlall':'UTF-8'}</li>
+                        <li>BTC</li>
+                        <li class="bnomics-grey"> ≈ </li>
+                        <li class="bnomics-grey">{$value|escape:'htmlall':'UTF-8'}</li>
+                        <li class="bnomics-grey">{$currency_iso_code|escape:'htmlall':'UTF-8'}</li>
+                    </ul>
+                  </div>
+                  <!-- Order Address -->
+                  <div class="bnomics-address">
+                    <div class="bnomics-address-text" ng-hide="address_copyshow" ng-cloak>{l s='To this bitcoin address' mod='blockonomics' }</div>
+                    <div class="bnomics-copy-address-text" ng-show="address_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
+                    <ul ng-click="blockonomics_address_click()" id="bnomics-address-input" class="bnomics-address-input">
+                          <li id="bnomics-address-copy">{$addr|escape:'htmlall':'UTF-8'}</li>
+                    </ul>
+                  </div>
+                  <!-- Order Countdown Timer -->
+                  <div class="bnomics-progress-bar-wrapper">
+                    <div class="bnomics-progress-bar-container">
+                      <div class="bnomics-progress-bar" style="width: [[progress]]%;"></div>
+                    </div>
+                  </div>
+                  <span class="ng-cloak bnomics-time-left">[[clock*1000 | date:'mm:ss' : 'UTC']] min</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-md-6 invoice-status" style="margin-top:15px;">
-          <!-- Amount -->
-          <h4 for="invoice-amount">{l s='Amount' mod='blockonomics'}</h4>
-          <div class="value ng-binding">
-            <label>{$bits|escape:'htmlall':'UTF-8'}
-              <small>BTC</small></label> ⇌
-            <label>{$value|escape:'htmlall':'UTF-8'}
-              <small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small></label>
-          </div>
-
-          {if $accept_altcoin}
-          <div class="bnomics-altcoin-pane">
-              <h4>{l s='OR you can' mod='blockonomics'}</h4>
-              <div>
-                <a ng-click="pay_altcoins()" href=""><img  style="margin: auto;" src="https://shapeshift.io/images/shifty/small_dark_altcoins.png"  class="ss-button"></a>
-                <div>
-                  <h4>{l s='Ethereum, Bitcoin Cash, Dash and many others supported' mod='blockonomics'}</h4>
-                </div>
-              </div>
-          </div>
-          {/if}
-        </div>
       </div>
-    </div>
-
-    <div class="row" ng-show="altcoin_waiting" ng-cloak>
-      <div class="col-xs-12 altcoin-waiting">
-        <h4>{l s='Waiting for BTC payment from shapeshift altcoin conversion' mod='blockonomics'}</h4>
-        <div class="bnomics-spinner"></div>
-        <h4><a href="" ng-click="altcoin_waiting=false">{l s='Click here' mod='blockonomics'}</a>{l s=' to cancel and go back' mod='blockonomics'}</h4>
-      </div>
-    </div>
-
-    <div class="row" ng-hide="altcoin_waiting">
-      <div class="col-xs-12">
-        <div class="input-group">
-          <!-- Necessary to apply text transfrom as some styles will capitalize h4 leading to wrong address -->
-          <span class="input-group-addon"><h4 style="text-transform:none">{$addr|escape:'htmlall':'UTF-8'}</h4></span>
-        </div>
-        <h3>Powered by blockonomics</h3>
+      <!-- Blockonomics How to pay + Credit -->
+      <div class="bnomics-powered-by">
+        <a href="https://blog.blockonomics.co/how-to-pay-a-bitcoin-invoice-abf4a04d041c" target="_blank">{l s='How do I pay? | Check reviews of this shop' mod='blockonomics' }</a><br>
+        <div class="bnomics-powered-by-text bnomics-grey">{l s='Powered by Blockonomics' mod='blockonomics' }</div>
       </div>
     </div>
   </div>
 </div>
+
+{/block}
