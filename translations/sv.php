@@ -2,10 +2,10 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97'] = 'Bitcoin - Blöckonomics';
+$_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97'] = 'Bitcoin - Blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b'] = 'Modul för att acceptera betalningar via bitcoin';
 $_MODULE['<{blockonomics}prestashop>blockonomics_876f23178c29dc2552c0b48bf23cd9bd'] = 'Är du säker på att du vill avinstallera?';
-$_MODULE['<{blockonomics}prestashop>blockonomics_176e07e16e8cbc5408fd2370e7ca46f4'] = 'API går inte att hämta ifrån Blockonomics';
+$_MODULE['<{blockonomics}prestashop>blockonomics_176e07e16e8cbc5408fd2370e7ca46f4'] = 'API nyckeln går inte att hämta ifrån Blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc226913037'] = 'Betala med bitcoin';
 $_MODULE['<{blockonomics}prestashop>blockonomics_db84ee92e4da32563f91afe070e37a7e'] = 'Din server blockerar utgående HTTPS calls';
 $_MODULE['<{blockonomics}prestashop>blockonomics_71d736bf8acac6f396861493102750d1'] = 'API nyckeln är inte korrekt.';
@@ -23,7 +23,6 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_70abb32fcb0c9e8194526d1eef15eb0
 $_MODULE['<{blockonomics}prestashop>blockonomics_c9cc8cce247e49bae79f15173ce97354'] = 'Spara';
 $_MODULE['<{blockonomics}prestashop>blockonomics_b279be2ec798cea1e5019824662e53e9'] = 'Testa Inställningarna';
 $_MODULE['<{blockonomics}prestashop>blockonomics_dfcfc43722eef1eab1e4a12e50a068b1'] = 'Valutor';
-$_MODULE['<{blockonomics}prestashop>blockonomics_54307568a36ad5cbf8c935c57936e6cb'] = 'hejsan123';
 $_MODULE['<{blockonomics}prestashop>blockonomics_630f6dc397fe74e52d5189e2c80f282b'] = 'Tillbaka till listan';
 $_MODULE['<{blockonomics}prestashop>validation_eb60ab14749e5732652e66fbaf2bd75e'] = 'Kunde inte generera en bitcoin address.';
 $_MODULE['<{blockonomics}prestashop>validation_b5511b23e304849b337641e03b9223de'] = 'Var god använd knappen \"Testa inställningarna\" i inställningarna för att hitta problemet. ';
@@ -33,14 +32,14 @@ $_MODULE['<{blockonomics}prestashop>backend_30b71246745d497d0f23b8ab179b2c4f'] =
 $_MODULE['<{blockonomics}prestashop>payment_d1228f5476d15142b1358ae4b5fa2454'] = 'Order #';
 $_MODULE['<{blockonomics}prestashop>payment_8fd2d4cb88dd67be9d343d3398ca763d'] = 'Betalning löpte ut.';
 $_MODULE['<{blockonomics}prestashop>payment_79d7ff78f59371847aa73f232be2d196'] = 'Klicka här för att prova igen.';
-$_MODULE['<{blockonomics}prestashop>payment_9e553ea6221b688a01e329cf76dde4bf'] = 'Mängden BTC är mindre än förväntat. Kontakta försäljaren.';
+$_MODULE['<{blockonomics}prestashop>payment_9e553ea6221b688a01e329cf76dde4bf'] = 'Mängden BTC som betalades är mindre än förväntad. Kontakta försäljaren.';
 $_MODULE['<{blockonomics}prestashop>payment_a217a4286be5ab0bd03a98d33a78c420'] = 'Öppna i plånboken';
 $_MODULE['<{blockonomics}prestashop>payment_6b60cd94d68cc387c2a8d67fbfeb10a3'] = 'För att betala, skicka exact så här mycket BTC';
-$_MODULE['<{blockonomics}prestashop>payment_efc1a46f7b47e4d3cf60f13b6c89069b'] = 'Kopierat till skrivplattan.';
+$_MODULE['<{blockonomics}prestashop>payment_efc1a46f7b47e4d3cf60f13b6c89069b'] = 'Kopierat.';
 $_MODULE['<{blockonomics}prestashop>payment_dfc0428b514303d97898d66028ffd16b'] = 'till denna bitcoin-adressen.';
 $_MODULE['<{blockonomics}prestashop>payment_7f0801830c4f3ed63e81fc0053177394'] = 'Hur betalar jag? | Kolla butikens recensioner ';
 $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea'] = 'Drivs av Blockonomics';
-$_MODULE['<{blockonomics}prestashop>invoice_044da71a05123e80ef695c1a858190e3'] = 'Bitcoin Transaktionens Detaljer';
+$_MODULE['<{blockonomics}prestashop>invoice_044da71a05123e80ef695c1a858190e3'] = 'Bitcoin-transaktionens detaljer';
 $_MODULE['<{blockonomics}prestashop>invoice_0c0f5919972bfc91771b8552015a57ab'] = 'Bitcoinadress';
 $_MODULE['<{blockonomics}prestashop>invoice_ec53a8c4f07baed5d8825072c89799be'] = 'Status';
 $_MODULE['<{blockonomics}prestashop>invoice_791d6355d34dfaf60d68ef04d1ee5767'] = 'Varukorgens värde';
