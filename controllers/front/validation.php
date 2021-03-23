@@ -66,7 +66,13 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     }
     public function postProcess()
     {
-        $cart = $this->context->cart;
+
+        // API Key not set
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            $this->displayError($blockonomics);
+        }
+
+
         $this->display_column_left = false;
         $blockonomics = $this->module;
 
@@ -80,105 +86,77 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         }
 
         $customer = new Customer((int) $cart->id_customer);
-
         if (!Validate::isLoadedObject($customer)) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
 
         $cookie = $blockonomics->getContext()->cookie;
-        $currency = new Currency(
-            (int) (Tools::getIsset(Tools::getValue('currency_payement'))
-                ? Tools::getValue('currency_payement')
-                : $cookie->id_currency)
-        );
+
+        $currency = $this->get_currency($cookie);
         $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
-
-        // API Key not set
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $this->displayError($blockonomics);
-        }
-
-        $responseObj = $blockonomics->getNewAddress();
-
-        if (!$responseObj->data || !$responseObj->data->address) {
-            $this->displayError($blockonomics);
-        }
-
-        $new_address = $responseObj->data->address;
-
-        $current_time = time();
-        $price = $blockonomics->getBTCPrice($currency->id);
-
-        if (!$price) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
-        }
-
+        $price = $this->get_price($blockonomics, $currency);
         $bits = (int) ((1.0e8 * $total) / $price);
+
+        //if order does not already exist
+        if(true){
+            //Create new address
+            $new_address = $this->new_blockonomics_address($blockonomics);
+
+            // Create backup cart
+            $cart_products = $cart->getProducts();
+            $new_cart = $this->create_backup_cart($this, $cart_products);
+            // Add the backup cart to user
+            $new_cart->id_customer = (int)$cart->id_customer;;
+            $new_cart->save();
+            if ($new_cart->id) {
+                $this->context->cookie->id_cart = (int) $new_cart->id;
+                $this->context->cookie->write();
+            }
+            $id_cart = (int) $new_cart->id;
+            $new_cart->secure_key = $cart->secure_key;
+
+
+            // Validate the order
+            $mailVars = array(
+                '{bitcoin_address}' => $new_address,
+                '{bits}' => $bits / 1.0e8,
+                '{track_url}' =>
+                    Tools::getHttpHost(true, true) .
+                    __PS_BASE_URI__ .
+                    'index.php?controller=order-confirmation&id_cart=' .
+                    (int) $cart->id .
+                    '&id_module=' .
+                    (int) $blockonomics->id .
+                    '&id_order=' .
+                    $blockonomics->currentOrder .
+                    '&key=' .
+                    $customer->secure_key
+            );
+
+            $mes = "Adr BTC : " . $new_address;
+            $blockonomics->validateOrder(
+                (int) $cart->id,
+                Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
+                $total,
+                $blockonomics->displayName,
+                $mes,
+                $mailVars,
+                (int) $currency->id,
+                false,
+                $customer->secure_key
+            );
+        }
 
         if (!extension_loaded('intl')) {
             $this->displayExtError($blockonomics);
         }
 
-        // Create backup cart
-        $old_cart_secure_key = $cart->secure_key;
-        $old_cart_customer_id = (int)$cart->id_customer;
-        $cart_products = $cart->getProducts();
-        $new_cart = new Cart();
-        $new_cart->id_lang = $this->context->language->id;
-        $new_cart->id_currency = $this->context->currency->id;
-        $new_cart->add();
-        foreach ($cart_products as $product) {
-            $new_cart->
-                updateQty(
-                    (int) $product['quantity'],
-                    (int) $product['id_product'],
-                    (int) $product['id_product_attribute']
-                );
-        }
         if ($this->context->cookie->id_guest) {
             $guest = new Guest($this->context->cookie->id_guest);
             $new_cart->mobile_theme = $guest->mobile_theme;
         }
 
-        // Validate the order
-        $mailVars = array(
-            '{bitcoin_address}' => $new_address,
-            '{bits}' => $bits / 1.0e8,
-            '{track_url}' =>
-                Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'index.php?controller=order-confirmation&id_cart=' .
-                (int) $cart->id .
-                '&id_module=' .
-                (int) $blockonomics->id .
-                '&id_order=' .
-                $blockonomics->currentOrder .
-                '&key=' .
-                $customer->secure_key
-        );
-
-        $mes = "Adr BTC : " . $new_address;
-        $blockonomics->validateOrder(
-            (int) $cart->id,
-            Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
-            $total,
-            $blockonomics->displayName,
-            $mes,
-            $mailVars,
-            (int) $currency->id,
-            false,
-            $customer->secure_key
-        );
-
-        // Add the backup cart to user
-        $new_cart->id_customer = $old_cart_customer_id;
-        $new_cart->save();
-        if ($new_cart->id) {
-            $this->context->cookie->id_cart = (int) $new_cart->id;
-            $this->context->cookie->write();
-        }
-        $id_cart = (int) $new_cart->id;
-        $new_cart->secure_key = $old_cart_secure_key;
+        $current_time = time();
 
         Db::getInstance()->Execute(
             "INSERT INTO " .
@@ -233,8 +211,57 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
         );
+
+
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+    }
+
+    function get_currency($cookie) 
+    {
+        return new Currency(
+            (int) (Tools::getIsset(Tools::getValue('currency_payement'))
+                ? Tools::getValue('currency_payement')
+                : $cookie->id_currency)
+        );
+    }
+
+    function get_price($blockonomics, $currency) 
+    {
+        $price = $blockonomics->getBTCPrice($currency->id);
+        if (!$price) {
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
+        }
+        return $price;
+    }
+
+    function new_blockonomics_address($blockonomics) 
+    {
+        $responseObj = $blockonomics->getNewAddress();
+
+        if (!$responseObj->data || !$responseObj->data->address) {
+            $this->displayError($blockonomics);
+        }
+
+        $new_address = $responseObj->data->address;
+        return $new_address;
+    }
+
+    function create_backup_cart($that, $cart_products) 
+    {
+        $new_cart = new Cart();
+        $new_cart->id_lang = $that->context->language->id;
+        $new_cart->id_currency = $that->context->currency->id;
+        $new_cart->add();
+        foreach ($cart_products as $product) {
+            $new_cart->
+                updateQty(
+                    (int) $product['quantity'],
+                    (int) $product['id_product'],
+                    (int) $product['id_product_attribute']
+                );
+        }
+        return $new_cart;
     }
 
     private function displayError($blockonomics)
