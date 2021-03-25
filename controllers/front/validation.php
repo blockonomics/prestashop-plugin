@@ -71,156 +71,153 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->display_column_left = false;
         $blockonomics = $this->module;
 
-        $cart_id = $cart->id - 1;
-        echo $cart_id;
-
-        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart_id";
-        $order_exist = Db::getInstance()->getRow($sql);
-        echo var_dump($order_exist);
-
         // API Key not set
-        // if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-        //     $this->displayError($blockonomics);
-        // }
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            $this->displayError($blockonomics);
+        }
 
-        // if (!extension_loaded('intl')) {
-        //     $this->displayExtError($blockonomics);
-        // }
+        if (!extension_loaded('intl')) {
+            $this->displayExtError($blockonomics);
+        }
 
-        // if (!isset($cart->id) or
-        //     $cart->id_customer == 0 or
-        //     $cart->id_address_delivery == 0 or
-        //     $cart->id_address_invoice == 0 or
-        //     !$blockonomics->active
-        // ) {
-        //     Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
-        // }
+        if (!isset($cart->id) or
+            $cart->id_customer == 0 or
+            $cart->id_address_delivery == 0 or
+            $cart->id_address_invoice == 0 or
+            !$blockonomics->active
+        ) {
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
+        }
 
-        // $customer = new Customer((int) $cart->id_customer);
-        // if (!Validate::isLoadedObject($customer)) {
-        //     Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
-        // }
+        $customer = new Customer((int) $cart->id_customer);
+        if (!Validate::isLoadedObject($customer)) {
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
+        }
 
-        // $cookie = $blockonomics->getContext()->cookie;
+        $cookie = $blockonomics->getContext()->cookie;
 
-        // $currency = $this->get_currency($cookie);
-        // $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
-        // $price = $this->get_price($blockonomics, $currency);
-        // $bits = (int) ((1.0e8 * $total) / $price);
+        $currency = $this->get_currency($cookie);
+        $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
+        $price = $this->get_price($blockonomics, $currency);
+        $bits = (int) ((1.0e8 * $total) / $price);
 
-        // //if order does not already exist
-        // if(!isset($cart->id)){
-        //     //Create new address
-        //     $new_address = $this->new_blockonomics_address($blockonomics);
+        $current_time = time();
 
-        //     // Create backup cart
-        //     $cart_products = $cart->getProducts();
-        //     $new_cart = $this->create_backup_cart($this, $cart_products);
-        //     // Add the backup cart to user
-        //     $new_cart->id_customer = (int)$cart->id_customer;;
-        //     $new_cart->save();
-        //     if ($new_cart->id) {
-        //         $this->context->cookie->id_cart = (int) $new_cart->id;
-        //         $this->context->cookie->write();
-        //     }
-        //     $id_cart = (int) $new_cart->id;
-        //     $new_cart->secure_key = $cart->secure_key;
-        // } else {
-        //     $id_cart = (int) $cart->id;
-        //     $new_address = $this->new_blockonomics_address($blockonomics);
-        // }
+        $cart_id = $cart->id;
+        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart_id";
+        $order = Db::getInstance()->getRow($sql);
+        //if order does not already exist
+        if(!$order){
+            //Create new address
+            $new_address = $this->new_blockonomics_address($blockonomics);
 
-        // if ($this->context->cookie->id_guest) {
-        //     $guest = new Guest($this->context->cookie->id_guest);
-        //     $new_cart->mobile_theme = $guest->mobile_theme;
-        // }
+            // Create backup cart
+            $cart_products = $cart->getProducts();
+            $new_cart = $this->create_backup_cart($this, $cart_products);
+            // Add the backup cart to user
+            $new_cart->id_customer = (int)$cart->id_customer;;
+            $new_cart->save();
+            if ($new_cart->id) {
+                $this->context->cookie->id_cart = (int) $new_cart->id;
+                $this->context->cookie->write();
+            }
+            $id_cart = (int) $new_cart->id;
+            $new_cart->secure_key = $cart->secure_key;
 
-        // // Validate the order
-        // $mailVars = array(
-        //     '{bitcoin_address}' => $new_address,
-        //     '{bits}' => $bits / 1.0e8,
-        //     '{track_url}' =>
-        //         Tools::getHttpHost(true, true) .
-        //         __PS_BASE_URI__ .
-        //         'index.php?controller=order-confirmation&id_cart=' .
-        //         (int) $cart->id .
-        //         '&id_module=' .
-        //         (int) $blockonomics->id .
-        //         '&id_order=' .
-        //         $blockonomics->currentOrder .
-        //         '&key=' .
-        //         $customer->secure_key
-        // );
+            // Validate the order
+            $mailVars = array(
+                '{bitcoin_address}' => $new_address,
+                '{bits}' => $bits / 1.0e8,
+                '{track_url}' =>
+                    Tools::getHttpHost(true, true) .
+                    __PS_BASE_URI__ .
+                    'index.php?controller=order-confirmation&id_cart=' .
+                    (int) $cart->id .
+                    '&id_module=' .
+                    (int) $blockonomics->id .
+                    '&id_order=' .
+                    $blockonomics->currentOrder .
+                    '&key=' .
+                    $customer->secure_key
+            );
 
-        // $mes = "Adr BTC : " . $new_address;
-        // $blockonomics->validateOrder(
-        //     (int) $cart->id,
-        //     Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
-        //     $total,
-        //     $blockonomics->displayName,
-        //     $mes,
-        //     $mailVars,
-        //     (int) $currency->id,
-        //     false,
-        //     $customer->secure_key
-        // );
+            $mes = "Adr BTC : " . $new_address;
+            $blockonomics->validateOrder(
+                (int) $cart->id,
+                Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
+                $total,
+                $blockonomics->displayName,
+                $mes,
+                $mailVars,
+                (int) $currency->id,
+                false,
+                $customer->secure_key
+            );
 
-        // $current_time = time();
+            Db::getInstance()->Execute(
+                "INSERT INTO " .
+                    _DB_PREFIX_ .
+                    "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
+                    "addr, txid, status,value, bits, bits_payed) VALUES
+                    ('" .
+                    (int) $blockonomics->currentOrder .
+                    "','" .
+                    (int) $id_cart .
+                    "','" .
+                    (int) $current_time .
+                    "','" .
+                    pSQL($new_address) .
+                    "', '', -1,'" .
+                    (float) $total .
+                    "','" .
+                    (int) $bits .
+                    "', 0)"
+            );
+            $id_order = $blockonomics->currentOrder;
+        } else {
+            $new_address = $order['addr'];
+            $id_order = $order['id_order'];
+            // $id_cart = $order['id_cart'];
+        }
 
-        // Db::getInstance()->Execute(
-        //     "INSERT INTO " .
-        //         _DB_PREFIX_ .
-        //         "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
-        //         "addr, txid, status,value, bits, bits_payed) VALUES
-        //         ('" .
-        //         (int) $blockonomics->currentOrder .
-        //         "','" .
-        //         (int) $id_cart .
-        //         "','" .
-        //         (int) $current_time .
-        //         "','" .
-        //         pSQL($new_address) .
-        //         "', '', -1,'" .
-        //         (float) $total .
-        //         "','" .
-        //         (int) $bits .
-        //         "', 0)"
-        // );
+        if ($this->context->cookie->id_guest && isset($new_cart)) {
+            $guest = new Guest($this->context->cookie->id_guest);
+            $new_cart->mobile_theme = $guest->mobile_theme;
+        }
 
-        // $redirect_link = __PS_BASE_URI__ .
-        //     'index.php?controller=order-confirmation?id_cart=' .
-        //     (int) $cart->id .
-        //     '&id_module=' .
-        //     (int) $blockonomics->id .
-        //     '&id_order=' .
-        //     $blockonomics->currentOrder .
-        //     '&key=' .
-        //     $customer->secure_key;
+        $redirect_link = __PS_BASE_URI__ .
+            'index.php?controller=order-confirmation?id_cart=' .
+            (int) $cart->id .
+            '&id_module=' .
+            (int) $blockonomics->id .
+            '&id_order=' .
+            $id_order .
+            '&key=' .
+            $customer->secure_key;
 
-        // $this->context->smarty->assign(array(
-        //     'id_order' => (int) $blockonomics->currentOrder,
-        //     'status' => -1,
-        //     'addr' => $new_address,
-        //     'txid' => "",
-        //     'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
-        //     'value' => (float) $total,
-        //     'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-        //     'base_websocket_url' => Configuration::get(
-        //         'BLOCKONOMICS_WEBSOCKET_URL'
-        //     ),
-        //     'timestamp' => $current_time,
-        //     'currency_iso_code' => $currency->iso_code,
-        //     'bits_payed' => 0,
-        //     'redirect_link' => $redirect_link,
-        //     'timeperiod' => Configuration::get(
-        //         'BLOCKONOMICS_TIMEPERIOD'
-        //     )
-        // ));
+        $this->context->smarty->assign(array(
+            'id_order' => (int) $id_order,
+            'status' => -1,
+            'addr' => $new_address,
+            'txid' => "",
+            'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
+            'value' => (float) $total,
+            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
+            'base_websocket_url' => Configuration::get(
+                'BLOCKONOMICS_WEBSOCKET_URL'
+            ),
+            'timestamp' => $current_time,
+            'currency_iso_code' => $currency->iso_code,
+            'bits_payed' => 0,
+            'redirect_link' => $redirect_link,
+            'timeperiod' => Configuration::get(
+                'BLOCKONOMICS_TIMEPERIOD'
+            )
+        ));
 
-        // $this->setTemplate(
-        //     'module:blockonomics/views/templates/front/payment.tpl'
-        // );
-
+        $this->setTemplate(
+            'module:blockonomics/views/templates/front/payment.tpl'
+        );
 
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
