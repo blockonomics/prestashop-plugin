@@ -182,31 +182,11 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $new_address = $order['addr'];
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
+            //if value of cart has changed because the user has added or removed products from the cart
             if ($total != $order['value']) {
-                Db::getInstance()->Execute(
-                    "INSERT INTO " .
-                        _DB_PREFIX_ .
-                        "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
-                        "addr, txid, status,value, bits, bits_payed) VALUES
-                        ('" .
-                        (int) $blockonomics->currentOrder .
-                        "','" .
-                        (int) $id_cart .
-                        "','" .
-                        (int) $current_time .
-                        "','" .
-                        pSQL($new_address) .
-                        "', '', -1,'" .
-                        (float) $total .
-                        "','" .
-                        (int) $bits .
-                        "', 0)"
-                );
+                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET value=$total, bits=$bits WHERE id_cart = $cart_id";
+                Db::getInstance()->Execute($query);	 
             }
-            if ($bits != $order['bits']) {
-
-            }
-            // $id_cart = $order['id_cart'];
         }
 
         if (isset($new_cart) && $this->context->cookie->id_guest) {
