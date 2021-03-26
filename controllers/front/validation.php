@@ -106,13 +106,12 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $cart_id = $cart->id;
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart_id";
         $order = Db::getInstance()->getRow($sql);
-        //if order does not already exist
-        $time_expired = false;
-        if ($order && (($current_time - $order['timestamp']) > (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60))) {
-            $time_expired = true;
-        }
-        if(!$order || $time_expired) {
+
+        $time_left = $this->get_time_left($order);
+
+        if(!$order || !$time_left) {
             //Create new address
+            $time_left = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $new_address = $this->new_blockonomics_address($blockonomics);
 
             // Create backup cart
@@ -127,7 +126,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             }
             $id_cart = (int) $new_cart->id;
             $new_cart->secure_key = $cart->secure_key;
-
             // Validate the order
             $mailVars = array(
                 '{bitcoin_address}' => $new_address,
@@ -144,7 +142,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                     '&key=' .
                     $customer->secure_key
             );
-
             $mes = "Adr BTC : " . $new_address;
             $blockonomics->validateOrder(
                 (int) $cart->id,
@@ -157,7 +154,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 false,
                 $customer->secure_key
             );
-
+            $id_order = $blockonomics->currentOrder;
             Db::getInstance()->Execute(
                 "INSERT INTO " .
                     _DB_PREFIX_ .
@@ -177,7 +174,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
-            $id_order = $blockonomics->currentOrder;
         } else {
             $new_address = $order['addr'];
             $id_order = $order['id_order'];
@@ -219,9 +215,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'timeperiod' => Configuration::get(
-                'BLOCKONOMICS_TIMEPERIOD'
-            )
+            'timeperiod' => $time_left
         ));
 
         $this->setTemplate(
@@ -248,6 +242,17 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
         return $price;
+    }
+
+    function get_time_left($order) 
+    {
+        if($order){
+            $time_remaining = ($order['timestamp'] + (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
+            if($time_remaining > 0){
+                return $time_remaining;
+            }
+        }
+        return false;
     }
 
     function new_blockonomics_address($blockonomics) 
