@@ -109,7 +109,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $time_left = $this->get_time_left($order);
 
-        if(!$order || !$time_left) {
+        if(!$order || !$time_left || $order['value'] != $total) {
             //Create new address
             $time_left = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $new_address = $this->new_blockonomics_address($blockonomics);
