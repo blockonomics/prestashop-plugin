@@ -107,7 +107,11 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart_id";
         $order = Db::getInstance()->getRow($sql);
         //if order does not already exist
-        if(!$order){
+        $time_expired = false;
+        if ($order && (($current_time - $order['timestamp']) > (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60))) {
+            $time_expired = true;
+        }
+        if(!$order || $time_expired) {
             //Create new address
             $new_address = $this->new_blockonomics_address($blockonomics);
 
@@ -177,10 +181,35 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         } else {
             $new_address = $order['addr'];
             $id_order = $order['id_order'];
+            $current_time = $order['timestamp'];
+            if ($total != $order['value']) {
+                Db::getInstance()->Execute(
+                    "INSERT INTO " .
+                        _DB_PREFIX_ .
+                        "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
+                        "addr, txid, status,value, bits, bits_payed) VALUES
+                        ('" .
+                        (int) $blockonomics->currentOrder .
+                        "','" .
+                        (int) $id_cart .
+                        "','" .
+                        (int) $current_time .
+                        "','" .
+                        pSQL($new_address) .
+                        "', '', -1,'" .
+                        (float) $total .
+                        "','" .
+                        (int) $bits .
+                        "', 0)"
+                );
+            }
+            if ($bits != $order['bits']) {
+
+            }
             // $id_cart = $order['id_cart'];
         }
 
-        if ($this->context->cookie->id_guest && isset($new_cart)) {
+        if (isset($new_cart) && $this->context->cookie->id_guest) {
             $guest = new Guest($this->context->cookie->id_guest);
             $new_cart->mobile_theme = $guest->mobile_theme;
         }
