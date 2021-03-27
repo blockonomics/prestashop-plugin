@@ -94,4 +94,17 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             }
         }
     }
+} else {
+    echo 'Secret not matching';
+    return;
+} 
+
+if ($addr != Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')) {
+    echo 'Order not found';
+    return;
 }
+
+
+
+
+
