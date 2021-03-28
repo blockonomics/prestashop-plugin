@@ -207,7 +207,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
+            'base_websocket_url' => Configuration::get(
+                'BLOCKONOMICS_WEBSOCKET_URL'
+            ),
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
@@ -218,7 +220,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
         );
-
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
