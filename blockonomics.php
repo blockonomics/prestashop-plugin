@@ -203,15 +203,6 @@ class Blockonomics extends PaymentModule
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'modules/' .
-                $this->name .
-                '/callback.php?secret=' .
-                $secret
-        );
 
         return true;
     }
@@ -225,7 +216,6 @@ class Blockonomics extends PaymentModule
         );
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
-        Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
@@ -322,7 +312,9 @@ class Blockonomics extends PaymentModule
         $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
         $response = $this->doCurlCall($url);
 
-        $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+        $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        $shop_domain = Configuration::get('PS_SHOP_DOMAIN');
+        $callback_url = 'http://' . $shop_domain . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callbacksecret;
 
         //TODO: Check This: WE should actually check code for timeout
         if (!isset($response->response_code)) {
@@ -656,11 +648,13 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
             'BLOCKONOMICS_TIMEPERIOD'
         );
-        $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
-        if (!$callbackurl) {
+        $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        if (!$callbacksecret) {
             $this->generatenewCallback();
-            $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+            $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
+        $shop_domain = Configuration::get('PS_SHOP_DOMAIN');
+        $callbackurl = 'http://'. $shop_domain . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callbacksecret;
         $helper->fields_value['callbackURL'] = $callbackurl;
         return $helper->generateForm($fields_form);
     }
@@ -669,14 +663,5 @@ class Blockonomics extends PaymentModule
     {
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'modules/' .
-                $this->name .
-                '/callback.php?secret=' .
-                $secret
-        );
     }
 }
