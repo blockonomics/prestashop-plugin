@@ -516,8 +516,8 @@ class Blockonomics extends PaymentModule
                     'Settings Saved, click on Test Setup to verify installation'
                 )
             );
-        } elseif (Tools::isSubmit('generateNewURL')) {
-            $this->generatenewCallback();
+        } elseif (Tools::isSubmit('generateNewSecret')) {
+            $this->generatenewCallbackSecret();
         }
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -584,9 +584,17 @@ class Blockonomics extends PaymentModule
                     'name' => 'testSetup',
                     'type' => 'submit',
                     'class' => 'btn btn-default pull-right',
-                    'icon' => 'process-icon-save',
+                    'icon' => 'process-icon-cogs',
+                    ),
+                'callback-url' => array(
+                    'title' => $this->l('Callback Secret'),
+                    'name' => 'generateNewSecret',
+                    'type' => 'submit',
+                    'class' => 'btn btn-default pull-right',
+                    'icon' => 'process-icon-refresh',
                     ),
                 ),
+                
         );
 
         // ** Keep for updated UI **
@@ -650,7 +658,7 @@ class Blockonomics extends PaymentModule
         );
         $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if (!$callbacksecret) {
-            $this->generatenewCallback();
+            $this->generatenewCallbackSecret();
             $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
         $shop_domain = Configuration::get('PS_SHOP_DOMAIN');
@@ -659,7 +667,7 @@ class Blockonomics extends PaymentModule
         return $helper->generateForm($fields_form);
     }
 
-    public function generatenewCallback()
+    public function generatenewCallbackSecret()
     {
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
