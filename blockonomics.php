@@ -203,16 +203,6 @@ class Blockonomics extends PaymentModule
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'modules/' .
-                $this->name .
-                '/callback.php?secret=' .
-                $secret
-        );
-
         return true;
     }
 
@@ -225,7 +215,6 @@ class Blockonomics extends PaymentModule
         );
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
-        Configuration::deleteByName('BLOCKONOMICS_CALLBACK_URL');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
@@ -322,7 +311,8 @@ class Blockonomics extends PaymentModule
         $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
         $response = $this->doCurlCall($url);
 
-        $callback_url = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+        $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        $callback_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callbacksecret;
 
         //TODO: Check This: WE should actually check code for timeout
         if (!isset($response->response_code)) {
@@ -524,8 +514,8 @@ class Blockonomics extends PaymentModule
                     'Settings Saved, click on Test Setup to verify installation'
                 )
             );
-        } elseif (Tools::isSubmit('generateNewURL')) {
-            $this->generatenewCallback();
+        } elseif (Tools::isSubmit('generateNewSecret')) {
+            $this->generatenewCallbackSecret();
         }
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -592,7 +582,15 @@ class Blockonomics extends PaymentModule
                     'name' => $this->l('testSetup'),
                     'type' => 'submit',
                     'class' => 'btn btn-default pull-right',
+                    'icon' => 'process-icon-cogs',
+                    ),
+                'callback-url' => array(
+                    'title' => $this->l('Callback Secret'),
+                    'name' => 'generateNewSecret',
+                    'type' => 'submit',
+                    'class' => 'btn btn-default pull-right',
                     'icon' => 'process-icon-save',
+                    'icon' => 'process-icon-refresh',
                     ),
                 ),
         );
@@ -656,27 +654,18 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
             'BLOCKONOMICS_TIMEPERIOD'
         );
-        $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
-        if (!$callbackurl) {
+        $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        if (!$callback_secret) {
             $this->generatenewCallback();
-            $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
+            $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
-        $helper->fields_value['callbackURL'] = $callbackurl;
+        $helper->fields_value['callbackURL'] = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
         return $helper->generateForm($fields_form);
     }
 
-    public function generatenewCallback()
+    public function generatenewCallbackSecret()
     {
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
-        Configuration::updateValue(
-            'BLOCKONOMICS_CALLBACK_URL',
-            Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'modules/' .
-                $this->name .
-                '/callback.php?secret=' .
-                $secret
-        );
     }
 }
