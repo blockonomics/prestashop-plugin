@@ -113,10 +113,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
-        $time_left = $this->get_time_left($order);
+        $time_remaining = $this->get_time_remaining($order);
 
         if(!$order || $order['value'] != $total) {
-            $time_left = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
+            $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress();
             if (!$responseObj->data || !$responseObj->data->address) {
                 $this->displayError($blockonomics);
@@ -209,10 +209,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
             //if value of cart has changed because the user has added or removed products from the cart
-            if (!$time_left) {
+            if (!$time_remaining) {
                 $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp=".time().", value=$total, bits=$bits WHERE id_cart = $cart->id";
                 Db::getInstance()->Execute($query);	 
-                $time_left = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
+                $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             } else {
                 $total = $order['value'];
                 $bits = $order['bits'];
@@ -244,7 +244,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'timeperiod' => $time_left
+            'timeperiod' => $time_remaining
         ));
 
         $this->setTemplate(
@@ -254,7 +254,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
-    function get_time_left($order) 
+    function get_time_remaining($order) 
     {
         if($order){
             $time_remaining = ($order['timestamp'] + (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
