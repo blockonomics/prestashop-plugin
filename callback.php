@@ -92,6 +92,9 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
             }
+        } else {
+            echo 'Order not found';
+            return;
         }
     }
 } else {
@@ -99,7 +102,3 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     return;
 } 
 
-if ($addr != Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL')) {
-    echo 'Order not found';
-    return;
-}
