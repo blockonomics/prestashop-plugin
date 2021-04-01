@@ -311,7 +311,7 @@ class Blockonomics extends PaymentModule
         $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
         $response = $this->doCurlCall($url);
 
-        $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         $callback_url = Context::getContext()->shop->getBaseURL(true). 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
 
         //TODO: Check This: WE should actually check code for timeout
@@ -547,7 +547,10 @@ class Blockonomics extends PaymentModule
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l('HTTP CALLBACK URL'),
+                    'label' => $this->l('HTTP CALLBACK URL ') . 
+                    '<input style="display: none" type="submit" name="generateNewSecret">
+                        <a style="display: inline;font-size: 20px; cursor: pointer; text-decoration: none;"class="process-icon-refresh"></a>
+                    </input>',
                     'name' => 'callbackURL',
                     'disabled' => 'disabled'
                 ),
@@ -582,14 +585,6 @@ class Blockonomics extends PaymentModule
                     'type' => 'submit',
                     'class' => 'btn btn-default pull-right',
                     'icon' => 'process-icon-cogs',
-                    ),
-                'callback-url' => array(
-                    'title' => $this->l('Callback Secret'),
-                    'name' => 'generateNewSecret',
-                    'type' => 'submit',
-                    'class' => 'btn btn-default pull-right',
-                    'icon' => 'process-icon-save',
-                    'icon' => 'process-icon-refresh',
                     ),
                 ),
         );
