@@ -98,24 +98,16 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $this->displayError($blockonomics);
         }
 
-        $current_time = time();
-        $price = $blockonomics->getBTCPrice($currency->id);
-
-        if (!$price) {
-            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
-        }
-
-        $bits = (int) ((1.0e8 * $total) / $price);
-
         if (!extension_loaded('intl')) {
             $this->displayExtError($blockonomics);
         }
 
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
-        $time_remaining = $this->get_time_remaining($order);
 
         if(!$order || $order['value'] != $total) {
+            $current_time = time();
+            $bits = $this->get_bits($blockonomics, $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress();
             if (!$responseObj->data || !$responseObj->data->address) {
@@ -208,9 +200,11 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $address = $order['addr'];
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
+            $time_remaining = $this->get_time_remaining($order);
             //if value of cart has changed because the user has added or removed products from the cart
             if (!$time_remaining) {
-                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp=".time().", value=$total, bits=$bits WHERE id_cart = $cart->id";
+                $bits = $this->get_bits($blockonomics, $currency, $total);
+                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp=".time().", bits=$bits WHERE id_cart = $cart->id";
                 Db::getInstance()->Execute($query);	 
                 $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             } else {
@@ -263,6 +257,16 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             }
         }
         return false;
+    }
+
+    function get_bits($blockonomics, $currency, $total) 
+    {
+        $price = $blockonomics->getBTCPrice($currency->id);
+        if (!$price) {
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
+        }
+        $bits =(int) ((1.0e8 * $total) / $price);
+        return $bits;
     }
 
     private function displayError($blockonomics)
