@@ -312,7 +312,7 @@ class Blockonomics extends PaymentModule
         $response = $this->doCurlCall($url);
 
         $callbacksecret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-        $callback_url = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callbacksecret;
+        $callback_url = Context::getContext()->shop->getBaseURL(true). 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
 
         //TODO: Check This: WE should actually check code for timeout
         if (!isset($response->response_code)) {
@@ -343,8 +343,7 @@ class Blockonomics extends PaymentModule
             } elseif ($response->data[0]->callback != $callback_url) {
                 // Check if only secret differs
                 $base_url =
-                    Tools::getHttpHost(true, true) .
-                    __PS_BASE_URI__ .
+                    Context::getContext()->shop->getBaseURL(true). 
                     'modules/' .
                     $this->name .
                     '/callback.php';
@@ -659,7 +658,7 @@ class Blockonomics extends PaymentModule
             $this->generatenewCallback();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
-        $helper->fields_value['callbackURL'] = Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
+        $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true). 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
         return $helper->generateForm($fields_form);
     }
 
