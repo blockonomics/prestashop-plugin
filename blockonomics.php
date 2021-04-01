@@ -312,7 +312,11 @@ class Blockonomics extends PaymentModule
         $response = $this->doCurlCall($url);
 
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-        $callback_url = Context::getContext()->shop->getBaseURL(true). 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
+        $callback_url = Context::getContext()->shop->getBaseURL(true).
+        'modules/'.
+        $this->name.
+        '/callback.php?secret='.
+        $callback_secret;
 
         //TODO: Check This: WE should actually check code for timeout
         if (!isset($response->response_code)) {
@@ -343,7 +347,7 @@ class Blockonomics extends PaymentModule
             } elseif ($response->data[0]->callback != $callback_url) {
                 // Check if only secret differs
                 $base_url =
-                    Context::getContext()->shop->getBaseURL(true). 
+                    Context::getContext()->shop->getBaseURL(true).
                     'modules/' .
                     $this->name .
                     '/callback.php';
@@ -547,9 +551,13 @@ class Blockonomics extends PaymentModule
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l('HTTP CALLBACK URL ') . 
+                    'label' => $this->l('HTTP CALLBACK URL ') .
                     '<input style="display: none" type="submit" name="generateNewSecret">
-                        <a style="display: inline;font-size: 20px; cursor: pointer; text-decoration: none;"class="process-icon-refresh"></a>
+                        <a style="display: inline;
+                        font-size: 20px;
+                        cursor: pointer;
+                        text-decoration: none;"
+                        class="process-icon-refresh"></a>
                     </input>',
                     'name' => 'callbackURL',
                     'disabled' => 'disabled'
@@ -653,7 +661,11 @@ class Blockonomics extends PaymentModule
             $this->generatenewCallback();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
-        $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true). 'modules/' . $this->name . '/callback.php?secret=' . $callback_secret;
+        $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true).
+        'modules/' .
+        $this->name .
+        '/callback.php?secret=' .
+        $callback_secret;
         return $helper->generateForm($fields_form);
     }
 

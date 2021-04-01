@@ -100,5 +100,4 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
 } else {
     echo 'Secret not matching';
     return;
-} 
-
+}
