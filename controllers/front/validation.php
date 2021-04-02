@@ -201,7 +201,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
             $time_remaining = $this->get_time_remaining($order);
-            //if value of cart has changed because the user has added or removed products from the cart
             if (!$time_remaining) {
                 $bits = $this->get_bits($blockonomics, $currency, $total);
                 $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp=".time().", bits=$bits WHERE id_cart = $cart->id";
@@ -238,7 +237,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'timeperiod' => $time_remaining
+            'time_remaining' => $time_remaining
         ));
 
         $this->setTemplate(
