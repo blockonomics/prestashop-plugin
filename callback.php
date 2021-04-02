@@ -89,6 +89,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
+                    Context::getContext()->currency = Context::getContext()->currency ?? new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
             }
