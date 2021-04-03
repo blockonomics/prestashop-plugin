@@ -221,7 +221,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $id_order .
             '&key=' .
             $customer->secure_key;
-
+            
         $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
             'status' => -1,
@@ -237,6 +237,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
+            'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
             'time_remaining' => $time_remaining
         ));
 
