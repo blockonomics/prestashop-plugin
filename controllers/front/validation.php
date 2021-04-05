@@ -140,17 +140,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $mailVars = array(
                 '{bitcoin_address}' => $address,
                 '{bits}' => $bits / 1.0e8,
-                '{track_url}' =>
-                    Tools::getHttpHost(true, true) .
-                    __PS_BASE_URI__ .
-                    'index.php?controller=order-confirmation&id_cart=' .
-                    (int) $cart->id .
-                    '&id_module=' .
-                    (int) $blockonomics->id .
-                    '&id_order=' .
-                    $blockonomics->currentOrder .
-                    '&key=' .
-                    $customer->secure_key
             );
 
             $mes = "Adr BTC : " . $address;
