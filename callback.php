@@ -94,10 +94,8 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             }
         } else {
             echo 'Order not found';
-            return;
         }
     }
 } else {
     echo 'Secret not matching';
-    return;
 }
