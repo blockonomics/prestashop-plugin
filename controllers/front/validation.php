@@ -107,7 +107,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
         if (!$order || $order['value'] != $total) {
             $current_time = time();
-            $bits = $this->get_bits($blockonomics, $currency, $total);
+            $bits = $this->getBits($blockonomics, $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress();
             if (!$responseObj->data || !$responseObj->data->address) {
@@ -189,9 +189,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $address = $order['addr'];
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
-            $time_remaining = $this->get_time_remaining($order);
+            $time_remaining = $this->getTimeRemaining($order);
             if (!$time_remaining) {
-                $bits = $this->get_bits($blockonomics, $currency, $total);
+                $bits = $this->getBits($blockonomics, $currency, $total);
                 $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
                 .time().", bits=$bits WHERE id_cart = $cart->id";
                 Db::getInstance()->Execute($query);
