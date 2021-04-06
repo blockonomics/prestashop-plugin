@@ -238,7 +238,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
-    private function getTimeRemaining($order) 
+    private function getTimeRemaining($order)
     {
         if ($order) {
             $time_remaining = ($order['timestamp'] +
