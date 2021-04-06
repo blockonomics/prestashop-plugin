@@ -238,19 +238,19 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
-    private function get_time_remaining($order) 
+    private function getTimeRemaining($order) 
     {
         if ($order) {
-            $time_remaining = ($order['timestamp'] + 
+            $time_remaining = ($order['timestamp'] +
             (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
-            if ($time_remaining > 0){
+            if ($time_remaining > 0) {
                 return $time_remaining;
             }
         }
         return false;
     }
 
-    private function get_bits($blockonomics, $currency, $total)
+    private function getBits($blockonomics, $currency, $total)
     {
         $price = $blockonomics->getBTCPrice($currency->id);
         if (!$price) {
