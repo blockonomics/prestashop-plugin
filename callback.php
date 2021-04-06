@@ -89,14 +89,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
-                    $id_currency = Db::getInstance()->ExecuteS(
-                        "SELECT id_currency FROM " .
-                            _DB_PREFIX_ .
-                            "orders WHERE `id_order` = '" .
-                            $order[0]['id_order'] .
-                            "' LIMIT 1"
-                    );
-                    Context::getContext()->currency = new Currency($id_currency[0]["id_currency"]);
+                    Context::getContext()->currency = new Currency($o->id_currency);
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
             }
