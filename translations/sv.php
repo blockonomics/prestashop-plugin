@@ -32,7 +32,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_630f6dc397fe74e52d5189e2c80f282
 $_MODULE['<{blockonomics}prestashop>validation_eb60ab14749e5732652e66fbaf2bd75e'] = 'Kunde inte generera en bitcoin address.';
 $_MODULE['<{blockonomics}prestashop>validation_b5511b23e304849b337641e03b9223de'] = 'Var god använd knappen \"Testa inställningarna\" i inställningarna för att hitta problemet. ';
 $_MODULE['<{blockonomics}prestashop>validation_02cb6e7914265feb537fe7078c7a5649'] = 'Saknar PHP-förlängning.';
-$_MODULE['<{blockonomics}prestashop>validation_5dbacc8b4262eb20aa2ec42ab2a1ac0b'] = 'Var god installera php-inti förlängning.';
+$_MODULE['<{blockonomics}prestashop>validation_5dbacc8b4262eb20aa2ec42ab2a1ac0b'] = 'Var god installera php-intl förlängning.';
 $_MODULE['<{blockonomics}prestashop>backend_30b71246745d497d0f23b8ab179b2c4f'] = 'Du är några klick ifrån att acceptera bitcoin-betalningar';
 $_MODULE['<{blockonomics}prestashop>backend_296258170e0429bde6e0188de17597a5'] = 'Klicka på';
 $_MODULE['<{blockonomics}prestashop>backend_64f676ae6e961fa1e596eeeeef5c7df9'] = 'Get Started for Free';
