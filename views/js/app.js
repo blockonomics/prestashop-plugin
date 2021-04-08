@@ -46,14 +46,14 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         $scope.progress = Math.floor($scope.clock*totalProgress/totalTime);
         if($scope.progress <= 0){
             //Expired status
-            $scope.status = -3;
+            $scope.status = -3; 
         }
     };
 
     //Check if the bitcoin address is present
-    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, timeperiod){;
+    $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, timeperiod, time_remaining){;
         totalTime = timeperiod*60; //10m
-        $scope.clock = totalTime;
+        $scope.clock = time_remaining*60;
         $scope.status = invoice_status;
         if($scope.status == -1){
             $scope.tick_interval  = $interval($scope.tick, 1000);
