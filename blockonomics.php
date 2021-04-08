@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.82';
+        $this->version = '1.7.9';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
