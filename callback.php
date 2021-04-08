@@ -93,6 +93,10 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
             }
+        } else {
+            echo 'Order not found';
         }
     }
+} else {
+    echo 'Secret not matching';
 }
