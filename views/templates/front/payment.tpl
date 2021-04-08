@@ -88,7 +88,7 @@
                       <div class="bnomics-progress-bar" style="width: [[progress]]%;"></div>
                     </div>
                   </div>
-                  <span class="ng-cloak bnomics-time-left">[[clock*1000 | date:'mm:ss' : 'UTC']] min</span>
+                  <span class="ng-cloak bnomics-time-left">[[clock*1000 | date:'mm:ss' : 'UTC']] {l s=' min' mod='blockonomics' }</span>
                 </div>
               </div>
             </div>

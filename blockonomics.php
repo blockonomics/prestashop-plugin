@@ -570,11 +570,11 @@ class Blockonomics extends PaymentModule
                     'required' => false,
                     'options' => array(
                     'query' => array(
-                        array('key' => '10', 'name' => '10 minutes'),
-                        array('key' => '15', 'name' => '15 minutes'),
-                        array('key' => '20', 'name' => '20 minutes'),
-                        array('key' => '25', 'name' => '25 minutes'),
-                        array('key' => '30', 'name' => '30 minutes'),
+                        array('key' => '10', 'name' => $this->l('10 minutes')),
+                        array('key' => '15', 'name' => $this->l('15 minutes')),
+                        array('key' => '20', 'name' => $this->l('20 minutes')),
+                        array('key' => '25', 'name' => $this->l('25 minutes')),
+                        array('key' => '30', 'name' => $this->l('30 minutes')),
                     ),
                         'id' => 'key',
                         'name' => 'name'
@@ -589,26 +589,13 @@ class Blockonomics extends PaymentModule
             'buttons' => array(
                 'test-setup' => array(
                     'title' => $this->l('Test Setup'),
-                    'name' => $this->l('testSetup'),
+                    'name' => 'testSetup',
                     'type' => 'submit',
                     'class' => 'btn btn-default pull-right',
                     'icon' => 'process-icon-cogs',
                     ),
                 ),
         );
-
-        // ** Keep for updated UI **
-        // Init Currencies Fields form array
-        // $fields_form[1]['form'] = array(
-        //     'legend' => array(
-        //         'title' => $this->l('Currencies')
-        //     ),
-        //     'submit' => array(
-        //         'title' => $this->l('Test Setup'),
-        //         'name' => $this->l('testSetup'),
-        //         'class' => 'btn btn-default pull-right'
-        //     )
-        // );
         
         $helper = new HelperForm();
 
