@@ -142,35 +142,29 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 '{bits}' => $bits / 1.0e8,
             );
 
-        // Validate the order
-        $mailVars = array(
-            '{bitcoin_address}' => $new_address,
-            '{bits}' => $bits / 1.0e8,
-            '{track_url}' =>
-                Tools::getHttpHost(true, true) .
-                __PS_BASE_URI__ .
-                'index.php?controller=order-confirmation&id_cart=' .
-                (int) $cart->id .
-                '&id_module=' .
-                (int) $blockonomics->id .
-                '&id_order=' .
-                $blockonomics->currentOrder .
-                '&key=' .
+            $mes = "Adr BTC : " . $address;
+            $blockonomics->validateOrder(
+                (int) $cart->id,
+                Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
+                $total,
+                $blockonomics->displayName,
+                $mes,
+                $mailVars,
+                (int) $currency->id,
+                false,
                 $customer->secure_key
-        );
+            );
 
-        $mes = "Adr BTC : " . $new_address;
-        $blockonomics->validateOrder(
-            (int) $cart->id,
-            Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
-            $total,
-            $blockonomics->displayName,
-            $mes,
-            $mailVars,
-            (int) $currency->id,
-            false,
-            $customer->secure_key
-        );
+            $id_order = $blockonomics->currentOrder;
+            // Add the backup cart to user
+            $new_cart->id_customer = $old_cart_customer_id;
+            $new_cart->save();
+            if ($new_cart->id) {
+                $this->context->cookie->id_cart = (int) $new_cart->id;
+                $this->context->cookie->write();
+            }
+            $id_cart = (int) $new_cart->id;
+            $new_cart->secure_key = $old_cart_secure_key;
 
             Db::getInstance()->Execute(
                 "INSERT INTO " .
@@ -207,28 +201,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 $bits = $order['bits'];
             }
         }
-        $id_cart = (int) $new_cart->id;
-        $new_cart->secure_key = $old_cart_secure_key;
-
-        Db::getInstance()->Execute(
-            "INSERT INTO " .
-                _DB_PREFIX_ .
-                "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
-                "addr, txid, status,value, bits, bits_payed) VALUES
-                ('" .
-                (int) $blockonomics->currentOrder .
-                "','" .
-                (int) $id_cart .
-                "','" .
-                (int) $current_time .
-                "','" .
-                pSQL($new_address) .
-                "', '', -1,'" .
-                (float) $total .
-                "','" .
-                (int) $bits .
-                "', 0)"
-        );
 
         $redirect_link = __PS_BASE_URI__ .
             'index.php?controller=order-confirmation?id_cart=' .
@@ -236,14 +208,14 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             '&id_module=' .
             (int) $blockonomics->id .
             '&id_order=' .
-            $blockonomics->currentOrder .
+            $id_order .
             '&key=' .
             $customer->secure_key;
             
         $this->context->smarty->assign(array(
-            'id_order' => (int) $blockonomics->currentOrder,
+            'id_order' => (int) $id_order,
             'status' => -1,
-            'addr' => $new_address,
+            'addr' => $address,
             'txid' => "",
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
