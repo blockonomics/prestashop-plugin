@@ -596,19 +596,6 @@ class Blockonomics extends PaymentModule
                     ),
                 ),
         );
-
-        // ** Keep for updated UI **
-        // Init Currencies Fields form array
-        // $fields_form[1]['form'] = array(
-        //     'legend' => array(
-        //         'title' => $this->l('Currencies')
-        //     ),
-        //     'submit' => array(
-        //         'title' => $this->l('Test Setup'),
-        //         'name' => $this->l('testSetup'),
-        //         'class' => 'btn btn-default pull-right'
-        //     )
-        // );
         
         $helper = new HelperForm();
 
