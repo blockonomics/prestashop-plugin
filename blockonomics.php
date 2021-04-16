@@ -120,6 +120,7 @@ class Blockonomics extends PaymentModule
             !$this->installDB() or
             !$this->registerHook('paymentOptions') or
             !$this->registerHook('displayPDFInvoice') or
+            !$this->registerHook('actionPaymentConfirmation') or
             !$this->registerHook('invoice')
         ) {
             return false;
@@ -409,6 +410,63 @@ class Blockonomics extends PaymentModule
                 }
             }
         }
+    }
+
+    // //Adds Note to the Invoice with Payment Information
+    // public function hookActionPaymentConfirmation($params)
+    // {
+
+    //     $b_order = Db::getInstance()->ExecuteS(
+    //         'SELECT * FROM ' .
+    //             _DB_PREFIX_ .
+    //             'blockonomics_bitcoin_orders WHERE `id_order` = ' .
+    //             (int) $params['id_order'] .
+    //             '  LIMIT 1'
+    //     );
+
+    //     if ($b_order) {
+    //         $cart_value = "<b>Cart value</b>: ". $b_order['value'] ."BTC <br>";
+
+    //         $note = 
+    //         Db::getInstance()->ExecuteS(
+    //             'UPDATE ' .
+    //                 _DB_PREFIX_ .
+    //                 'order_invoice SET `note` = ' .
+                     
+    //                 ' WHERE `id_order` = ' .
+    //                 (int) $params['id_order']
+    //         );
+    //     }   
+    // }
+
+    //Adds Note to the Invoice with Payment Information
+    public function hookActionPaymentConfirmation($params)
+    {
+        $id_order = $params['order']['id_order'];
+        $b_order = Db::getInstance()->ExecuteS(
+            'SELECT * FROM ' .
+                _DB_PREFIX_ .
+                'blockonomics_bitcoin_orders WHERE `id_order` = ' .
+                (int) $id_order .
+                '  LIMIT 1'
+        );
+        if ($b_order) {
+            $addr = "<b>Bitcoin Address</b>: ". $b_order[0]['addr'] ."<br>";
+            $status = "<b>Status</b>: ". $b_order[0]['status'] ."<br>";
+            $cart_value = "<b>Cart value</b>: ". $b_order[0]['value']/100000000 ." BTC <br>";
+            $amount_paid = "<b>Cart value</b>: ". $b_order[0]['bits_payed']/100000000 ." BTC <br>";
+
+            // $transaction_link = "<a href="{$base_url|escape:'htmlall':'UTF-8'}/api/tx?txid={$txid|escape:'htmlall':'UTF-8'}&addr={$addr|escape:'htmlall':'UTF-8'}"> {$txid|escape:'htmlall':'UTF-8'} <a>
+            $note = $addr . $status . $cart_value . $amount_paid;
+            Db::getInstance()->ExecuteS(
+                'UPDATE ' .
+                    _DB_PREFIX_ .
+                    'order_invoice SET `note` = ' .
+                        $note .
+                    ' WHERE `id_order` = ' .
+                    (int) $params['id_order']
+            );
+        }   
     }
 
     //Add Bitcoin invoice to pdf invoice
