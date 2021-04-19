@@ -120,7 +120,6 @@ class Blockonomics extends PaymentModule
             !$this->installDB() or
             !$this->registerHook('paymentOptions') or
             !$this->registerHook('displayPDFInvoice') or
-            !$this->registerHook('actionPaymentConfirmation') or
             !$this->registerHook('invoice')
         ) {
             return false;
@@ -410,48 +409,6 @@ class Blockonomics extends PaymentModule
                 }
             }
         }
-    }
-
-    //Adds Note to the Invoice with Payment Information
-    public function hookActionPaymentConfirmation($params)
-    {
-        $id_order = $params['id_order'];
-        $b_order = Db::getInstance()->ExecuteS(
-            'SELECT * FROM ' .
-                _DB_PREFIX_ .
-                'blockonomics_bitcoin_orders WHERE `id_order` = ' .
-                (int) $id_order .
-                '  LIMIT 1'
-        );
-        if ($b_order) {
-            $note = $this->getInvoiceNote($b_order[0]);
-            $sql = "UPDATE " . _DB_PREFIX_ .
-            "order_invoice SET `note` = '" . $note .
-            "' WHERE `id_order` = " . (int) $id_order;
-            Db::getInstance()->Execute($sql);
-        }   
-    }
-
-    //Creates Note for the Invoice with Payment Information
-    public function getInvoiceNote($order)
-    {
-        $addr = $order['addr'];
-        $bits = $order['bits'];
-        $bits_payed = $order['bits_payed'];
-        $addr_message = "<b>Bitcoin Address</b>: $addr <br>";
-        $status = "<b>Status</b>: " . $order['status'] . "<br>";
-        $cart_value = "<b>Cart value</b>: " . $bits/100000000 . " BTC <br>";
-        $amount_paid = "<b>Amount paid</b>: " . $bits_payed/100000000 . " BTC <br>";
-        $base_url = Configuration::get('BLOCKONOMICS_BASE_URL');
-        $txid = $order['txid'];
-        $transaction_link = "<a href=$base_url/api/tx?txid=$txid&addr=$addr> $txid </a> <br>";
-
-        $payment_error = '';
-        if ($bits > $bits_payed) {
-            $payment_error = '<b style="color:red">Payment Error</b>: Amount paid less than cart value <br>';
-        }
-        $note = $addr_message . $status . $cart_value . $amount_paid . $transaction_link . $payment_error;
-        return $note;
     }
 
     //Add Bitcoin invoice to pdf invoice
