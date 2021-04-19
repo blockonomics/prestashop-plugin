@@ -113,14 +113,13 @@ function getInvoiceNote($order)
     $addr = $order['addr'];
     $bits = $order['bits'];
     $bits_payed = $order['bits_payed'];
-    $addr_message = "<b>Bitcoin Address</b>: $addr <br>";
-    $status = "<b>Status</b>: " . $order['status'] . "<br>";
-    $cart_value = "<b>Cart value</b>: " . $bits/100000000 . " BTC <br>";
-    $amount_paid = "<b>Amount paid</b>: " . $bits_payed/100000000 . " BTC <br>";
+    $addr_message = "<b>BTC Addr: </b> $addr <br>";
+    $status = "<b>Status: </b>" . $order['status'] . "<br>";
+    $cart_value = "<b>Cart value: </b>" . $bits/100000000 . " BTC <br>";
+    $amount_paid = "<b>Amount paid: </b>" . $bits_payed/100000000 . " BTC <br>";
     $base_url = Configuration::get('BLOCKONOMICS_BASE_URL');
     $txid = $order['txid'];
-    $transaction_link = "<a href=$base_url/api/tx?txid=$txid&addr=$addr> $txid </a> <br>";
-
+    $transaction_link = `<b>TXID: </b><a "style=word-wrap: break-word;" href=$base_url/api/tx?txid=$txid&addr=$addr>$txid</a>`;
     $payment_error = '';
     if ($bits > $bits_payed) {
         $payment_error = '<b style="color:red">Payment Error</b>: Amount paid less than cart value <br>';
