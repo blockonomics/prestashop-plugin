@@ -119,7 +119,7 @@ class Blockonomics extends PaymentModule
             ) or
             !$this->installDB() or
             !$this->registerHook('paymentOptions') or
-            !$this->registerHook('actionValidateOrder') 
+            !$this->registerHook('actionValidateOrder')
         ) {
             return false;
         }
@@ -413,7 +413,7 @@ class Blockonomics extends PaymentModule
     //Add invoice to order after it's validated
     public function hookActionValidateOrder($params)
     {
-        $order_object = $params['order']; 
+        $order_object = $params['order'];
         $order_object->setInvoice(true);
     }
 

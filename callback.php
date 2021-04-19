@@ -119,7 +119,8 @@ function getInvoiceNote($order)
     $amount_paid = "<b>Amount paid: </b>" . $bits_payed/100000000 . " BTC <br>";
     $base_url = Configuration::get('BLOCKONOMICS_BASE_URL');
     $txid = $order['txid'];
-    $transaction_link = '<b>TXID: </b><a "style=word-wrap: break-word;" href='.$base_url.'/api/tx?txid='.$txid.'&addr=$addr> '.$txid.'</a>';
+    $transaction_link = '<b>TXID: </b><a "style=word-wrap: break-word;" href='.$base_url.
+    '/api/tx?txid='.$txid.'&addr=$addr> '.$txid.'</a>';
     $payment_error = '';
     if ($bits > $bits_payed) {
         $payment_error = '<b style="color:red">Payment Error</b>: Amount paid less than cart value <br>';
