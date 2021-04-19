@@ -120,6 +120,7 @@ class Blockonomics extends PaymentModule
             !$this->installDB() or
             !$this->registerHook('paymentOptions') or
             !$this->registerHook('displayPDFInvoice') or
+            !$this->registerHook('actionValidateOrder') or
             !$this->registerHook('invoice')
         ) {
             return false;
@@ -409,6 +410,13 @@ class Blockonomics extends PaymentModule
                 }
             }
         }
+    }
+
+    //Add invoice to order after it's validated
+    public function hookActionValidateOrder($params)
+    {
+        $order_object = $params['order'];
+        $order_object->setInvoice(true);
     }
 
     //Add Bitcoin invoice to pdf invoice
