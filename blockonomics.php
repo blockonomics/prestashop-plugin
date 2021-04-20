@@ -414,7 +414,7 @@ class Blockonomics extends PaymentModule
     public function hookActionValidateOrder($params)
     {
         $order_object = $params['order'];
-        if($order_object->module == 'blockonomics'){
+        if ($order_object->module == 'blockonomics') {
             $order_object->setInvoice(true);
         }
     }
