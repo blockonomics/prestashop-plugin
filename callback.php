@@ -113,8 +113,7 @@ function getInvoiceNote($order)
     $addr = $order['addr'];
     $bits = $order['bits'];
     $bits_payed = $order['bits_payed'];
-    $addr_message = "<b>BTC Addr: </b> $addr <br>";
-    $status = "<b>Status: </b>" . $order['status'] . "<br>";
+    $addr_message = "<b>Bitcoin Address: </b> $addr <br>";
     $cart_value = "<b>Cart value: </b>" . $bits/100000000 . " BTC <br>";
     $amount_paid = "<b>Amount paid: </b>" . $bits_payed/100000000 . " BTC <br>";
     $base_url = Configuration::get('BLOCKONOMICS_BASE_URL');
@@ -125,6 +124,6 @@ function getInvoiceNote($order)
     if ($bits > $bits_payed) {
         $payment_error = '<b style="color:red">Payment Error</b>: Amount paid less than cart value <br>';
     }
-    $note = $addr_message . $status . $cart_value . $amount_paid . $transaction_link . $payment_error;
+    $note = $addr_message . $cart_value . $amount_paid . $transaction_link . $payment_error;
     return $note;
 }
