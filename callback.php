@@ -113,8 +113,6 @@ function getInvoiceNote($order)
     $addr = $order['addr'];
     $bits = number_format($order['bits']/100000000, 8);
     $bits_payed = number_format($order['bits_payed']/100000000, 8);
-    $bits = rtrim($bits, '0');
-    $bits_payed = rtrim($bits_payed, '0');
     $addr_message = "<b>Bitcoin Address: </b> $addr <br>";
     $cart_value = "<b>Cart value: </b>" . $bits . " BTC <br>";
     $amount_paid = "<b>Amount paid: </b>" . $bits_payed . " BTC <br>";
