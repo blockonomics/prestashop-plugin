@@ -122,7 +122,7 @@ function getInvoiceNote($order)
     '/api/tx?txid='.$txid.'&addr=$addr> '.$txid.'</a>';
     $payment_error = '';
     if ($bits > $bits_payed) {
-        $payment_error = '<br><b style="color:red">Payment Error</b>: Amount paid less than cart value <br>';
+        $payment_error = '<br><b>Payment Error</b>: Amount paid less than cart value <br>';
     }
     $note = $addr_message . $cart_value . $amount_paid . $transaction_link . $payment_error;
     return $note;
