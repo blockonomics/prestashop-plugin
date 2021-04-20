@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.9';
+        $this->version = '1.8.0';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -414,7 +414,9 @@ class Blockonomics extends PaymentModule
     public function hookActionValidateOrder($params)
     {
         $order_object = $params['order'];
-        $order_object->setInvoice(true);
+        if($order_object->module == 'blockonomics'){
+            $order_object->setInvoice(true);
+        }
     }
 
     public function getContent()
