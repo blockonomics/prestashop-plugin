@@ -198,6 +198,8 @@ class Blockonomics extends PaymentModule
 
         //Blockonimcs basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
+        Configuration::updateValue('BLOCKONOMICS_BTC', true);
+        Configuration::updateValue('BLOCKONOMICS_BCH', false);
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
 
         //Generate callback secret
@@ -216,6 +218,8 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
+        Configuration::deleteByName('BLOCKONOMICS_BTC');
+        Configuration::deleteByName('BLOCKONOMICS_BCH');
 
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
@@ -485,6 +489,14 @@ class Blockonomics extends PaymentModule
                 'BLOCKONOMICS_API_KEY',
                 Tools::getValue('BLOCKONOMICS_API_KEY')
             );
+            Configuration::updateValue(
+                'BLOCKONOMICS_BTC',
+                Tools::getValue('BLOCKONOMICS_BTC')
+            );
+            Configuration::updateValue(
+                'BLOCKONOMICS_BCH',
+                Tools::getValue('BLOCKONOMICS_BCH')
+            );
             $error_str = $this->testSetup();
             if ($error_str) {
                 $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
@@ -512,6 +524,14 @@ class Blockonomics extends PaymentModule
                 'BLOCKONOMICS_TIMEPERIOD',
                 Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
             );
+            Configuration::updateValue(
+                'BLOCKONOMICS_BTC',
+                Tools::getValue('BLOCKONOMICS_BTC')
+            );
+            Configuration::updateValue(
+                'BLOCKONOMICS_BCH',
+                Tools::getValue('BLOCKONOMICS_BCH')
+            );
             $output = $this->displayConfirmation(
                 $this->l(
                     'Settings Saved, click on Test Setup to verify installation'
@@ -535,7 +555,6 @@ class Blockonomics extends PaymentModule
         // Get default language
         $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
-        // Init Settings Fields form array
         $fields_form = array();
         $fields_form[0]['form'] = array(
             'legend' => array(
@@ -587,6 +606,14 @@ class Blockonomics extends PaymentModule
                 'class' => 'btn btn-default pull-right'
             ),
         );
+        
+        $options = array(
+            array(
+            'query' => '',
+            'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
+            'name' => 'Method 1'    // The value of the text content of the  <option> tag.
+            )
+        );
 
         $fields_form[1]['form'] = array(
             'legend' => array(
@@ -595,23 +622,39 @@ class Blockonomics extends PaymentModule
             'input' => array(
                 array(
                     'type' => 'checkbox',
-                    'label' => $this->l('Bitcoin (BTC)'),
-                    'name' => 'BLOCKONOMICS_BTC',
-                    'values'    => array(
-                        'query' => '',
-                        'id'    => '',
-                        'name'  => '',
-                    ),
+                    'label'     => $this->l('Bitcoin (BTC)'),
+                    'desc'      => $this->l('To configure, click Get Started for Free on ').
+                    '<a href="https://blockonomics.co/merchants">https://blockonomics.co/merchants</a>',   
+                    'name' => 'BLOCKONOMICS',
+                    'values' => array(
+                        'query' => array(
+                            array(
+                                'id' => 'BTC',
+                                'name' => '',
+                                'val' => '1',
+                            ),
+                        ),
+                        'id' => 'id',
+                        'name' => 'name'
+                    )
                 ),
                 array(
-                    'type' => 'checkbox',
-                    'label' => $this->l('Bitcoin Cash (BCH)'),
-                    'name' => 'BLOCKONOMICS_BCH',
-                    'values'    => array(
-                        'query' => '',
-                        'id'    => '',
-                        'name'  => '',
-                    ),
+                    'type'      => 'checkbox',
+                    'label'     => $this->l('Bitcoin Cash (BCH)'),
+                    'desc'      => $this->l('To configure, click Get Started for Free on ').
+                    '<a href="https://bch.blockonomics.co/merchants">https://bch.blockonomics.co/merchants</a>',   
+                    'name'      => 'BLOCKONOMICS',
+                    'values' => array(
+                        'query' => array(
+                            array(
+                                'id' => 'BCH',
+                                'name' => '',
+                                'val' => '1',
+                            ),
+                        ),
+                        'id' => 'id',
+                        'name' => 'name'
+                    )
                 ),
             ),
             'buttons' => array(
@@ -671,17 +714,32 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
             'BLOCKONOMICS_TIMEPERIOD'
         );
+        $helper->fields_value['BLOCKONOMICS_BTC'] = Configuration::get(
+            'BLOCKONOMICS_BTC'
+        );
+        $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
+            'BLOCKONOMICS_BCH'
+        );;
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if (!$callback_secret) {
             $this->generatenewCallback();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
+        $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
+            'BLOCKONOMICS_BCH'
+        );
         $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true).
         'modules/' .
         $this->name .
         '/callback.php?secret=' .
         $callback_secret;
         return $helper->generateForm($fields_form);
+    }
+
+    public function updateValues()
+    {
+        $secret = md5(uniqid(rand(), true));
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
     }
 
     public function generatenewCallbackSecret()
