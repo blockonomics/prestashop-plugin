@@ -586,6 +586,34 @@ class Blockonomics extends PaymentModule
                 'name' => 'updateSettings',
                 'class' => 'btn btn-default pull-right'
             ),
+        );
+
+        $fields_form[1]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Currencies')
+            ),
+            'input' => array(
+                array(
+                    'type' => 'checkbox',
+                    'label' => $this->l('Bitcoin (BTC)'),
+                    'name' => 'BLOCKONOMICS_BTC',
+                    'values'    => array(
+                        'query' => '',
+                        'id'    => '',
+                        'name'  => '',
+                    ),
+                ),
+                array(
+                    'type' => 'checkbox',
+                    'label' => $this->l('Bitcoin Cash (BCH)'),
+                    'name' => 'BLOCKONOMICS_BCH',
+                    'values'    => array(
+                        'query' => '',
+                        'id'    => '',
+                        'name'  => '',
+                    ),
+                ),
+            ),
             'buttons' => array(
                 'test-setup' => array(
                     'title' => $this->l('Test Setup'),
