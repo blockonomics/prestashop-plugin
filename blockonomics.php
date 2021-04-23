@@ -484,19 +484,7 @@ class Blockonomics extends PaymentModule
     {
         $output = '';
         if (Tools::isSubmit("testSetup")) {
-            //Save current settings before testing setup
-            Configuration::updateValue(
-                'BLOCKONOMICS_API_KEY',
-                Tools::getValue('BLOCKONOMICS_API_KEY')
-            );
-            Configuration::updateValue(
-                'BLOCKONOMICS_BTC',
-                Tools::getValue('BLOCKONOMICS_BTC')
-            );
-            Configuration::updateValue(
-                'BLOCKONOMICS_BCH',
-                Tools::getValue('BLOCKONOMICS_BCH')
-            );
+            $this->updateSettings();
             $error_str = $this->testSetup();
             if ($error_str) {
                 $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
@@ -516,22 +504,7 @@ class Blockonomics extends PaymentModule
                 );
             }
         } elseif (Tools::isSubmit('updateSettings')) {
-            Configuration::updateValue(
-                'BLOCKONOMICS_API_KEY',
-                Tools::getValue('BLOCKONOMICS_API_KEY')
-            );
-            Configuration::updateValue(
-                'BLOCKONOMICS_TIMEPERIOD',
-                Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
-            );
-            Configuration::updateValue(
-                'BLOCKONOMICS_BTC',
-                Tools::getValue('BLOCKONOMICS_BTC')
-            );
-            Configuration::updateValue(
-                'BLOCKONOMICS_BCH',
-                Tools::getValue('BLOCKONOMICS_BCH')
-            );
+            $this->updateSettings();
             $output = $this->displayConfirmation(
                 $this->l(
                     'Settings Saved, click on Test Setup to verify installation'
@@ -736,10 +709,24 @@ class Blockonomics extends PaymentModule
         return $helper->generateForm($fields_form);
     }
 
-    public function updateValues()
+    public function updateSettings()
     {
-        $secret = md5(uniqid(rand(), true));
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+        Configuration::updateValue(
+            'BLOCKONOMICS_API_KEY',
+            Tools::getValue('BLOCKONOMICS_API_KEY')
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_TIMEPERIOD',
+            Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_BTC',
+            Tools::getValue('BLOCKONOMICS_BTC')
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_BCH',
+            Tools::getValue('BLOCKONOMICS_BCH')
+        );
     }
 
     public function generatenewCallbackSecret()
