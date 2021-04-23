@@ -525,9 +525,6 @@ class Blockonomics extends PaymentModule
 
     public function displayForm()
     {
-        // Get default language
-        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
-
         $fields_form = array();
         $fields_form[0]['form'] = array(
             'legend' => array(
@@ -580,14 +577,6 @@ class Blockonomics extends PaymentModule
             ),
         );
         
-        $options = array(
-            array(
-            'query' => '',
-            'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
-            'name' => 'Method 1'    // The value of the text content of the  <option> tag.
-            )
-        );
-
         $fields_form[1]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Currencies')
@@ -641,8 +630,15 @@ class Blockonomics extends PaymentModule
                 ),
         );
         
-        $helper = new HelperForm();
+        $helper = $this->generateHelper();
+        return $helper->generateForm($fields_form);
+    }
 
+    public function generateHelper() 
+    {
+        // Get default language
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $helper = new HelperForm();
         // Module, token and currentIndex
         $helper->module = $this;
         $helper->name_controller = $this->name;
@@ -706,7 +702,7 @@ class Blockonomics extends PaymentModule
         $this->name .
         '/callback.php?secret=' .
         $callback_secret;
-        return $helper->generateForm($fields_form);
+        return $helper;
     }
 
     public function updateSettings()
