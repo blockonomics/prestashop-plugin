@@ -67,11 +67,11 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_SET_CALLBACK_URL =
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
-        $BCH_BASE_URL = 'https://bch.blockonomics.co';
-        $BCH_NEW_ADDRESS_URL = 'https://bch.blockonomics.co/api/new_address';
-        $BCH_PRICE_URL = 'https://bch.blockonomics.co/api/price';
-        $BCH_SET_CALLBACK_URL = 'https://bch.blockonomics.co/api/update_callback';
-        $BCH_GET_CALLBACKS_URL = 'https://bch.blockonomics.co/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $BCH_BLOCKONOMICS_BASE_URL = 'https://bch.blockonomics.co';
+        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL = 'https://bch.blockonomics.co/api/new_address';
+        $BCH_BLOCKONOMICS_PRICE_URL = 'https://bch.blockonomics.co/api/price';
+        $BCH_BLOCKONOMICS_SET_CALLBACK_URL = 'https://bch.blockonomics.co/api/update_callback';
+        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL = 'https://bch.blockonomics.co/api/address?&no_balance=true&only_xpub=true&get_callback=true';
 
         Configuration::updateValue(
             'BLOCKONOMICS_BASE_URL',
@@ -111,16 +111,12 @@ class Blockonomics extends PaymentModule
             $BCH_BLOCKONOMICS_NEW_ADDRESS_URL
         );
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_WEBSOCKET_URL',
-            $BCH_BLOCKONOMICS_WEBSOCKET_URL
+            'BCH_BLOCKONOMICS_SET_CALLBACK_URL',
+            $BCH_BLOCKONOMICS_SET_CALLBACK_URL
         );
         Configuration::updateValue(
             'BCH_BLOCKONOMICS_GET_CALLBACKS_URL',
             $BCH_BLOCKONOMICS_GET_CALLBACKS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_SET_CALLBACK_URL',
-            $BLOCKONOMICS_SET_CALLBACK_URL
         );
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -306,16 +302,17 @@ class Blockonomics extends PaymentModule
         return $this->doCurlCall($url)->data->price;
     }
 
-    public function getNewAddress($test_mode = false)
+    public function getNewAddress($crypto, $test_mode = false)
     {
-        $url =
-            Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL') .
-            "?match_callback=" .
-            Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        if($crypto == 'btc'){
+            $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
+        }else{
+            $new_address_url = Configuration::get('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');            
+        }
+        $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
             $url = $url . "&reset=1";
         }
-
         return $this->doCurlCall($url, 'dummy');
     }
 
@@ -396,12 +393,22 @@ class Blockonomics extends PaymentModule
         $error_str = $this->checkCallbackUrlsOrSetOne($crypto, $response);
         if (!$error_str) {
             //Everything OK ! Test address generation
-            $response = $this->getNewAddress(true);
+            $response = $this->testNewAddressGen($crypto, $response);
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
         }
 
+        return $error_str;
+    }
+
+    public function testNewAddressGen($crypto, $response)
+    {
+        $error_str = '';
+        $response = $this->getNewAddress($crypto, true);
+        if ($response->response_code!=200){	
+             $error_str = $response->response_message;
+        }
         return $error_str;
     }
 
