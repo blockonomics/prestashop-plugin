@@ -394,68 +394,6 @@ class Blockonomics extends PaymentModule
         $error_str = '';
         $response = $this->getCallbacks($crypto);
         $error_str = $this->checkCallbackUrlsOrSetOne($crypto, $response);
-
-        $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-        $callback_url = Context::getContext()->shop->getBaseURL(true).
-        'modules/'.
-        $this->name.
-        '/callback.php?secret='.
-        $callback_secret;
-
-        if (!isset($response->data) || count($response->data) == 0) {
-            $error_str = $this->l('You have not entered an xpub');
-        } elseif (count($response->data) == 1) {
-            if (!$response->data[0]->callback ||
-                $response->data[0]->callback == null
-            ) {
-                //No callback URL set, set one
-                $post_content =
-                    '{"callback": "' .
-                    $callback_url .
-                    '", "xpub": "' .
-                    $response->data[0]->address .
-                    '"}';
-                $set_callback_url = Configuration::get(
-                    'BLOCKONOMICS_SET_CALLBACK_URL'
-                );
-                $this->doCurlCall($set_callback_url, $post_content);
-            } elseif ($response->data[0]->callback != $callback_url) {
-                // Check if only secret differs
-                $base_url =
-                    Context::getContext()->shop->getBaseURL(true).
-                    'modules/' .
-                    $this->name .
-                    '/callback.php';
-                if (strpos($response->data[0]->callback, $base_url) !== false) {
-                    //Looks like the user regenrated callback by mistake
-                    //Just force Update_callback on server
-                    $post_content =
-                        '{"callback": "' .
-                        $callback_url .
-                        '", "xpub": "' .
-                        $response->data[0]->address .
-                        '"}';
-                    $set_callback_url = Configuration::get(
-                        'BLOCKONOMICS_SET_CALLBACK_URL'
-                    );
-                    $this->doCurlCall($set_callback_url, $post_content);
-                } else {
-                    $error_str = $this->l(
-                        "Your have an existing callback URL. Refer instructions on integrating multiple websites"
-                    );
-                }
-            }
-        } else {
-            // Check if callback url is set
-            foreach ($response->data as $resObj) {
-                if ($resObj->callback == $callback_url) {
-                    return "";
-                }
-            }
-            $error_str = $this->l(
-                "Your have an existing callback URL. Refer instructions on integrating multiple websites"
-            );
-        }
         if (!$error_str) {
             //Everything OK ! Test address generation
             $response = $this->getNewAddress(true);
@@ -497,6 +435,72 @@ class Blockonomics extends PaymentModule
         elseif ($response->response_code != 200) 
             $error_str = $response->data;
         return $error_str;
+    }
+
+    public function checkGetCallbacksResponseBody($crypto)
+    {
+        $error_str = '';
+        $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        $callback_url = Context::getContext()->shop->getBaseURL(true).
+        'modules/'.
+        $this->name.
+        '/callback.php?secret='.
+        $callback_secret;
+
+        if (!isset($response->data) || count($response->data) == 0) {
+            $error_str = $this->l('You have not entered an xpub');
+        } elseif (count($response->data) == 1) {
+            if (!$response->data[0]->callback ||
+                $response->data[0]->callback == null
+            ) {
+                //No callback URL set, set one
+                $this->updateCallback($callback_url, $crypto, $response->data[0]->address);
+            } elseif ($response->data[0]->callback != $callback_url) {
+                // Check if only secret differs
+                $base_url =
+                    Context::getContext()->shop->getBaseURL(true).
+                    'modules/' .
+                    $this->name .
+                    '/callback.php';
+                if (strpos($response->data[0]->callback, $base_url) !== false) {
+                    //Looks like the user regenrated callback by mistake
+                    //Just force Update_callback on server
+                    $this->updateCallback($callback_url, $crypto, $response->data[0]->address);
+                } else {
+                    $error_str = $this->l(
+                        "Your have an existing callback URL. Refer instructions on integrating multiple websites"
+                    );
+                }
+            }
+        } else {
+            // Check if callback url is set
+            foreach ($response->data as $resObj) {
+                if ($resObj->callback == $callback_url) {
+                    return "";
+                }
+            }
+            $error_str = $this->l(
+                "Your have an existing callback URL. Refer instructions on integrating multiple websites"
+            );
+        }
+        
+        return $error_str;
+    }
+
+    public function updateCallback($callback_url, $crypto, $xpub)
+    {
+        if ($crypto == 'btc'){
+            $set_callback_url = Configuration::get('SET_CALLBACK_URL');
+        }else{
+            $set_callback_url = Configuration::get('BCH_SET_CALLBACK_URL');
+        }
+        $post_content =
+        '{"callback": "' .
+        $callback_url .
+        '", "xpub": "' .
+        $xpub .
+        '"}';
+        $this->doCurlCall($set_callback_url, $post_content);
     }
 
     public function getCallbacks($crypto)
