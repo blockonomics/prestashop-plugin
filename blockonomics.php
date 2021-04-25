@@ -67,6 +67,12 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_SET_CALLBACK_URL =
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
+        $BCH_BASE_URL = 'https://bch.blockonomics.co';
+        $BCH_NEW_ADDRESS_URL = 'https://bch.blockonomics.co/api/new_address';
+        $BCH_PRICE_URL = 'https://bch.blockonomics.co/api/price';
+        $BCH_SET_CALLBACK_URL = 'https://bch.blockonomics.co/api/update_callback';
+        $BCH_GET_CALLBACKS_URL = 'https://bch.blockonomics.co/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+
         Configuration::updateValue(
             'BLOCKONOMICS_BASE_URL',
             $BLOCKONOMICS_BASE_URL
@@ -86,6 +92,31 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue(
             'BLOCKONOMICS_GET_CALLBACKS_URL',
             $BLOCKONOMICS_GET_CALLBACKS_URL
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_SET_CALLBACK_URL',
+            $BLOCKONOMICS_SET_CALLBACK_URL
+        );
+
+        Configuration::updateValue(
+            'BCH_BLOCKONOMICS_BASE_URL',
+            $BCH_BLOCKONOMICS_BASE_URL
+        );
+        Configuration::updateValue(
+            'BCH_BLOCKONOMICS_PRICE_URL',
+            $BCH_BLOCKONOMICS_PRICE_URL
+        );
+        Configuration::updateValue(
+            'BCH_BLOCKONOMICS_NEW_ADDRESS_URL',
+            $BCH_BLOCKONOMICS_NEW_ADDRESS_URL
+        );
+        Configuration::updateValue(
+            'BCH_BLOCKONOMICS_WEBSOCKET_URL',
+            $BCH_BLOCKONOMICS_WEBSOCKET_URL
+        );
+        Configuration::updateValue(
+            'BCH_BLOCKONOMICS_GET_CALLBACKS_URL',
+            $BCH_BLOCKONOMICS_GET_CALLBACKS_URL
         );
         Configuration::updateValue(
             'BLOCKONOMICS_SET_CALLBACK_URL',
@@ -227,6 +258,12 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
+
+        Configuration::deleteByName('BCH_BLOCKONOMICS_BASE_URL');
+        Configuration::deleteByName('BCH_BLOCKONOMICS_PRICE_URL');
+        Configuration::deleteByName('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');
+        Configuration::deleteByName('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
+        Configuration::deleteByName('BCH_BLOCKONOMICS_SET_CALLBACK_URL');
         return true;
     }
 
@@ -240,11 +277,11 @@ class Blockonomics extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-        $payment_options = array($this->getBTCPaymentOption());
+        $payment_options = array($this->getPaymentOption());
         return $payment_options;
     }
 
-    public function getBTCPaymentOption()
+    public function getPaymentOption()
     {
         $offlineOption = new PaymentOption();
         $offlineOption
@@ -260,7 +297,7 @@ class Blockonomics extends PaymentModule
         return $offlineOption;
     }
 
-    public function getBTCPrice($id_currency)
+    public function getPrice($id_currency)
     {
         //Getting price
         $currency = new Currency((int) $id_currency);
@@ -311,9 +348,52 @@ class Blockonomics extends PaymentModule
 
     public function testSetup()
     {
+        $test_results = array();
+        $active_cryptos = $this->getActiveCurrencies();
+        foreach ($active_cryptos as $code => $crypto) {
+            $test_results[$code] = $this->testOneCrypto($code);
+        }
+        return $test_results;
+    }
+
+        /*
+     * Get list of active crypto currencies
+     */
+    public function getActiveCurrencies() {
+        $active_currencies = array();
+        $blockonomics_currencies = $this->getSupportedCurrencies();
+        foreach ($blockonomics_currencies as $code => $currency) {
+            $enabled = Configuration::get('BLOCKONOMICS_'.$code);
+            if($enabled || ($code === 'btc' && $enabled === false )){
+                $active_currencies[$code] = $currency;
+            }
+        }
+        return $active_currencies;
+    }
+
+        /*
+     * Get list of crypto currencies supported by Blockonomics
+     */
+    public function getSupportedCurrencies() {
+        return array(
+              'btc' => array(
+                    'code' => 'btc',
+                    'name' => 'Bitcoin',
+                    'uri' => 'bitcoin'
+              ),
+              'bch' => array(
+                    'code' => 'bch',
+                    'name' => 'Bitcoin Cash',
+                    'uri' => 'bitcoincash'
+              )
+          );
+    }
+
+    public function testOneCrypto($crypto)
+    {
         $error_str = '';
-        $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
-        $response = $this->doCurlCall($url);
+        $response = $this->getCallbacks($crypto);
+        $error_str = $this->checkCallbackUrlsOrSetOne($crypto, $response);
 
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         $callback_url = Context::getContext()->shop->getBaseURL(true).
@@ -322,16 +402,7 @@ class Blockonomics extends PaymentModule
         '/callback.php?secret='.
         $callback_secret;
 
-        //TODO: Check This: WE should actually check code for timeout
-        if (!isset($response->response_code)) {
-            $error_str = $this->l(
-                'Your server is blocking outgoing HTTPS calls'
-            );
-        } elseif ($response->response_code == 401) {
-            $error_str = $this->l('API Key is incorrect');
-        } elseif ($response->response_code != 200) {
-            $error_str = $response->data;
-        } elseif (!isset($response->data) || count($response->data) == 0) {
+        if (!isset($response->data) || count($response->data) == 0) {
             $error_str = $this->l('You have not entered an xpub');
         } elseif (count($response->data) == 1) {
             if (!$response->data[0]->callback ||
@@ -394,6 +465,49 @@ class Blockonomics extends PaymentModule
         }
 
         return $error_str;
+    }
+
+    public function checkCallbackUrlsOrSetOne($crypto, $response)
+    {
+        $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
+        if (!$api_key){
+            $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
+            return $error_str;
+        }
+        //chek the current callback and detect any potential errors
+        $error_str = $this->checkGetCallbacksResponseCode($response, $crypto);
+        if(!$error_str){
+            //if needed, set the callback.
+            $error_str = $this->checkGetCallbacksResponseBody($response, $crypto);
+        }
+        return $error_str;
+    }
+    
+    public function checkGetCallbacksResponseCode($crypto)
+    {
+        $error_str = '';
+        //TODO: Check This: WE should actually check code for timeout
+        if (!isset($response->response_code)) {
+            $error_str = $this->l(
+                'Your server is blocking outgoing HTTPS calls'
+            );
+        } 
+        elseif ($response->response_code == 401)
+            $error_str = $this->l('API Key is incorrect');
+        elseif ($response->response_code != 200) 
+            $error_str = $response->data;
+        return $error_str;
+    }
+
+    public function getCallbacks($crypto)
+    {
+        if ($crypto == 'btc'){
+            $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
+        }else{
+            $url = Configuration::get('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
+        }
+        $response = $this->doCurlCall($url);
+        return $response;
     }
 
     public function getContext()
