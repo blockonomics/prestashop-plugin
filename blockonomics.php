@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.9';
+        $this->version = '1.7.9.1';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -119,8 +119,7 @@ class Blockonomics extends PaymentModule
             ) or
             !$this->installDB() or
             !$this->registerHook('paymentOptions') or
-            !$this->registerHook('displayPDFInvoice') or
-            !$this->registerHook('invoice')
+            !$this->registerHook('actionValidateOrder')
         ) {
             return false;
         }
@@ -411,68 +410,12 @@ class Blockonomics extends PaymentModule
         }
     }
 
-    //Add Bitcoin invoice to pdf invoice
-    public function hookDisplayPDFInvoice($params)
+    //Add invoice to order after it's validated
+    public function hookActionValidateOrder($params)
     {
-        if (!$this->active) {
-            return;
-        }
-
-        $b_order = Db::getInstance()->ExecuteS(
-            'SELECT * FROM ' .
-                _DB_PREFIX_ .
-                'blockonomics_bitcoin_orders WHERE `id_order` = ' .
-                (int) $params['object']->id_order .
-                '  LIMIT 1'
-        );
-
-        $this->smarty->assign(array(
-            'status' => (int) $b_order[0]['status'],
-            'addr' => $b_order[0]['addr'],
-            'txid' => $b_order[0]['txid'],
-            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'bits_payed' => $b_order[0]['bits_payed']
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/invoice_pdf.tpl');
-    }
-
-    //Display Invoice
-    public function hookInvoice($params)
-    {
-        $b_order = Db::getInstance()->ExecuteS(
-            'SELECT * FROM ' .
-                _DB_PREFIX_ .
-                'blockonomics_bitcoin_orders WHERE `id_order` = ' .
-                (int) $params['id_order'] .
-                '  LIMIT 1'
-        );
-
-        /*
-        print_r($b_order);
-        */
-
-        if ($b_order) {
-            $tx_status = (int) $b_order[0]['status'];
-
-            if ($tx_status == -1) {
-                $status = 'Payment Not Received.';
-            } elseif ($tx_status == 0 || $tx_status == 1) {
-                $status = 'Waiting for 2 Confirmations.';
-            } else {
-                $status = 'Payment Confirmed.';
-            }
-
-            $this->smarty->assign(array(
-                'status' => $status,
-                'addr' => $b_order[0]['addr'],
-                'txid' => $b_order[0]['txid'],
-                'bits' => $b_order[0]['bits'],
-                'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-                'bits_payed' => $b_order[0]['bits_payed']
-            ));
-
-            return $this->display(__FILE__, 'views/templates/hook/invoice.tpl');
+        $order_object = $params['order'];
+        if ($order_object->module == 'blockonomics') {
+            $order_object->setInvoice(true);
         }
     }
 
