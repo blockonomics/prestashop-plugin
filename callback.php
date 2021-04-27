@@ -78,11 +78,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             //Update order status
             $o = new Order($order[0]['id_order']);
 
-            if ($status == 0 || $status == 1) {
-                $o->setCurrentState(
-                    Configuration::get('PS_OS_PREPARATION')
-                );
-            } elseif ($status == 2) {
+            if ($status == 2) {
                 $id_order = $order[0]['id_order'];
                 $note = getInvoiceNote($order[0]);
                 $sql = "UPDATE " . _DB_PREFIX_ .
