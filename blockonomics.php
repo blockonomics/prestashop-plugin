@@ -449,7 +449,7 @@ class Blockonomics extends PaymentModule
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $output =
                 $output .
-                $this->display(__FILE__, '/views/templates/admin/backend.tpl');
+                $this->display(__FILE__, 'views/templates/admin/backend.tpl');
         }
 
         return $output . $this->displayForm();
