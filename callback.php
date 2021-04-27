@@ -80,7 +80,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
 
             if ($status == 0 || $status == 1) {
                 $o->setCurrentState(
-                    Configuration::get('BLOCKONOMICS_ORDER_STATUS_0')
+                    Configuration::get('PS_OS_PREPARATION')
                 );
             } elseif ($status == 2) {
                 $id_order = $order[0]['id_order'];
@@ -90,9 +90,6 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 "' WHERE `id_order` = " . (int) $id_order;
                 Db::getInstance()->Execute($sql);
 
-                $o->setCurrentState(
-                    Configuration::get('BLOCKONOMICS_ORDER_STATUS_2')
-                );
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
