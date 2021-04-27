@@ -92,7 +92,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                     Context::getContext()->currency = new Currency($o->id_currency);
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
-                insertTXIDIntoPaymentDetails($order[0]['txid'], $o->reference);
+                insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]['bits_payed']);
             }
         } else {
             echo 'Order not found';
@@ -102,12 +102,27 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     echo 'Secret not matching';
 }
 
-function insertTXIDIntoPaymentDetails($txid, $order_reference)
+function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
 {
-    $sql = "UPDATE " . _DB_PREFIX_ .
-    "order_payment SET `transaction_id` = '" . $txid .
-    "' WHERE `order_reference` = '" . $order_reference. "'";
-    Db::getInstance()->Execute($sql);
+    $payments = $order->getOrderPayments();
+    $len = count($payments);
+    $i = 0;
+    foreach ($payments as $payment) {
+        $i++;
+        //if this txid has already been saved
+        if ($payment->transaction_id == $txid) {
+            return;
+        //if the payment does not have a transaction id, save the TXID
+        } else if (!$payment->transaction_id){
+            $payment->transaction_id = $txid;
+            $payment->save();
+        //all orders have a transaction_id, but this txid has not been saved 
+        } else if ($i == $len - 1) {
+            $payment_method = 'Bitcoin - Blockonomics';
+            $order->addOrderPayment($bits_payed, $payment_method, $txid);
+        }
+    }
+
 }
 
 function getInvoiceNote($order)
