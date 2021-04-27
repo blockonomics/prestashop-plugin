@@ -96,6 +96,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                     Context::getContext()->currency = new Currency($o->id_currency);
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
+                insertTXIDIntoPaymentDetails($order[0]['txid'], $o->reference);
             }
         } else {
             echo 'Order not found';
@@ -103,6 +104,14 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     }
 } else {
     echo 'Secret not matching';
+}
+
+function insertTXIDIntoPaymentDetails($txid, $order_reference)
+{
+    $sql = "UPDATE " . _DB_PREFIX_ .
+    "order_payment SET `transaction_id` = '" . $txid .
+    "' WHERE `order_reference` = '" . $order_reference. "'";
+    Db::getInstance()->Execute($sql);
 }
 
 function getInvoiceNote($order)
