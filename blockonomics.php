@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.8.0';
+        $this->version = '1.7.9.2';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -449,7 +449,7 @@ class Blockonomics extends PaymentModule
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $output =
                 $output .
-                $this->display(__FILE__, 'views/templates/admin/backend.tpl');
+                $this->display(__FILE__, '/views/templates/admin/backend.tpl');
         }
 
         return $output . $this->displayForm();
