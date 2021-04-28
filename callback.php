@@ -19,6 +19,7 @@
  */
 
 require dirname(__FILE__) . '/../../config/config.inc.php';
+require dirname(__FILE__) . '/blockonomics.php';
 
 $secret = Tools::getValue('secret');
 $txid = Tools::getValue('txid');
@@ -104,6 +105,14 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
 
 function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
 {
+    //Get amount payed in fiat currency
+    $currency = new Currency((int) $order->id_currency);
+    $blockonomics = new Blockonomics();
+    $url = Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
+    $price = $blockonomics->doCurlCall($url)->data->price;
+    $total = $price * $bits_payed * 1.0e-8;
+    $rounded_total = round($total, 2);
+
     $payments = $order->getOrderPayments();
     $len = count($payments);
     $i = 0;
@@ -119,10 +128,9 @@ function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
         //all orders have a transaction_id, but this txid has not been saved 
         } else if ($i == $len - 1) {
             $payment_method = 'Bitcoin - Blockonomics';
-            $order->addOrderPayment($bits_payed, $payment_method, $txid);
+            $order->addOrderPayment($rounded_total, $payment_method, $txid);
         }
     }
-
 }
 
 function getInvoiceNote($order)
