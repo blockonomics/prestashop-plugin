@@ -19,7 +19,7 @@
  */
 
 require dirname(__FILE__) . '/../../config/config.inc.php';
-require dirname(__FILE__) . '/blockonomics.php';
+
 
 $secret = Tools::getValue('secret');
 $txid = Tools::getValue('txid');
@@ -93,7 +93,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                     Context::getContext()->currency = new Currency($o->id_currency);
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
-                insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]['bits_payed']);
+                insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]);
             }
         } else {
             echo 'Order not found';
@@ -103,34 +103,18 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     echo 'Secret not matching';
 }
 
-function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
+function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
 {
     //Get amount payed in fiat currency
-    $currency = new Currency((int) $order->id_currency);
-    $blockonomics = new Blockonomics();
-    $url = Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
-    $price = $blockonomics->doCurlCall($url)->data->price;
-    $total = $price * $bits_payed * 1.0e-8;
+    $currency = new Currency((int) $presta_order->id_currency);
+    $btc_price = $blockonomics_order['bits']/$blockonomics_order['value'];
+    $amount = $btc_price * $blockonomics_order['bits_payed'];
 
-    $payments = $order->getOrderPayments();
-    $len = count($payments);
-    $i = 0;
-    foreach ($payments as $payment) {
-        //if this txid has already been saved
-        if ($payment->transaction_id == $txid) {
-            return;
-        //if the payment does not have a transaction id, save the TXID
-        } else if (!$payment->transaction_id){
-            $payment->transaction_id = $txid;
-            $payment->amount = $total;
-            $payment->save();
-            return;
-        //all orders have a transaction_id, but this txid has not been saved 
-        } else if ($i == $len - 1) {
-            $payment_method = 'Bitcoin - Blockonomics';
-            $order->addOrderPayment($total, $payment_method, $txid, $currency);
-        }
-        $i++;
+    $payment_details = $presta_order->getOrderPayments()[0];
+    if (!$payment_details->transaction_id) {
+        $payment_details->transaction_id = $txid;
+        $payment_details->amount = $amount;
+        $payment_details->save();
     }
 }
 
