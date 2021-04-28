@@ -117,7 +117,6 @@ function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
     $len = count($payments);
     $i = 0;
     foreach ($payments as $payment) {
-        $i++;
         //if this txid has already been saved
         if ($payment->transaction_id == $txid) {
             return;
@@ -125,11 +124,13 @@ function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
         } else if (!$payment->transaction_id){
             $payment->transaction_id = $txid;
             $payment->save();
+            return;
         //all orders have a transaction_id, but this txid has not been saved 
         } else if ($i == $len - 1) {
             $payment_method = 'Bitcoin - Blockonomics';
-            $order->addOrderPayment($rounded_total, $payment_method, $txid);
+            $order->addOrderPayment($rounded_total, $payment_method, $txid, $currency);
         }
+        $i++;
     }
 }
 
