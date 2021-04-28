@@ -108,10 +108,10 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
     //Get amount payed in fiat currency
     $currency = new Currency((int) $presta_order->id_currency);
     $btc_price = $blockonomics_order['bits']/$blockonomics_order['value'];
-    $amount = $btc_price * $blockonomics_order['bits_payed'];
+    $amount = $blockonomics_order['bits_payed'] / $btc_price;
 
     $payment_details = $presta_order->getOrderPayments()[0];
-    if (!$payment_details->transaction_id) {
+    if (true) {
         $payment_details->transaction_id = $txid;
         $payment_details->amount = $amount;
         $payment_details->save();
