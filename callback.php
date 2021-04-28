@@ -111,7 +111,6 @@ function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
     $url = Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
     $price = $blockonomics->doCurlCall($url)->data->price;
     $total = $price * $bits_payed * 1.0e-8;
-    $rounded_total = round($total, 2);
 
     $payments = $order->getOrderPayments();
     $len = count($payments);
@@ -123,12 +122,13 @@ function insertTXIDIntoPaymentDetails($order, $txid, $bits_payed)
         //if the payment does not have a transaction id, save the TXID
         } else if (!$payment->transaction_id){
             $payment->transaction_id = $txid;
+            $payment->amount = $total;
             $payment->save();
             return;
         //all orders have a transaction_id, but this txid has not been saved 
         } else if ($i == $len - 1) {
             $payment_method = 'Bitcoin - Blockonomics';
-            $order->addOrderPayment($rounded_total, $payment_method, $txid, $currency);
+            $order->addOrderPayment($total, $payment_method, $txid, $currency);
         }
         $i++;
     }
