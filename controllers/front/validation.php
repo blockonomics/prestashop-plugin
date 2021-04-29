@@ -145,7 +145,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $mes = "Adr BTC : " . $address;
             $blockonomics->validateOrder(
                 (int) $cart->id,
-                Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
+                (int) Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
                 $total,
                 $blockonomics->displayName,
                 $mes,
@@ -156,6 +156,13 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             );
 
             $id_order = $blockonomics->currentOrder;
+
+            $invoice_note = "<b>Bitcoin Address: </b>$address";
+            $sql = "UPDATE " . _DB_PREFIX_ .
+            "order_invoice SET `note` = '" . $invoice_note .
+            "' WHERE `id_order` = " . (int) $id_order;
+            Db::getInstance()->Execute($sql);
+
             // Add the backup cart to user
             $new_cart->id_customer = $old_cart_customer_id;
             $new_cart->save();
