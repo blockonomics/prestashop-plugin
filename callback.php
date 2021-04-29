@@ -105,14 +105,13 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
 
 function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
 {
-    $btc_price = $blockonomics_order['bits']/$blockonomics_order['value'];
-    $amount = $blockonomics_order['bits_payed'] / $btc_price;
+    $paid_ratio = $blockonomics_order['bits_payed'] / $blockonomics_order['bits'];
+    $amount = round($paid_ratio * $blockonomics_order['value'], 2);
     
-    $payment_details = $presta_order->getOrderPayments()[0];
-    if (!$payment_details->transaction_id) {
-        $payment_details->transaction_id = $txid;
-        $payment_details->amount = $amount;
-        $payment_details->save();
+    $payments = $presta_order->getOrderPayments();
+    if (!$payments) {
+        $payment_method = 'Bitcoin - Blockonomics';
+        $presta_order->addOrderPayment($amount, $payment_method, $txid);
     }
 }
 
