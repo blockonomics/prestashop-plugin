@@ -114,10 +114,6 @@ class Blockonomics extends PaymentModule
             'BCH_BLOCKONOMICS_SET_CALLBACK_URL',
             $BCH_BLOCKONOMICS_SET_CALLBACK_URL
         );
-        Configuration::updateValue(
-            'BCH_BLOCKONOMICS_GET_CALLBACKS_URL',
-            $BCH_BLOCKONOMICS_GET_CALLBACKS_URL
-        );
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
@@ -223,7 +219,7 @@ class Blockonomics extends PaymentModule
         UNIQUE KEY order_table (addr))"
         );
 
-        //Blockonimcs basic configuration
+        //Blockonomics basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
@@ -360,8 +356,9 @@ class Blockonomics extends PaymentModule
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
+            $code = strtoupper($code);
             $enabled = Configuration::get('BLOCKONOMICS_'.$code);
-            if($enabled || ($code === 'btc' && $enabled === false )){
+            if($enabled){
                 $active_currencies[$code] = $currency;
             }
         }
@@ -428,7 +425,7 @@ class Blockonomics extends PaymentModule
         return $error_str;
     }
     
-    public function checkGetCallbacksResponseCode($crypto)
+    public function checkGetCallbacksResponseCode($response, $crypto)
     {
         $error_str = '';
         //TODO: Check This: WE should actually check code for timeout
@@ -444,7 +441,7 @@ class Blockonomics extends PaymentModule
         return $error_str;
     }
 
-    public function checkGetCallbacksResponseBody($crypto)
+    public function checkGetCallbacksResponseBody($response, $crypto)
     {
         $error_str = '';
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
@@ -518,6 +515,8 @@ class Blockonomics extends PaymentModule
             $url = Configuration::get('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
         }
         $response = $this->doCurlCall($url);
+        echo var_dump($url);
+        echo var_dump($response);
         return $response;
     }
 
@@ -610,24 +609,27 @@ class Blockonomics extends PaymentModule
         $output = '';
         if (Tools::isSubmit("testSetup")) {
             $this->updateSettings();
-            $error_str = $this->testSetup();
-            if ($error_str) {
-                $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
-                $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
-                $error_str =
-                    $error_str .
-                    "</br>" .
-                    $this->l('For more information please consult this ') .
-                    "<a target='_blank' href='" .
-                    $article_url. "'>" .
-                    $this->l('troubleshooting article') .
-                    "</a>";
-                $output = $this->displayError($error_str);
-            } else {
-                $output = $this->displayConfirmation(
-                    $this->l('Setup is all done!')
-                );
+            $error_strings = $this->testSetup();
+            foreach ($error_strings as $error_str){
+                if ($error_str) {
+                    $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
+                    $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
+                    $error_str =
+                        $error_str .
+                        "</br>" .
+                        $this->l('For more information please consult this ') .
+                        "<a target='_blank' href='" .
+                        $article_url. "'>" .
+                        $this->l('troubleshooting article') .
+                        "</a>";
+                    $output = $output . $this->displayError($error_str);
+                } else {
+                    $output = $output . $this->displayConfirmation(
+                        $this->l('Setup is all done!')
+                    );
+                }
             }
+
         } elseif (Tools::isSubmit('updateSettings')) {
             $this->updateSettings();
             $output = $this->displayConfirmation(
