@@ -33,7 +33,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.7.91';
+        $this->version = '1.7.10';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -103,6 +103,7 @@ class Blockonomics extends PaymentModule
     {
         if (!parent::install() or
             !$this->installDB() or
+            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', null) or
             !$this->registerHook('paymentOptions') or
             !$this->registerHook('actionValidateOrder')
         ) {
