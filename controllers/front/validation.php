@@ -145,7 +145,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $mes = "Adr BTC : " . $address;
             $blockonomics->validateOrder(
                 (int) $cart->id,
-                Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
+                (int) Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
                 $total,
                 $blockonomics->displayName,
                 $mes,

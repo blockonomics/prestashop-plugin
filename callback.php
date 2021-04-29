@@ -20,6 +20,7 @@
 
 require dirname(__FILE__) . '/../../config/config.inc.php';
 
+
 $secret = Tools::getValue('secret');
 $txid = Tools::getValue('txid');
 $value = Tools::getValue('value');
@@ -78,11 +79,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             //Update order status
             $o = new Order($order[0]['id_order']);
 
-            if ($status == 0 || $status == 1) {
-                $o->setCurrentState(
-                    Configuration::get('BLOCKONOMICS_ORDER_STATUS_0')
-                );
-            } elseif ($status == 2) {
+            if ($status == 2) {
                 $id_order = $order[0]['id_order'];
                 $note = getInvoiceNote($order[0]);
                 $sql = "UPDATE " . _DB_PREFIX_ .
@@ -90,15 +87,13 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 "' WHERE `id_order` = " . (int) $id_order;
                 Db::getInstance()->Execute($sql);
 
-                $o->setCurrentState(
-                    Configuration::get('BLOCKONOMICS_ORDER_STATUS_2')
-                );
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
                     Context::getContext()->currency = new Currency($o->id_currency);
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                 }
+                insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]);
             }
         } else {
             echo 'Order not found';
@@ -106,6 +101,18 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
     }
 } else {
     echo 'Secret not matching';
+}
+
+function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
+{
+    $paid_ratio = $blockonomics_order['bits_payed'] / $blockonomics_order['bits'];
+    $amount = round($paid_ratio * $blockonomics_order['value'], 2);
+    
+    $payments = $presta_order->getOrderPayments();
+    if (!$payments) {
+        $payment_method = 'Bitcoin - Blockonomics';
+        $presta_order->addOrderPayment($amount, $payment_method, $txid);
+    }
 }
 
 function getInvoiceNote($order)
