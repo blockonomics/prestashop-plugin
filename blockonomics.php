@@ -338,8 +338,7 @@ class Blockonomics extends PaymentModule
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
-            $code = strtoupper($code);
-            $enabled = Configuration::get('BLOCKONOMICS_'.$code);
+            $enabled = Configuration::get('BLOCKONOMICS_'.strtoupper($code));
             if($enabled){
                 $active_currencies[$code] = $currency;
             }
@@ -372,7 +371,7 @@ class Blockonomics extends PaymentModule
         $error_str = $this->checkCallbackUrlsOrSetOne($crypto, $response);
         if (!$error_str) {
             //Everything OK ! Test address generation
-            $response = $this->testNewAddressGen($crypto, $response);
+            $response = $this->testNewAddressGen($crypto);
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
@@ -381,7 +380,7 @@ class Blockonomics extends PaymentModule
         return $error_str;
     }
 
-    public function testNewAddressGen($crypto, $response)
+    public function testNewAddressGen($crypto)
     {
         $error_str = '';
         $response = $this->getNewAddress($crypto, true);
@@ -497,8 +496,6 @@ class Blockonomics extends PaymentModule
             $url = Configuration::get('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
         }
         $response = $this->doCurlCall($url);
-        echo var_dump($url);
-        echo var_dump($response);
         return $response;
     }
 
