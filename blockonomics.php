@@ -111,6 +111,10 @@ class Blockonomics extends PaymentModule
             $BCH_BLOCKONOMICS_NEW_ADDRESS_URL
         );
         Configuration::updateValue(
+            'BCH_BLOCKONOMICS_GET_CALLBACKS_URL',
+            $BCH_BLOCKONOMICS_GET_CALLBACKS_URL
+        );
+        Configuration::updateValue(
             'BCH_BLOCKONOMICS_SET_CALLBACK_URL',
             $BCH_BLOCKONOMICS_SET_CALLBACK_URL
         );
