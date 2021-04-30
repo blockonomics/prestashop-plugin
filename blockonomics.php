@@ -523,12 +523,12 @@ class Blockonomics extends PaymentModule
         if (Tools::isSubmit("testSetup")) {
             $this->updateSettings();
             $error_strings = $this->testSetup();
-            foreach ($error_strings as $error_str){
+            foreach ($error_strings as $crypto => $error_str){
                 if ($error_str) {
                     $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
                     $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
-                    $error_str =
-                        $error_str .
+                    $error_str = strtoupper($crypto) .
+                        ': ' . $error_str .
                         "</br>" .
                         $this->l('For more information please consult this ') .
                         "<a target='_blank' href='" .
@@ -538,7 +538,7 @@ class Blockonomics extends PaymentModule
                     $output = $output . $this->displayError($error_str);
                 } else {
                     $output = $output . $this->displayConfirmation(
-                        $this->l('Setup is all done!')
+                        strtoupper($crypto) . ': ' . $this->l('Setup is all done!')
                     );
                 }
             }
