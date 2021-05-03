@@ -291,9 +291,9 @@ class Blockonomics extends PaymentModule
 
     public function getNewAddress($crypto, $test_mode = false)
     {
-        if($crypto == 'btc'){
+        if ($crypto == 'btc') {
             $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
-        }else{
+        } else {
             $new_address_url = Configuration::get('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');
         }
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
@@ -348,7 +348,7 @@ class Blockonomics extends PaymentModule
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
             $enabled = Configuration::get('BLOCKONOMICS_' . Tools::strtoupper($code));
-            if($enabled){
+            if ($enabled) {
                 $active_currencies[$code] = $currency;
             }
         }
@@ -392,13 +392,13 @@ class Blockonomics extends PaymentModule
     public function checkCallbackUrlsOrSetOne($crypto, $response)
     {
         $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
-        if (!$api_key){
+        if (!$api_key) {
             $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
             return $error_str;
         }
         //chek the current callback and detect any potential errors
         $error_str = $this->checkGetCallbacksResponseCode($response, $crypto);
-        if(!$error_str){
+        if (!$error_str) {
             //if needed, set the callback.
             $error_str = $this->checkGetCallbacksResponseBody($response, $crypto);
         }
@@ -473,9 +473,9 @@ class Blockonomics extends PaymentModule
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
-        if ($crypto == 'btc'){
+        if ($crypto == 'btc') {
             $set_callback_url = Configuration::get('SET_CALLBACK_URL');
-        }else{
+        } else {
             $set_callback_url = Configuration::get('BCH_SET_CALLBACK_URL');
         }
         $post_content =
@@ -489,9 +489,9 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        if ($crypto == 'btc'){
+        if ($crypto == 'btc') {
             $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
-        }else{
+        } else {
             $url = Configuration::get('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
         }
         $response = $this->doCurlCall($url);
@@ -532,7 +532,7 @@ class Blockonomics extends PaymentModule
         if (Tools::isSubmit("testSetup")) {
             $this->updateSettings();
             $error_strings = $this->testSetup();
-            foreach ($error_strings as $crypto => $error_str){
+            foreach ($error_strings as $crypto => $error_str) {
                 if ($error_str) {
                     $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
                     $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
