@@ -343,7 +343,8 @@ class Blockonomics extends PaymentModule
     /*
      * Get list of active crypto currencies
      */
-    public function getActiveCurrencies() {
+    public function getActiveCurrencies() 
+    {
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
@@ -358,7 +359,8 @@ class Blockonomics extends PaymentModule
     /*
      * Get list of crypto currencies supported by Blockonomics
      */
-    public function getSupportedCurrencies() {
+    public function getSupportedCurrencies() 
+    {
         return array(
               'btc' => array(
                     'code' => 'btc',
@@ -413,11 +415,11 @@ class Blockonomics extends PaymentModule
             $error_str = $this->l(
                 'Your server is blocking outgoing HTTPS calls'
             );
-        }
-        elseif ($response->response_code == 401)
+        } elseif ($response->response_code == 401) {
             $error_str = $this->l('API Key is incorrect');
-        elseif ($response->response_code != 200)
+        } elseif ($response->response_code != 200) {
             $error_str = $response->data;
+        }
         return $error_str;
     }
 
@@ -551,7 +553,6 @@ class Blockonomics extends PaymentModule
                     );
                 }
             }
-
         } elseif (Tools::isSubmit('updateSettings')) {
             $this->updateSettings();
             $output = $this->displayConfirmation(
@@ -737,7 +738,7 @@ class Blockonomics extends PaymentModule
         );
         $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
             'BLOCKONOMICS_BCH'
-        );;
+        );
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if (!$callback_secret) {
             $this->generatenewCallback();
