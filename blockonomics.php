@@ -212,9 +212,9 @@ class Blockonomics extends PaymentModule
 
         //Blockonomics basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
+        Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
-        Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
 
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
@@ -340,7 +340,7 @@ class Blockonomics extends PaymentModule
         return $test_results;
     }
 
-        /*
+    /*
      * Get list of active crypto currencies
      */
     public function getActiveCurrencies() {
@@ -355,7 +355,7 @@ class Blockonomics extends PaymentModule
         return $active_currencies;
     }
 
-        /*
+    /*
      * Get list of crypto currencies supported by Blockonomics
      */
     public function getSupportedCurrencies() {
