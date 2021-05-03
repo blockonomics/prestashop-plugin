@@ -68,10 +68,15 @@ class Blockonomics extends PaymentModule
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         $BCH_BLOCKONOMICS_BASE_URL = 'https://bch.blockonomics.co';
-        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL = 'https://bch.blockonomics.co/api/new_address';
-        $BCH_BLOCKONOMICS_PRICE_URL = 'https://bch.blockonomics.co/api/price';
-        $BCH_BLOCKONOMICS_SET_CALLBACK_URL = 'https://bch.blockonomics.co/api/update_callback';
-        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL = 'https://bch.blockonomics.co/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL = 
+            $BCH_BLOCKONOMICS_BASE_URL . '/api/new_address';
+        $BCH_BLOCKONOMICS_PRICE_URL = 
+            $BCH_BLOCKONOMICS_BASE_URL . '/api/price?currency=';
+        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL = 
+            $BCH_BLOCKONOMICS_BASE_URL . 
+            '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $BCH_BLOCKONOMICS_SET_CALLBACK_URL = 
+            $BCH_BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         Configuration::updateValue(
             'BLOCKONOMICS_BASE_URL',
