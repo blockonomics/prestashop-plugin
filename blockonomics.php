@@ -334,7 +334,7 @@ class Blockonomics extends PaymentModule
     {
         $test_results = array();
         $active_cryptos = $this->getActiveCurrencies();
-        foreach ($active_cryptos as $code => $crypto) {
+        foreach (array_keys($active_cryptos) as $code) {
             $test_results[$code] = $this->testOneCrypto($code);
         }
         return $test_results;
@@ -343,7 +343,7 @@ class Blockonomics extends PaymentModule
     /*
      * Get list of active crypto currencies
      */
-    public function getActiveCurrencies() 
+    public function getActiveCurrencies()
     {
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
@@ -359,7 +359,7 @@ class Blockonomics extends PaymentModule
     /*
      * Get list of crypto currencies supported by Blockonomics
      */
-    public function getSupportedCurrencies() 
+    public function getSupportedCurrencies()
     {
         return array(
               'btc' => array(
@@ -399,7 +399,7 @@ class Blockonomics extends PaymentModule
             return $error_str;
         }
         //chek the current callback and detect any potential errors
-        $error_str = $this->checkGetCallbacksResponseCode($response, $crypto);
+        $error_str = $this->checkGetCallbacksResponseCode($response);
         if (!$error_str) {
             //if needed, set the callback.
             $error_str = $this->checkGetCallbacksResponseBody($response, $crypto);
@@ -407,7 +407,7 @@ class Blockonomics extends PaymentModule
         return $error_str;
     }
     
-    public function checkGetCallbacksResponseCode($response, $crypto)
+    public function checkGetCallbacksResponseCode($response)
     {
         $error_str = '';
         //TODO: Check This: WE should actually check code for timeout
