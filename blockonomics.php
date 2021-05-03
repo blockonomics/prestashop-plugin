@@ -68,14 +68,14 @@ class Blockonomics extends PaymentModule
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         $BCH_BLOCKONOMICS_BASE_URL = 'https://bch.blockonomics.co';
-        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL = 
+        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/new_address';
-        $BCH_BLOCKONOMICS_PRICE_URL = 
+        $BCH_BLOCKONOMICS_PRICE_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/price?currency=';
-        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL = 
-            $BCH_BLOCKONOMICS_BASE_URL . 
+        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL =
+            $BCH_BLOCKONOMICS_BASE_URL .
             '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BCH_BLOCKONOMICS_SET_CALLBACK_URL = 
+        $BCH_BLOCKONOMICS_SET_CALLBACK_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         Configuration::updateValue(
@@ -294,7 +294,7 @@ class Blockonomics extends PaymentModule
         if($crypto == 'btc'){
             $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
         }else{
-            $new_address_url = Configuration::get('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');            
+            $new_address_url = Configuration::get('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');
         }
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
@@ -413,10 +413,10 @@ class Blockonomics extends PaymentModule
             $error_str = $this->l(
                 'Your server is blocking outgoing HTTPS calls'
             );
-        } 
+        }
         elseif ($response->response_code == 401)
             $error_str = $this->l('API Key is incorrect');
-        elseif ($response->response_code != 200) 
+        elseif ($response->response_code != 200)
             $error_str = $response->data;
         return $error_str;
     }
@@ -635,7 +635,7 @@ class Blockonomics extends PaymentModule
                     'type' => 'checkbox',
                     'label'     => $this->l('Bitcoin (BTC)'),
                     'desc'      => $this->l('To configure, click Get Started for Free on ').
-                    '<a href="https://blockonomics.co/merchants">https://blockonomics.co/merchants</a>',   
+                    '<a href="https://blockonomics.co/merchants">https://blockonomics.co/merchants</a>',
                     'name' => 'BLOCKONOMICS',
                     'values' => array(
                         'query' => array(
@@ -653,7 +653,7 @@ class Blockonomics extends PaymentModule
                     'type'      => 'checkbox',
                     'label'     => $this->l('Bitcoin Cash (BCH)'),
                     'desc'      => $this->l('To configure, click Get Started for Free on ').
-                    '<a href="https://bch.blockonomics.co/merchants">https://bch.blockonomics.co/merchants</a>',   
+                    '<a href="https://bch.blockonomics.co/merchants">https://bch.blockonomics.co/merchants</a>',
                     'name'      => 'BLOCKONOMICS',
                     'values' => array(
                         'query' => array(
@@ -683,7 +683,7 @@ class Blockonomics extends PaymentModule
         return $helper->generateForm($fields_form);
     }
 
-    public function generateHelper() 
+    public function generateHelper()
     {
         // Get default language
         $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
