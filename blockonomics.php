@@ -347,7 +347,7 @@ class Blockonomics extends PaymentModule
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
-            $enabled = Configuration::get('BLOCKONOMICS_'.strtoupper($code));
+            $enabled = Configuration::get('BLOCKONOMICS_' . Tools::strtoupper($code));
             if($enabled){
                 $active_currencies[$code] = $currency;
             }
@@ -536,7 +536,7 @@ class Blockonomics extends PaymentModule
                 if ($error_str) {
                     $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
                     $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
-                    $error_str = strtoupper($crypto) .
+                    $error_str = Tools::strtoupper($crypto) .
                         ': ' . $error_str .
                         "</br>" .
                         $this->l('For more information please consult this ') .
@@ -547,7 +547,7 @@ class Blockonomics extends PaymentModule
                     $output = $output . $this->displayError($error_str);
                 } else {
                     $output = $output . $this->displayConfirmation(
-                        strtoupper($crypto) . ': ' . $this->l('Setup is all done!')
+                        Tools::strtoupper($crypto) . ': ' . $this->l('Setup is all done!')
                     );
                 }
             }
