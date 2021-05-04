@@ -80,13 +80,6 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             $o = new Order($order[0]['id_order']);
 
             if ($status == 2) {
-                $id_order = $order[0]['id_order'];
-                $note = getInvoiceNote($order[0]);
-                $sql = "UPDATE " . _DB_PREFIX_ .
-                "order_invoice SET `note` = '" . $note .
-                "' WHERE `id_order` = " . (int) $id_order;
-                Db::getInstance()->Execute($sql);
-
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
@@ -112,24 +105,8 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
     if (!$payments) {
         $payment_method = 'Bitcoin - Blockonomics';
         $presta_order->addOrderPayment($amount, $payment_method, $txid);
+    } elseif ($payments[0]->payment_method = 'Bitcoin - Blockonomics' && !$payments[0]->transaction_id) {
+        $payments[0]->transaction_id = $txid;
+        $payments[0]->save();
     }
-}
-
-function getInvoiceNote($order)
-{
-    $addr = $order['addr'];
-    $bits = number_format($order['bits']/100000000, 8);
-    $bits_payed = number_format($order['bits_payed']/100000000, 8);
-    $addr_message = "<b>Bitcoin Address: </b> $addr <br>";
-    $cart_value = "<b>Cart value: </b>" . $bits . " BTC <br>";
-    $amount_paid = "<b>Amount paid: </b>" . $bits_payed . " BTC <br>";
-    $base_url = Configuration::get('BLOCKONOMICS_BASE_URL');
-    $txid = $order['txid'];
-    $transaction_link = '<b>TXID:</b><a href="'.$base_url.'/api/tx?txid='.$txid.'&addr='.$addr.'">'.$txid.'</a>';
-    $payment_error = '';
-    if ($bits > $bits_payed) {
-        $payment_error = '<br><b>Payment Error</b>: Amount paid less than cart value <br>';
-    }
-    $note = $addr_message . $cart_value . $amount_paid . $transaction_link . $payment_error;
-    return $note;
 }
