@@ -393,12 +393,7 @@ class Blockonomics extends PaymentModule
 
     public function checkCallbackUrlsOrSetOne($crypto, $response)
     {
-        $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
-        if (!$api_key) {
-            $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
-            return $error_str;
-        }
-        //chek the current callback and detect any potential errors
+        //check the current callback and detect any potential errors
         $error_str = $this->checkGetCallbacksResponseCode($response);
         if (!$error_str) {
             //if needed, set the callback.
