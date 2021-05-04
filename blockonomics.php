@@ -623,6 +623,10 @@ class Blockonomics extends PaymentModule
             ),
         );
         // Init Currencies Fields form array
+        $desc = $this->l('To configure, click ') .
+        '<b>'. $this->l('Get Started for Free'). '</b>' . 
+        $this->l(' on ');
+
         $fields_form[1]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Currencies')
@@ -631,8 +635,7 @@ class Blockonomics extends PaymentModule
                 array(
                     'type' => 'checkbox',
                     'label'     => $this->l('Bitcoin (BTC)'),
-                    'desc'      => $this->l('To configure, click Get Started for Free on ').
-                    '<a href="https://blockonomics.co/merchants">https://blockonomics.co/merchants</a>',
+                    'desc'      => $desc . '<a href="https://blockonomics.co/merchants">https://blockonomics.co/merchants</a>',
                     'name' => 'BLOCKONOMICS',
                     'values' => array(
                         'query' => array(
@@ -648,8 +651,7 @@ class Blockonomics extends PaymentModule
                 array(
                     'type'      => 'checkbox',
                     'label'     => $this->l('Bitcoin Cash (BCH)'),
-                    'desc'      => $this->l('To configure, click Get Started for Free on ').
-                    '<a href="https://bch.blockonomics.co/merchants">https://bch.blockonomics.co/merchants</a>',
+                    'desc'      => $desc . '<a href="https://bch.blockonomics.co/merchants">https://bch.blockonomics.co/merchants</a>',
                     'name'      => 'BLOCKONOMICS',
                     'values' => array(
                         'query' => array(
