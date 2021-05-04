@@ -571,6 +571,7 @@ class Blockonomics extends PaymentModule
     public function displayForm()
     {
         $fields_form = array();
+        // Init Settings Fields form array
         $fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Settings')
@@ -621,7 +622,7 @@ class Blockonomics extends PaymentModule
                 'class' => 'btn btn-default pull-right'
             ),
         );
-        
+        // Init Currencies Fields form array
         $fields_form[1]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Currencies')
