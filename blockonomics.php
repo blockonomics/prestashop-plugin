@@ -737,9 +737,6 @@ class Blockonomics extends PaymentModule
             $this->generatenewCallback();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
-        $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
-            'BLOCKONOMICS_BCH'
-        );
         $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true).
         'modules/' .
         $this->name .
