@@ -638,7 +638,6 @@ class Blockonomics extends PaymentModule
                             array(
                                 'id' => 'BTC',
                                 'name' => '',
-                                'val' => '1',
                             ),
                         ),
                         'id' => 'id',
@@ -656,7 +655,6 @@ class Blockonomics extends PaymentModule
                             array(
                                 'id' => 'BCH',
                                 'name' => '',
-                                'val' => '1',
                             ),
                         ),
                         'id' => 'id',
