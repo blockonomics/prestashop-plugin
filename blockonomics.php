@@ -765,7 +765,7 @@ class Blockonomics extends PaymentModule
         );
     }
 
-    public function generatenewCallbackSecret()
+    public function generateNewCallbackSecret()
     {
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
