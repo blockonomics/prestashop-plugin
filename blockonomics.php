@@ -227,6 +227,7 @@ class Blockonomics extends PaymentModule
         $offlineOption = new PaymentOption();
         $offlineOption
             ->setCallToActionText($this->l('Pay by bitcoin'))
+            ->setLogo(_MODULE_DIR_.'blockonomics/views/img/payment-selection-logo.png')
             ->setAction(
                 $this->context->link->getModuleLink(
                     $this->name,
