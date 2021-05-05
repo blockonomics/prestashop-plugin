@@ -474,9 +474,9 @@ class Blockonomics extends PaymentModule
     public function updateCallback($callback_url, $crypto, $xpub)
     {
         if ($crypto == 'btc') {
-            $set_callback_url = Configuration::get('SET_CALLBACK_URL');
+            $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
         } else {
-            $set_callback_url = Configuration::get('BCH_SET_CALLBACK_URL');
+            $set_callback_url = Configuration::get('BCH_BLOCKONOMICS_SET_CALLBACK_URL');
         }
         $post_content =
         '{"callback": "' .
