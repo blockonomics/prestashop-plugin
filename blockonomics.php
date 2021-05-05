@@ -289,7 +289,7 @@ class Blockonomics extends PaymentModule
         return $this->doCurlCall($url)->data->price;
     }
 
-    public function getNewAddress($crypto, $test_mode = false)
+    public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
         if ($crypto == 'btc') {
             $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
