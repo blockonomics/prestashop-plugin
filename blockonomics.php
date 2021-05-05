@@ -290,7 +290,7 @@ class Blockonomics extends PaymentModule
     }
 
     /*
-     * Get new address; default crypto is btc 
+     * Get new address; default crypto is btc
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
