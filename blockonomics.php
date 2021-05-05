@@ -289,6 +289,9 @@ class Blockonomics extends PaymentModule
         return $this->doCurlCall($url)->data->price;
     }
 
+    /*
+     * Get new address; default crypto is btc 
+     */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
         if ($crypto == 'btc') {
@@ -396,7 +399,7 @@ class Blockonomics extends PaymentModule
         //check the current callback and detect any potential errors
         $error_str = $this->checkGetCallbacksResponseCode($response);
         if (!$error_str) {
-            //if needed, set the callback.
+            //check callback responsebody and if needed, set the callback.
             $error_str = $this->checkGetCallbacksResponseBody($response, $crypto);
         }
         return $error_str;
@@ -571,7 +574,7 @@ class Blockonomics extends PaymentModule
     public function displayForm()
     {
         $fields_form = array();
-        // Init Settings Fields form array
+        // Init Settings Fields form array; a.k.a. Settings section
         $fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Settings')
@@ -622,7 +625,8 @@ class Blockonomics extends PaymentModule
                 'class' => 'btn btn-default pull-right'
             ),
         );
-        // Init Currencies Fields form array
+
+        // Init Currencies Fields form array; a.k.a. Currencies section
         $desc = $this->l('To configure, click ') .
         '<b>'. $this->l('Get Started for Free'). '</b>' .
         $this->l(' on ');
@@ -724,7 +728,7 @@ class Blockonomics extends PaymentModule
             )
         );
 
-        // Load current value
+        // Load current values for the different fields in Settings and Currencies section
         $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get(
             'BLOCKONOMICS_API_KEY'
         );
