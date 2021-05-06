@@ -665,7 +665,8 @@ class Blockonomics extends PaymentModule
                     'type'      => 'checkbox',
                     'label'     => $this->l('Bitcoin Cash (BCH)'),
                     'desc'      => $desc .
-                    '<a href="https://bch.blockonomics.co/merchants" target="_blank">https://bch.blockonomics.co/merchants</a>',
+                    '<a href="https://bch.blockonomics.co/merchants" target="_blank">
+                    https://bch.blockonomics.co/merchants</a>',
                     'name'      => 'BLOCKONOMICS',
                     'values' => array(
                         'query' => array(
