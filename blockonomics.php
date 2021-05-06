@@ -537,6 +537,7 @@ class Blockonomics extends PaymentModule
             if (!$api_key) {
                 $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
                 $output = $output . $this->displayError($error_str);
+            //otherwise, test active cryptos
             } else {
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
