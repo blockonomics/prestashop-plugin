@@ -532,23 +532,30 @@ class Blockonomics extends PaymentModule
         if (Tools::isSubmit("testSetup")) {
             $this->updateSettings();
             $error_strings = $this->testSetup();
-            foreach ($error_strings as $crypto => $error_str) {
-                if ($error_str) {
-                    $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
-                    $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
-                    $error_str = Tools::strtoupper($crypto) .
-                        ': ' . $error_str .
-                        "</br>" .
-                        $this->l('For more information please consult this ') .
-                        "<a target='_blank' href='" .
-                        $article_url. "'>" .
-                        $this->l('troubleshooting article') .
-                        "</a>";
-                    $output = $output . $this->displayError($error_str);
-                } else {
-                    $output = $output . $this->displayConfirmation(
-                        Tools::strtoupper($crypto) . ': ' . $this->l('Setup is all done!')
-                    );
+            $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
+            //if there's no API key, give error immediately
+            if (!$api_key) {
+                $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
+                $output = $output . $this->displayError($error_str);
+            } else {
+                foreach ($error_strings as $crypto => $error_str) {
+                    if ($error_str) {
+                        $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
+                        $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
+                        $error_str = Tools::strtoupper($crypto) .
+                            ': ' . $error_str .
+                            "</br>" .
+                            $this->l('For more information please consult this ') .
+                            "<a target='_blank' href='" .
+                            $article_url. "'>" .
+                            $this->l('troubleshooting article') .
+                            "</a>";
+                        $output = $output . $this->displayError($error_str);
+                    } else {
+                        $output = $output . $this->displayConfirmation(
+                            Tools::strtoupper($crypto) . ': ' . $this->l('Setup is all done!')
+                        );
+                    }
                 }
             }
         } elseif (Tools::isSubmit('updateSettings')) {
