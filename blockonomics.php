@@ -68,14 +68,14 @@ class Blockonomics extends PaymentModule
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         $BCH_BLOCKONOMICS_BASE_URL = 'https://bch.blockonomics.co';
-        $BCH_BLOCKONOMICS_NEW_ADDRESS_URL =
+        $BLOCKONOMICS_BCH_NEW_ADDRESS_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/new_address';
-        $BCH_BLOCKONOMICS_PRICE_URL =
+        $BLOCKONOMICS_BCH_PRICE_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/price?currency=';
-        $BCH_BLOCKONOMICS_GET_CALLBACKS_URL =
+        $BLOCKONOMICS_BCH_GET_CALLBACKS_URL =
             $BCH_BLOCKONOMICS_BASE_URL .
             '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BCH_BLOCKONOMICS_SET_CALLBACK_URL =
+        $BLOCKONOMICS_BCH_SET_CALLBACK_URL =
             $BCH_BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         Configuration::updateValue(
@@ -108,20 +108,20 @@ class Blockonomics extends PaymentModule
             $BCH_BLOCKONOMICS_BASE_URL
         );
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_PRICE_URL',
-            $BCH_BLOCKONOMICS_PRICE_URL
+            'BLOCKONOMICS_BCH_PRICE_URL',
+            $BLOCKONOMICS_BCH_PRICE_URL
         );
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_NEW_ADDRESS_URL',
-            $BCH_BLOCKONOMICS_NEW_ADDRESS_URL
+            'BLOCKONOMICS_BCH_NEW_ADDRESS_URL',
+            $BLOCKONOMICS_BCH_NEW_ADDRESS_URL
         );
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_GET_CALLBACKS_URL',
-            $BCH_BLOCKONOMICS_GET_CALLBACKS_URL
+            'BLOCKONOMICS_BCH_GET_CALLBACKS_URL',
+            $BLOCKONOMICS_BCH_GET_CALLBACKS_URL
         );
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_SET_CALLBACK_URL',
-            $BCH_BLOCKONOMICS_SET_CALLBACK_URL
+            'BLOCKONOMICS_BCH_SET_CALLBACK_URL',
+            $BLOCKONOMICS_BCH_SET_CALLBACK_URL
         );
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -243,10 +243,10 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
 
         Configuration::deleteByName('BCH_BLOCKONOMICS_BASE_URL');
-        Configuration::deleteByName('BCH_BLOCKONOMICS_PRICE_URL');
-        Configuration::deleteByName('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
-        Configuration::deleteByName('BCH_BLOCKONOMICS_SET_CALLBACK_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_PRICE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
         return true;
     }
 
@@ -297,7 +297,7 @@ class Blockonomics extends PaymentModule
         if ($crypto == 'btc') {
             $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
         } else {
-            $new_address_url = Configuration::get('BCH_BLOCKONOMICS_NEW_ADDRESS_URL');
+            $new_address_url = Configuration::get('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
         }
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
@@ -476,7 +476,7 @@ class Blockonomics extends PaymentModule
         if ($crypto == 'btc') {
             $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
         } else {
-            $set_callback_url = Configuration::get('BCH_BLOCKONOMICS_SET_CALLBACK_URL');
+            $set_callback_url = Configuration::get('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
         }
         $post_content =
         '{"callback": "' .
@@ -492,7 +492,7 @@ class Blockonomics extends PaymentModule
         if ($crypto == 'btc') {
             $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
         } else {
-            $url = Configuration::get('BCH_BLOCKONOMICS_GET_CALLBACKS_URL');
+            $url = Configuration::get('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
         }
         $response = $this->doCurlCall($url);
         return $response;
