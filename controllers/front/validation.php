@@ -157,12 +157,11 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
             $id_order = $blockonomics->currentOrder;
             
-            // Get invoice and add address as a note
-            $presta_order = new Order($id_order);
-            $invoice = $presta_order->getInvoicesCollection()[0];
-            $invoice_note = "Bitcoin Address: $address";
-            $invoice->note = $invoice_note;
-            $invoice->save();
+            $invoice_note = "<b>Bitcoin Address: </b>$address";
+            $sql = "UPDATE " . _DB_PREFIX_ .
+            "order_invoice SET `note` = '" . $invoice_note .
+            "' WHERE `id_order` = " . (int) $id_order;
+            Db::getInstance()->Execute($sql);
 
             // Add the backup cart to user
             $new_cart->id_customer = $old_cart_customer_id;
