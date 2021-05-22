@@ -156,7 +156,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             );
 
             $id_order = $blockonomics->currentOrder;
-            
+            var_dump($id_order);
+
             $invoice_note = "<b>Bitcoin Address: </b>$address";
             $sql = "UPDATE " . _DB_PREFIX_ .
             "order_invoice SET `note` = '" . $invoice_note .

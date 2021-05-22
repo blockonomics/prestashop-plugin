@@ -104,8 +104,11 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
     $payments = $presta_order->getOrderPayments();
     if (!$payments) {
         $payment_method = 'Bitcoin - Blockonomics';
+        var_dump('adding '.$txid);
         $presta_order->addOrderPayment($amount, $payment_method, $txid);
+
     } elseif ($payments[0]->payment_method = 'Bitcoin - Blockonomics' && !$payments[0]->transaction_id) {
+        var_dump('updating '.$txid);
         $payments[0]->transaction_id = $txid;
         $payments[0]->save();
     }
