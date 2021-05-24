@@ -66,6 +66,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
     }
     public function postProcess()
     {
+        $crypto = Tools::getValue('crypto');
         $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
@@ -108,9 +109,9 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         //if no order, or the fiat value of the cart has changed => create a new order
         if (!$order || $order['value'] != $total) {
             $current_time = time();
-            $bits = $this->getBits($blockonomics, $currency, $total);
+            $bits = $this->getBits($blockonomics, $crypto, $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
-            $responseObj = $blockonomics->getNewAddress();
+            $responseObj = $blockonomics->getNewAddress($crypto);
             if (!$responseObj->data || !$responseObj->data->address) {
                 $this->displayError($blockonomics);
             }
@@ -240,7 +241,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
             'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
-            'time_remaining' => $time_remaining
+            'time_remaining' => $time_remaining,
+            'crypto' => $crypto
         ));
 
         $this->setTemplate(
@@ -262,13 +264,13 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         return false;
     }
 
-    private function getBits($blockonomics, $currency, $total)
+    private function getBits($blockonomics, $crypto, $currency, $total)
     {
-        $price = $blockonomics->getPrice($currency->id);
+        $price = $blockonomics->getPrice($crypto, $currency->id);
         if (!$price) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
-        $bits =(int) ((1.0e8 * $total) / $price);
+        $bits = (int) ((1.0e8 * $total) / $price);
         return $bits;
     }
 

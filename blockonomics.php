@@ -280,12 +280,15 @@ class Blockonomics extends PaymentModule
         return $offlineOption;
     }
 
-    public function getPrice($id_currency)
+    public function getPrice($crypto, $id_currency)
     {
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $url =
-            Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
+        if ($crypto == 'btc') {
+            $url = Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
+        } else {
+            $url = Configuration::get('BLOCKONOMICS_BCH_PRICE_URL') . $currency->iso_code;
+        }
         return $this->doCurlCall($url)->data->price;
     }
 
