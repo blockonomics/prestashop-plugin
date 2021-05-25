@@ -100,6 +100,13 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
 {
     $paid_ratio = $blockonomics_order['bits_payed'] / $blockonomics_order['bits'];
     $amount = round($paid_ratio * $blockonomics_order['value'], 2);
+
+    // Get invoice and add address as a note
+    $presta_order = new Order($blockonomics_order['id_order']);
+    $invoice = $presta_order->getInvoicesCollection()[0];
+    $invoice_note = Tools::strtoupper($blockonomics_order['crypto']) . " Address: " . $blockonomics_order['addr'];
+    $invoice->note = $invoice_note;
+    $invoice->save();
     
     $payments = $presta_order->getOrderPayments();
     if (!$payments) {
