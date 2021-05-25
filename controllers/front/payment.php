@@ -65,11 +65,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         );
     }
     public function postProcess()
-    {
-        $crypto = Tools::getValue('crypto');
+    {   
         $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
+        $crypto = $blockonomics->getActiveCurrencies()[Tools::getValue('crypto')];
 
         if (!isset($cart->id) or
             $cart->id_customer == 0 or
@@ -103,15 +103,17 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $this->displayExtError($blockonomics);
         }
 
-        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
+        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id AND crypto = '" . $crypto['code'] . "'";
+        echo var_dump($sql);
         $order = Db::getInstance()->getRow($sql);
+        echo var_dump($order);
 
         //if no order, or the fiat value of the cart has changed => create a new order
         if (!$order || $order['value'] != $total) {
             $current_time = time();
-            $bits = $this->getBits($blockonomics, $crypto, $currency, $total);
+            $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
-            $responseObj = $blockonomics->getNewAddress($crypto);
+            $responseObj = $blockonomics->getNewAddress($crypto['code']);
             if (!$responseObj->data || !$responseObj->data->address) {
                 $this->displayError($blockonomics);
             }
@@ -179,12 +181,14 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             Db::getInstance()->Execute(
                 "INSERT INTO " .
                     _DB_PREFIX_ .
-                    "blockonomics_bitcoin_orders (id_order, id_cart, timestamp,  ".
+                    "blockonomics_bitcoin_orders (id_order, id_cart, crypto, timestamp,  ".
                     "addr, txid, status,value, bits, bits_payed) VALUES
                     ('" .
                     (int) $blockonomics->currentOrder .
                     "','" .
                     (int) $id_cart .
+                    "','" .
+                    (string) $crypto['code'] .
                     "','" .
                     (int) $current_time .
                     "','" .
@@ -204,7 +208,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             //if time runs out, restart the timer and fetch new crypto price
             //store prices in database so that they are "frozen" until the end of the next time period
             if (!$time_remaining) {
-                $bits = $this->getBits($blockonomics, $currency, $total);
+                $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
                 $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
                 .time().", bits=$bits WHERE id_cart = $cart->id";
                 Db::getInstance()->Execute($query);
@@ -224,7 +228,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $id_order .
             '&key=' .
             $customer->secure_key;
-            
+        
+        $crypto['code'] = strtoupper($crypto['code']);
         $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
             'status' => -1,
@@ -242,7 +247,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'redirect_link' => $redirect_link,
             'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
             'time_remaining' => $time_remaining,
-            'crypto' => $crypto
+            'crypto' => $crypto,
         ));
 
         $this->setTemplate(
