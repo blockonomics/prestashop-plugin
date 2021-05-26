@@ -530,7 +530,6 @@ class Blockonomics extends PaymentModule
         $output = '';
         if (Tools::isSubmit("testSetup")) {
             $this->updateSettings();
-            $error_strings = $this->testSetup();
             $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
             //if there's no API key, give error immediately
             if (!$api_key) {
@@ -538,6 +537,7 @@ class Blockonomics extends PaymentModule
                 $output = $output . $this->displayError($error_str);
             //otherwise, test active cryptos
             } else {
+                $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
                         $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
