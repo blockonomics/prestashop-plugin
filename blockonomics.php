@@ -67,16 +67,16 @@ class Blockonomics extends PaymentModule
         $BLOCKONOMICS_SET_CALLBACK_URL =
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
-        $BCH_BLOCKONOMICS_BASE_URL = 'https://bch.blockonomics.co';
+        $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
         $BLOCKONOMICS_BCH_NEW_ADDRESS_URL =
-            $BCH_BLOCKONOMICS_BASE_URL . '/api/new_address';
+            $BLOCKONOMICS_BCH_BASE_URL . '/api/new_address';
         $BLOCKONOMICS_BCH_PRICE_URL =
-            $BCH_BLOCKONOMICS_BASE_URL . '/api/price?currency=';
+            $BLOCKONOMICS_BCH_BASE_URL . '/api/price?currency=';
         $BLOCKONOMICS_BCH_GET_CALLBACKS_URL =
-            $BCH_BLOCKONOMICS_BASE_URL .
+            $BLOCKONOMICS_BCH_BASE_URL .
             '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
         $BLOCKONOMICS_BCH_SET_CALLBACK_URL =
-            $BCH_BLOCKONOMICS_BASE_URL . '/api/update_callback';
+            $BLOCKONOMICS_BCH_BASE_URL . '/api/update_callback';
 
         Configuration::updateValue(
             'BLOCKONOMICS_BASE_URL',
@@ -104,8 +104,8 @@ class Blockonomics extends PaymentModule
         );
 
         Configuration::updateValue(
-            'BCH_BLOCKONOMICS_BASE_URL',
-            $BCH_BLOCKONOMICS_BASE_URL
+            'BLOCKONOMICS_BCH_BASE_URL',
+            $BLOCKONOMICS_BCH_BASE_URL
         );
         Configuration::updateValue(
             'BLOCKONOMICS_BCH_PRICE_URL',
@@ -242,7 +242,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
 
-        Configuration::deleteByName('BCH_BLOCKONOMICS_BASE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
