@@ -385,7 +385,7 @@ class Blockonomics extends PaymentModule
         $error_str = $this->checkCallbackUrlsOrSetOne($crypto, $response);
         if (!$error_str) {
             //Everything OK ! Test address generation
-            $response = $this->getNewAddress($crypto);
+            $response = $this->getNewAddress($crypto, true);
             if ($response->response_code != 200) {
                 $error_str = $response->data->message;
             }
