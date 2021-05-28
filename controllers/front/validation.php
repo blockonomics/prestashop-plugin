@@ -37,12 +37,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         if (count($active_cryptos) > 1) {
             Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'select', array(), true));
         } elseif (count($active_cryptos) === 1) {
-            Tools::redirect($this->context->link->getModuleLink(
-                $blockonomics->name,
-                'payment',
-                array("crypto"=>array_keys($active_cryptos)[0]),
-                true)
-            );
+            $crypto = array("crypto"=>array_keys($active_cryptos)[0]);
+            Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', $crypto, true));
         } elseif (count($active_cryptos) === 0) {
             $this->setTemplate('module:blockonomics/views/templates/front/no_crypto.tpl');
         }
