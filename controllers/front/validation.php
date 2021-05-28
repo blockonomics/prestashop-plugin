@@ -41,7 +41,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 $blockonomics->name,
                 'payment',
                 array("crypto"=>array_keys($active_cryptos)[0]),
-                true));
+                true)
+            );
         } elseif (count($active_cryptos) === 0) {
             $this->setTemplate('module:blockonomics/views/templates/front/no_crypto.tpl');
         }
