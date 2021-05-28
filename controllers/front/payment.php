@@ -65,7 +65,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         );
     }
     public function postProcess()
-    {   
+    {
         $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
@@ -99,10 +99,12 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $this->displayError($blockonomics);
         }
 
-        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
+        $sql = 'SELECT * FROM '._DB_PREFIX_ .
+        "blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
 
-        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id AND crypto = '" . $crypto['code'] . "'";
+        $sql = 'SELECT * FROM '._DB_PREFIX_ .
+        "blockonomics_bitcoin_orders WHERE id_cart = $cart->id AND crypto = '" . $crypto['code'] . "'";
         $order_in_crypto = Db::getInstance()->getRow($sql);
 
         //if no order, or the fiat value of the cart has changed => create a new order
@@ -252,8 +254,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             '&key=' .
             $customer->secure_key;
         
-        $base_websocket_url = ($crypto['code']  == 'bch') ? 
-        Configuration::get('BLOCKONOMICS_BCH_WEBSOCKET_URL'): 
+        $base_websocket_url = ($crypto['code']  == 'bch') ?
+        Configuration::get('BLOCKONOMICS_BCH_WEBSOCKET_URL'):
         Configuration::get('BLOCKONOMICS_WEBSOCKET_URL');
 
         //Make $crypto['code'] caps before sending it to the payment.tpl

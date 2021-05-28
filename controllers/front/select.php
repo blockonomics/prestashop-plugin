@@ -40,7 +40,7 @@ class BlockonomicsSelectModuleFrontController extends ModuleFrontController
     {
         $blockonomics = $this->module;
         $active_cryptos = $blockonomics->getActiveCurrencies();
-        $this->context->smarty->assign('active_cryptos' , $active_cryptos);
+        $this->context->smarty->assign('active_cryptos', $active_cryptos);
         $this->setTemplate('module:blockonomics/views/templates/front/select.tpl');
     }
 }
