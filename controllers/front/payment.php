@@ -257,8 +257,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         Configuration::get('BLOCKONOMICS_WEBSOCKET_URL');
 
         //Make $crypto['code'] caps before sending it to the payment.tpl
-        $crypto['code'] = strtoupper($crypto['code']);
-        
+        $crypto['code'] = Tools::strtoupper($crypto['code']);
+
         $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
             'status' => -1,
