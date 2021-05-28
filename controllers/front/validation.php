@@ -28,10 +28,10 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
     {
+        $blockonomics = $this->module;
         if (!extension_loaded('intl')) {
             $this->displayExtError($blockonomics);
         }
-        $blockonomics = $this->module;
         $active_cryptos = $blockonomics->getActiveCurrencies();
         // Check how many crypto currencies are activated
         if (count($active_cryptos) > 1) {
