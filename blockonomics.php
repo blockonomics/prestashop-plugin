@@ -68,6 +68,7 @@ class Blockonomics extends PaymentModule
             $BLOCKONOMICS_BASE_URL . '/api/update_callback';
 
         $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
+        $BLOCKONOMICS_BCH_WEBSOCKET_URL = 'wss://bch.blockonomics.co';
         $BLOCKONOMICS_BCH_NEW_ADDRESS_URL =
             $BLOCKONOMICS_BCH_BASE_URL . '/api/new_address';
         $BLOCKONOMICS_BCH_PRICE_URL =
@@ -114,6 +115,10 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue(
             'BLOCKONOMICS_BCH_NEW_ADDRESS_URL',
             $BLOCKONOMICS_BCH_NEW_ADDRESS_URL
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_BCH_WEBSOCKET_URL',
+            $BLOCKONOMICS_BCH_WEBSOCKET_URL
         );
         Configuration::updateValue(
             'BLOCKONOMICS_BCH_GET_CALLBACKS_URL',
@@ -245,6 +250,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
         return true;

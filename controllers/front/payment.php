@@ -252,7 +252,13 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             '&key=' .
             $customer->secure_key;
         
+        $base_websocket_url = ($crypto['code']  == 'bch') ? 
+        Configuration::get('BLOCKONOMICS_BCH_WEBSOCKET_URL'): 
+        Configuration::get('BLOCKONOMICS_WEBSOCKET_URL');
+
+        //Make $crypto['code'] caps before sending it to the payment.tpl
         $crypto['code'] = strtoupper($crypto['code']);
+        
         $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
             'status' => -1,
@@ -261,9 +267,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => Configuration::get(
-                'BLOCKONOMICS_WEBSOCKET_URL'
-            ),
+            'base_websocket_url' => $base_websocket_url,
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
