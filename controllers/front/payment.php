@@ -99,10 +99,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $this->displayError($blockonomics);
         }
 
-        if (!extension_loaded('intl')) {
-            $this->displayExtError($blockonomics);
-        }
-
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
 
@@ -312,33 +308,15 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             '<h4>' .
             $blockonomics->l(
                 'Unable to generate bitcoin address.',
-                'validation'
+                'payment'
             ) .
             '</h4><p>' .
             $blockonomics->l(
                 'Please use Test Setup button in configuration to diagnose the error ',
-                'validation'
+                'payment'
             );
 
         echo $unable_to_generate;
-        die();
-    }
-
-    private function displayExtError($blockonomics)
-    {
-        $missing_extension =
-            '<h4>' .
-            $blockonomics->l(
-                'Missing PHP Extension.',
-                'validation'
-            ) .
-            '</h4><p>' .
-            $blockonomics->l(
-                'Please install the missing php-intl extension',
-                'validation'
-            );
-
-        echo $missing_extension;
         die();
     }
 }
