@@ -30,38 +30,9 @@ class BlockonomicsSelectModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->registerStylesheet(
-            'mystyle',
-            'modules/blockonomics/views/css/bootstrap-prestashop-ui-kit.css',
-            array('postion' => 'head')
-        );
-        $this->registerStylesheet(
             'mystyle2',
             'modules/blockonomics/views/css/order.css',
             array('postion' => 'head')
-        );
-        $this->registerJavascript(
-            'bootstrap',
-            'modules/blockonomics/views/js/bootstrap.js'
-        );
-        $this->registerJavascript(
-            'angular',
-            'modules/blockonomics/views/js/angular.js'
-        );
-        $this->registerJavascript(
-            'vendor',
-            'modules/blockonomics/views/js/vendors.min.js'
-        );
-        $this->registerJavascript(
-            'qrcode',
-            'modules/blockonomics/views/js/angular-qrcode.js'
-        );
-        $this->registerJavascript(
-            'angular-resource',
-            'modules/blockonomics/views/js/angular-resource.min.js'
-        );
-        $this->registerJavascript(
-            'app',
-            'modules/blockonomics/views/js/app.js'
         );
     }
 
@@ -73,23 +44,5 @@ class BlockonomicsSelectModuleFrontController extends ModuleFrontController
         $this->setTemplate(
             'module:blockonomics/views/templates/front/select.tpl'
         );
-    }
-
-    private function displayExtError($blockonomics)
-    {
-        $missing_extension =
-            '<h4>' .
-            $blockonomics->l(
-                'Missing PHP Extension.',
-                'validation'
-            ) .
-            '</h4><p>' .
-            $blockonomics->l(
-                'Please install the missing php-intl extension',
-                'validation'
-            );
-
-        echo $missing_extension;
-        die();
     }
 }
