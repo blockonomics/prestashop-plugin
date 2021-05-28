@@ -433,42 +433,42 @@ class Blockonomics extends PaymentModule
         return $error_str;
     }
 
-        // checks each existing xpub callback URL to update and/or use
-        public function examineServerCallbackUrls($response_body, $crypto)
-        {
-            $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-            $api_url = Context::getContext()->shop->getBaseURL(true) . 'modules/' . $this->name;
-            $presta_callback_url = $api_url . '/callback.php?secret=' . $callback_secret;
-            $base_url = preg_replace('/https?:\/\//', '', $api_url);
-            $available_xpub = '';
-            $partial_match = '';
-            //Go through all xpubs on the server and examine their callback url
-            foreach($response_body as $one_response){
-                $server_callback_url = isset($one_response->callback) ? $one_response->callback : '';
-                $server_base_url = preg_replace('/https?:\/\//', '', $server_callback_url);
-                $xpub = isset($one_response->address) ? $one_response->address : '';
-                if(!$server_callback_url){
-                    // No callback
-                    $available_xpub = $xpub;
-                }else if($server_callback_url == $presta_callback_url){
-                    // Exact match
-                    return '';
-                }
-                else if(strpos($server_base_url, $base_url) === 0 ){
-                    // Partial Match - Only secret or protocol differ
-                    $partial_match = $xpub;
-                }
-            }
-            // Use the available xpub
-            if($partial_match || $available_xpub){
-                $update_xpub = $partial_match ? $partial_match : $available_xpub;
-                $this->updateCallback($presta_callback_url, $crypto, $update_xpub);
+    // checks each existing xpub callback URL to update and/or use
+    public function examineServerCallbackUrls($response_body, $crypto)
+    {
+        $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
+        $api_url = Context::getContext()->shop->getBaseURL(true) . 'modules/' . $this->name;
+        $presta_callback_url = $api_url . '/callback.php?secret=' . $callback_secret;
+        $base_url = preg_replace('/https?:\/\//', '', $api_url);
+        $available_xpub = '';
+        $partial_match = '';
+        //Go through all xpubs on the server and examine their callback url
+        foreach($response_body as $one_response){
+            $server_callback_url = isset($one_response->callback) ? $one_response->callback : '';
+            $server_base_url = preg_replace('/https?:\/\//', '', $server_callback_url);
+            $xpub = isset($one_response->address) ? $one_response->address : '';
+            if(!$server_callback_url){
+                // No callback
+                $available_xpub = $xpub;
+            }else if($server_callback_url == $presta_callback_url){
+                // Exact match
                 return '';
             }
-            // No match and no empty callback
-            $error_str = $this->l("Multiple callback error: Please add a new store with valid xpub");
-            return $error_str;
+            else if(strpos($server_base_url, $base_url) === 0 ){
+                // Partial Match - Only secret or protocol differ
+                $partial_match = $xpub;
+            }
         }
+        // Use the available xpub
+        if($partial_match || $available_xpub){
+            $update_xpub = $partial_match ? $partial_match : $available_xpub;
+            $this->updateCallback($presta_callback_url, $crypto, $update_xpub);
+            return '';
+        }
+        // No match and no empty callback
+        $error_str = $this->l("Multiple callback error: Please add a new store with valid xpub");
+        return $error_str;
+    }
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
