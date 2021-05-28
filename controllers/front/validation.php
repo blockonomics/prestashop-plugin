@@ -35,11 +35,12 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $active_cryptos = $blockonomics->getActiveCurrencies();
         // Check how many crypto currencies are activated
         if (count($active_cryptos) > 1) {
-            Tools::redirect($this->context->link->getModuleLink(
-                $blockonomics->name, 'select', array(), true));
+            Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'select', array(), true));
         } elseif (count($active_cryptos) === 1) {
             Tools::redirect($this->context->link->getModuleLink(
-                $blockonomics->name, 'payment', array("crypto"=>array_keys($active_cryptos)[0]), true));
+            $blockonomics->name, 
+            'payment', 
+            array("crypto"=>array_keys($active_cryptos)[0]), true));
         } elseif (count($active_cryptos) === 0) {
             $this->setTemplate('module:blockonomics/views/templates/front/no_crypto.tpl');
         }
