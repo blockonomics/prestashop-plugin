@@ -28,6 +28,9 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
     {
+        if (!extension_loaded('intl')) {
+            $this->displayExtError($blockonomics);
+        }
         $blockonomics = $this->module;
         $active_cryptos = $blockonomics->getActiveCurrencies();
         // Check how many crypto currencies are activated
@@ -38,5 +41,22 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         } else if (count($active_cryptos) === 0) {
             $this->setTemplate('module:blockonomics/views/templates/front/no_crypto.tpl');
         }
+    }
+    private function displayExtError($blockonomics)
+    {
+        $missing_extension =
+            '<h4>' .
+            $blockonomics->l(
+                'Missing PHP Extension.',
+                'validation'
+            ) .
+            '</h4><p>' .
+            $blockonomics->l(
+                'Please install the missing php-intl extension',
+                'validation'
+            );
+
+        echo $missing_extension;
+        die();
     }
 }
