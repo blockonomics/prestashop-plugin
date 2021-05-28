@@ -443,24 +443,23 @@ class Blockonomics extends PaymentModule
         $available_xpub = '';
         $partial_match = '';
         //Go through all xpubs on the server and examine their callback url
-        foreach($response_body as $one_response){
+        foreach ($response_body as $one_response) {
             $server_callback_url = isset($one_response->callback) ? $one_response->callback : '';
             $server_base_url = preg_replace('/https?:\/\//', '', $server_callback_url);
             $xpub = isset($one_response->address) ? $one_response->address : '';
-            if(!$server_callback_url){
+            if (!$server_callback_url) {
                 // No callback
                 $available_xpub = $xpub;
-            }else if($server_callback_url == $presta_callback_url){
+            }elseif ($server_callback_url == $presta_callback_url) {
                 // Exact match
                 return '';
-            }
-            else if(strpos($server_base_url, $base_url) === 0 ){
+            } elseif (strpos($server_base_url, $base_url) === 0 ) {
                 // Partial Match - Only secret or protocol differ
                 $partial_match = $xpub;
             }
         }
         // Use the available xpub
-        if($partial_match || $available_xpub){
+        if ($partial_match || $available_xpub) {
             $update_xpub = $partial_match ? $partial_match : $available_xpub;
             $this->updateCallback($presta_callback_url, $crypto, $update_xpub);
             return '';
