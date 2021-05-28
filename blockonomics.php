@@ -453,7 +453,7 @@ class Blockonomics extends PaymentModule
             } elseif ($server_callback_url == $presta_callback_url) {
                 // Exact match
                 return '';
-            } elseif (strpos($server_base_url, $base_url) === 0 ) {
+            } elseif (strpos($server_base_url, $base_url) === 0) {
                 // Partial Match - Only secret or protocol differ
                 $partial_match = $xpub;
             }
