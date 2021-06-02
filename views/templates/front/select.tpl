@@ -26,11 +26,10 @@
         {foreach $active_cryptos as $crypto}
             <td class="bnomics-select-options">
                 <a href="{url entity='module' name='blockonomics' controller='payment' params=['crypto' => $crypto.code]}" style="color: inherit; text-decoration: inherit;">
-                    <p>{l s='Pay With' mod='blockonomics' }</p>
+                    <p class="top-margin">{l s='Pay With' mod='blockonomics' }</p>
                     <span class="bnomics-icon-{$crypto.code|escape:'htmlall':'UTF-8'} bnomics-rotate-{$crypto.code|escape:'htmlall':'UTF-8'}"></span>
-                    <p>{$crypto.name|escape:'htmlall':'UTF-8'}<br>
-                        <b>{$crypto.code|escape:'htmlall':'UTF-8'}</b>
-                    </p>
+                    <p class="top-margin">{$crypto.name|escape:'htmlall':'UTF-8'}</p>
+                    <p class="top-margin"><b>{$crypto.code|escape:'htmlall':'UTF-8'}</b></p>
                 </a>
             </td>
         {/foreach}

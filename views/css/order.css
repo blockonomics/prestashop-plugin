@@ -191,6 +191,11 @@
 .bnomics-icon-btc:before {
   content: "\e901";
 }
+.top-margin {
+  margin-top: 5px;
+  font-size: 1.1em;
+  margin-block-end: 0.3em !important;
+}
 
 .bnomics-rotate-btc {
   -webkit-transform:rotate(15deg);
@@ -230,6 +235,7 @@
 
 .bnomics-select-container {
   padding-top: 10vh;
+  padding-bottom: 10vh;
   text-align:center;
   max-width:400px;
   margin:auto;
