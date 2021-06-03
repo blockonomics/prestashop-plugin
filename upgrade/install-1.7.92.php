@@ -33,7 +33,7 @@ function upgrade_module_1_7_92($object, $install = false)
 //function used to upgrade the module table
 function updateDatabase()
 {
-    $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `crypto` varchar(191) NOT NULL';
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'blockonomics_bitcoin_orders'.'` ADD `crypto` varchar(3) NOT NULL';
     if (!Db::getInstance()->execute($query)) {
         return false;
     }
