@@ -170,6 +170,7 @@ class Blockonomics extends PaymentModule
             addr varchar(191) NOT NULL,
             txid varchar(191) NOT NULL,
             status int(8) NOT NULL,
+            crypto varchar(3) NOT NULL,
             value double(10,2) NOT NULL,
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
