@@ -126,7 +126,7 @@ class Blockonomics extends PaymentModule
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
-                'API Key is not provided to communicate with Blockonomics'
+                'Please specify an API Key'
             );
         }
     }
@@ -532,7 +532,7 @@ class Blockonomics extends PaymentModule
             $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
             //if there's no API key, give error immediately
             if (!$api_key) {
-                $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
+                $error_str = $this->l('Please specify an API Key');
                 $output = $output . $this->displayError($error_str);
             //otherwise, test active cryptos
             } else {
@@ -559,21 +559,21 @@ class Blockonomics extends PaymentModule
             }
         } elseif (Tools::isSubmit('updateSettings')) {
             $this->updateSettings();
-            $output = $this->displayConfirmation(
-                $this->l(
-                    'Settings Saved, click on Test Setup to verify installation'
-                )
-            );
+            $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
+            if (!$api_key) {
+                $output = $this->displayError(
+                    $this->l('Please specify an API Key')
+                );
+            } else {
+                $output = $this->displayConfirmation(
+                    $this->l(
+                        'Settings Saved, click on Test Setup to verify installation'
+                    )
+                );
+            }
         } elseif (Tools::isSubmit('generateNewSecret')) {
             $this->generatenewCallbackSecret();
         }
-
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $output =
-                $output .
-                $this->display(__FILE__, 'views/templates/admin/backend.tpl');
-        }
-
         return $output . $this->displayForm();
     }
 
