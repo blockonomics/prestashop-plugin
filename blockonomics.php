@@ -265,16 +265,19 @@ class Blockonomics extends PaymentModule
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
-        if ($crypto == 'btc') {
-            $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
-        } else {
-            $new_address_url = Configuration::get('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
-        }
+        $new_address_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_NEW_ADDRESS_PATH');
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
             $url = $url . "&reset=1";
         }
         return $this->doCurlCall($url, 'dummy');
+    }
+
+    public function getServerAPIURL($crypto, $path)
+    {
+        $base_url = "BLOCKONOMICS_" . Tools::strtoupper($crypto) . "_BASE_URL";
+        $server_API_URL = Configuration::get($base_url) . Configuration::get($path);
+        return $server_API_URL;
     }
 
     public function doCurlCall($url, $post_content = '')
@@ -442,11 +445,7 @@ class Blockonomics extends PaymentModule
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
-        if ($crypto == 'btc') {
-            $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
-        } else {
-            $set_callback_url = Configuration::get('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
-        }
+        $set_callback_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_SET_CALLBACK_PATH');
         $post_content =
         '{"callback": "' .
         $callback_url .
@@ -458,11 +457,7 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        if ($crypto == 'btc') {
-            $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
-        } else {
-            $url = Configuration::get('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
-        }
+        $get_callback_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_GET_CALLBACKS_PATH');
         $response = $this->doCurlCall($url);
         return $response;
     }
