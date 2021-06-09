@@ -210,12 +210,12 @@ class Blockonomics extends PaymentModule
         return $offlineOption;
     }
 
-    public function getPrice($crypto = 'btc', $id_currency)
+    public function getPrice($crypto, $id_currency)
     {
         $domain = ($crypto == 'btc') ? 'www' : 'bch';
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $url = "https://" . $domain . ".blockonomics.co/api/price?currency=" . $currency->iso_code;;
+        $url = "https://" . $domain . ".blockonomics.co/api/price?currency=" . $currency->iso_code;
         return $this->doCurlCall($url)->data->price;
     }
 
@@ -415,7 +415,8 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        $get_callback_url = $this->getServerAPIURL($crypto, '/api/address?&no_balance=true&only_xpub=true&get_callback=true');
+        $path = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $get_callback_url = $this->getServerAPIURL($crypto, $path);
         $response = $this->doCurlCall($get_callback_url);
         return $response;
     }
