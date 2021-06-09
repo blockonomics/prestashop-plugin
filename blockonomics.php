@@ -235,9 +235,7 @@ class Blockonomics extends PaymentModule
     public function getServerAPIURL($crypto, $path)
     {
         $domain = ($crypto == 'btc') ? 'www' : 'bch';
-        $base_url = "https://" . $domain . ".blockonomics.co";
-        $server_API_URL = Configuration::get($base_url) . $path
-        return $server_API_URL;
+        return "https://" . $domain . ".blockonomics.co" . $path;
     }
 
     public function doCurlCall($url, $post_content = '')
@@ -418,7 +416,7 @@ class Blockonomics extends PaymentModule
     public function getCallbacks($crypto)
     {
         $get_callback_url = $this->getServerAPIURL($crypto, '/api/address?&no_balance=true&only_xpub=true&get_callback=true');
-        $response = $this->doCurlCall($url);
+        $response = $this->doCurlCall($get_callback_url);
         return $response;
     }
 
