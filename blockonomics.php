@@ -55,48 +55,14 @@ class Blockonomics extends PaymentModule
         );
 
         //Include configuration from the local file.
-        $BLOCKONOMICS_BTC_BASE_URL = 'https://www.blockonomics.co';
-        $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
-        $BLOCKONOMICS_BTC_WEBSOCKET_URL = 'wss://www.blockonomics.co';
-        $BLOCKONOMICS_BCH_WEBSOCKET_URL = 'wss://bch.blockonomics.co';
+        $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
 
-        $BLOCKONOMICS_PRICE_PATH = '/api/price?currency=';
-        $BLOCKONOMICS_NEW_ADDRESS_PATH = '/api/new_address';
-        $BLOCKONOMICS_GET_CALLBACKS_PATH = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BLOCKONOMICS_SET_CALLBACK_PATH = '/api/update_callback';
 
         Configuration::updateValue(
-            'BLOCKONOMICS_BTC_BASE_URL',
-            $BLOCKONOMICS_BTC_BASE_URL
+            'BLOCKONOMICS_WEBSOCKET_URL',
+            $BLOCKONOMICS_WEBSOCKET_URL
         );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_BASE_URL',
-            $BLOCKONOMICS_BCH_BASE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BTC_WEBSOCKET_URL',
-            $BLOCKONOMICS_BTC_WEBSOCKET_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_WEBSOCKET_URL',
-            $BLOCKONOMICS_BCH_WEBSOCKET_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_PRICE_PATH',
-            $BLOCKONOMICS_PRICE_PATH
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_NEW_ADDRESS_PATH',
-            $BLOCKONOMICS_NEW_ADDRESS_PATH
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_GET_CALLBACKS_PATH',
-            $BLOCKONOMICS_GET_CALLBACKS_PATH
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_SET_CALLBACK_PATH',
-            $BLOCKONOMICS_SET_CALLBACK_PATH
-        );
+
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
@@ -209,15 +175,8 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_BTC');
         Configuration::deleteByName('BLOCKONOMICS_BCH');
 
-        Configuration::deleteByName('BLOCKONOMICS_BTC_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BTC_WEBSOCKET_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_WEBSOCKET_URL');
+        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
 
-        Configuration::deleteByName('BLOCKONOMICS_PRICE_PATH');
-        Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_PATH');
-        Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_PATH');
-        Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_PATH');
         return true;
     }
 
@@ -251,12 +210,12 @@ class Blockonomics extends PaymentModule
         return $offlineOption;
     }
 
-    public function getPrice($id_currency)
+    public function getPrice($crypto = 'btc', $id_currency)
     {
+        $domain = ($crypto == 'btc') ? 'www' : 'bch';
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $url =
-            Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
+        $url = "https://" . $domain . ".blockonomics.co/api/price?currency=" . $currency->iso_code;;
         return $this->doCurlCall($url)->data->price;
     }
 
@@ -265,7 +224,7 @@ class Blockonomics extends PaymentModule
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
-        $new_address_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_NEW_ADDRESS_PATH');
+        $new_address_url = $this->getServerAPIURL($crypto, '/api/new_address');
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
             $url = $url . "&reset=1";
@@ -275,8 +234,9 @@ class Blockonomics extends PaymentModule
 
     public function getServerAPIURL($crypto, $path)
     {
-        $base_url = "BLOCKONOMICS_" . Tools::strtoupper($crypto) . "_BASE_URL";
-        $server_API_URL = Configuration::get($base_url) . Configuration::get($path);
+        $domain = ($crypto == 'btc') ? 'www' : 'bch';
+        $base_url = "https://" . $domain . ".blockonomics.co";
+        $server_API_URL = Configuration::get($base_url) . $path
         return $server_API_URL;
     }
 
@@ -445,7 +405,7 @@ class Blockonomics extends PaymentModule
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
-        $set_callback_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_SET_CALLBACK_PATH');
+        $set_callback_url = $this->getServerAPIURL($crypto, '/api/update_callback');
         $post_content =
         '{"callback": "' .
         $callback_url .
@@ -457,7 +417,7 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        $get_callback_url = $this->getServerAPIURL($crypto, 'BLOCKONOMICS_GET_CALLBACKS_PATH');
+        $get_callback_url = $this->getServerAPIURL($crypto, '/api/address?&no_balance=true&only_xpub=true&get_callback=true');
         $response = $this->doCurlCall($url);
         return $response;
     }
