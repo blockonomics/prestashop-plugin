@@ -55,12 +55,25 @@ class Blockonomics extends PaymentModule
         );
 
         //Include configuration from the local file.
+        $BLOCKONOMICS_BASE_URL = 'https://www.blockonomics.co';
+        $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
+
         $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
 
-        Configuration::updateValue(
-            'BLOCKONOMICS_WEBSOCKET_URL',
-            $BLOCKONOMICS_WEBSOCKET_URL
-        );
+        $BLOCKONOMICS_NEW_ADDRESS_URL = '/api/new_address';
+        $BLOCKONOMICS_PRICE_URL = '/api/price?currency=';
+        $BLOCKONOMICS_GET_CALLBACKS_URL = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $BLOCKONOMICS_SET_CALLBACK_URL = '/api/update_callback';
+
+        Configuration::updateValue('BLOCKONOMICS_BASE_URL', $BLOCKONOMICS_BASE_URL);
+        Configuration::updateValue('BLOCKONOMICS_BCH_BASE_URL', $BLOCKONOMICS_BCH_BASE_URL);
+
+        Configuration::updateValue('BLOCKONOMICS_WEBSOCKET_URL', $BLOCKONOMICS_WEBSOCKET_URL);
+        
+        Configuration::updateValue('BLOCKONOMICS_NEW_ADDRESS_URL', $BLOCKONOMICS_NEW_ADDRESS_URL);
+        Configuration::updateValue('BLOCKONOMICS_PRICE_URL', $BLOCKONOMICS_PRICE_URL);
+        Configuration::updateValue('BLOCKONOMICS_GET_CALLBACKS_URL', $BLOCKONOMICS_GET_CALLBACKS_URL);
+        Configuration::updateValue('BLOCKONOMICS_SET_CALLBACK_URL', $BLOCKONOMICS_SET_CALLBACK_URL);
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
@@ -175,9 +188,10 @@ class Blockonomics extends PaymentModule
 
         //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
 
@@ -216,10 +230,12 @@ class Blockonomics extends PaymentModule
 
     public function getPrice($crypto, $id_currency)
     {
-        $domain = ($crypto == 'btc') ? 'www' : 'bch';
+        $domain = ($crypto == 'btc') ?
+        Configuration::get('BLOCKONOMICS_BASE_URL') :
+        Configuration::get('BLOCKONOMICS_BCH_BASE_URL');
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $url = "https://" . $domain . ".blockonomics.co/api/price?currency=" . $currency->iso_code;
+        $url = $domain . Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
         return $this->doCurlCall($url)->data->price;
     }
 
@@ -228,7 +244,7 @@ class Blockonomics extends PaymentModule
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
-        $new_address_url = $this->getServerAPIURL($crypto, '/api/new_address');
+        $new_address_url = $this->getServerAPIURL($crypto, Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL'));
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
             $url = $url . "&reset=1";
@@ -238,8 +254,10 @@ class Blockonomics extends PaymentModule
 
     public function getServerAPIURL($crypto, $path)
     {
-        $domain = ($crypto == 'btc') ? 'www' : 'bch';
-        return "https://" . $domain . ".blockonomics.co" . $path;
+        $domain = ($crypto == 'btc') ?
+        Configuration::get('BLOCKONOMICS_BASE_URL') :
+        Configuration::get('BLOCKONOMICS_BCH_BASE_URL');
+        return $domain . $path;
     }
 
     public function doCurlCall($url, $post_content = '')
@@ -407,7 +425,7 @@ class Blockonomics extends PaymentModule
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
-        $set_callback_url = $this->getServerAPIURL($crypto, '/api/update_callback');
+        $set_callback_url = $this->getServerAPIURL($crypto, Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL'));
         $post_content =
         '{"callback": "' .
         $callback_url .
@@ -419,8 +437,7 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        $path = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $get_callback_url = $this->getServerAPIURL($crypto, $path);
+        $get_callback_url = $this->getServerAPIURL($crypto, Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL'));
         $response = $this->doCurlCall($get_callback_url);
         return $response;
     }
