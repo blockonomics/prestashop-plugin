@@ -264,7 +264,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
     private function getBits($blockonomics, $currency, $total)
     {
-        $price = $blockonomics->getPrice($currency->id);
+        $price = $blockonomics->getPrice('btc', $currency->id);
         if (!$price) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }

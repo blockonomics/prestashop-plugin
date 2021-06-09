@@ -175,7 +175,13 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_BTC');
         Configuration::deleteByName('BLOCKONOMICS_BCH');
 
+        //We should still delete these values since older versions had them
+        Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
         Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
+        Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
+        Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
 
         return true;
     }
