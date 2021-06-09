@@ -539,8 +539,8 @@ class Blockonomics extends PaymentModule
                 $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
-                        $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
-                        $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
+                        $article_url = 'https://help.blockonomics.co/support/solutions/articles/';
+                        $article_url .= '33000215104-unable-to-generate-new-address';
                         $error_str = Tools::strtoupper($crypto) .
                             ': ' . $error_str .
                             "</br>" .
