@@ -57,12 +57,10 @@ class Blockonomics extends PaymentModule
         //Include configuration from the local file.
         $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
 
-
         Configuration::updateValue(
             'BLOCKONOMICS_WEBSOCKET_URL',
             $BLOCKONOMICS_WEBSOCKET_URL
         );
-
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
