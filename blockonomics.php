@@ -55,73 +55,47 @@ class Blockonomics extends PaymentModule
         );
 
         //Include configuration from the local file.
-        $BLOCKONOMICS_BASE_URL = 'https://www.blockonomics.co';
-        $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
-        $BLOCKONOMICS_NEW_ADDRESS_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/new_address';
-        $BLOCKONOMICS_PRICE_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/price?currency=';
-        $BLOCKONOMICS_GET_CALLBACKS_URL =
-            $BLOCKONOMICS_BASE_URL .
-            '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BLOCKONOMICS_SET_CALLBACK_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/update_callback';
-
+        $BLOCKONOMICS_BTC_BASE_URL = 'https://www.blockonomics.co';
         $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
-        $BLOCKONOMICS_BCH_NEW_ADDRESS_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/new_address';
-        $BLOCKONOMICS_BCH_PRICE_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/price?currency=';
-        $BLOCKONOMICS_BCH_GET_CALLBACKS_URL =
-            $BLOCKONOMICS_BCH_BASE_URL .
-            '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BLOCKONOMICS_BCH_SET_CALLBACK_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/update_callback';
+        $BLOCKONOMICS_BTC_WEBSOCKET_URL = 'wss://www.blockonomics.co';
+        $BLOCKONOMICS_BCH_WEBSOCKET_URL = 'wss://bch.blockonomics.co';
+
+        $BLOCKONOMICS_PRICE_PATH = '/api/price?currency=';
+        $BLOCKONOMICS_NEW_ADDRESS_PATH = '/api/new_address';
+        $BLOCKONOMICS_GET_CALLBACKS_PATH = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+        $BLOCKONOMICS_SET_CALLBACK_PATH = '/api/update_callback';
 
         Configuration::updateValue(
-            'BLOCKONOMICS_BASE_URL',
-            $BLOCKONOMICS_BASE_URL
+            'BLOCKONOMICS_BTC_BASE_URL',
+            $BLOCKONOMICS_BTC_BASE_URL
         );
-        Configuration::updateValue(
-            'BLOCKONOMICS_PRICE_URL',
-            $BLOCKONOMICS_PRICE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_NEW_ADDRESS_URL',
-            $BLOCKONOMICS_NEW_ADDRESS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_WEBSOCKET_URL',
-            $BLOCKONOMICS_WEBSOCKET_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_GET_CALLBACKS_URL',
-            $BLOCKONOMICS_GET_CALLBACKS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_SET_CALLBACK_URL',
-            $BLOCKONOMICS_SET_CALLBACK_URL
-        );
-
         Configuration::updateValue(
             'BLOCKONOMICS_BCH_BASE_URL',
             $BLOCKONOMICS_BCH_BASE_URL
         );
         Configuration::updateValue(
-            'BLOCKONOMICS_BCH_PRICE_URL',
-            $BLOCKONOMICS_BCH_PRICE_URL
+            'BLOCKONOMICS_BTC_WEBSOCKET_URL',
+            $BLOCKONOMICS_BTC_WEBSOCKET_URL
         );
         Configuration::updateValue(
-            'BLOCKONOMICS_BCH_NEW_ADDRESS_URL',
-            $BLOCKONOMICS_BCH_NEW_ADDRESS_URL
+            'BLOCKONOMICS_BCH_WEBSOCKET_URL',
+            $BLOCKONOMICS_BCH_WEBSOCKET_URL
         );
         Configuration::updateValue(
-            'BLOCKONOMICS_BCH_GET_CALLBACKS_URL',
-            $BLOCKONOMICS_BCH_GET_CALLBACKS_URL
+            'BLOCKONOMICS_PRICE_PATH',
+            $BLOCKONOMICS_PRICE_PATH
         );
         Configuration::updateValue(
-            'BLOCKONOMICS_BCH_SET_CALLBACK_URL',
-            $BLOCKONOMICS_BCH_SET_CALLBACK_URL
+            'BLOCKONOMICS_NEW_ADDRESS_PATH',
+            $BLOCKONOMICS_NEW_ADDRESS_PATH
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_GET_CALLBACKS_PATH',
+            $BLOCKONOMICS_GET_CALLBACKS_PATH
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_SET_CALLBACK_PATH',
+            $BLOCKONOMICS_SET_CALLBACK_PATH
         );
 
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -235,18 +209,15 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_BTC');
         Configuration::deleteByName('BLOCKONOMICS_BCH');
 
-        Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
-        Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
-
+        Configuration::deleteByName('BLOCKONOMICS_BTC_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_PRICE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BTC_WEBSOCKET_URL');
+        Configuration::deleteByName('BLOCKONOMICS_BCH_WEBSOCKET_URL');
+
+        Configuration::deleteByName('BLOCKONOMICS_PRICE_PATH');
+        Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_PATH');
+        Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_PATH');
+        Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_PATH');
         return true;
     }
 
