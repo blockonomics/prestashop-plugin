@@ -172,12 +172,9 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
-        Configuration::deleteByName('BLOCKONOMICS_BTC');
-        Configuration::deleteByName('BLOCKONOMICS_BCH');
 
         //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
         Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
