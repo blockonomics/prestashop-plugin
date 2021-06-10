@@ -32,8 +32,6 @@ class Blockonomics extends PaymentModule
     const BASE_URL = 'https://www.blockonomics.co';
     const BCH_BASE_URL = 'https://bch.blockonomics.co';
 
-    const WEBSOCKET_URL = 'wss://www.blockonomics.co';
-
     const NEW_ADDRESS_PATH = '/api/new_address';
     const PRICE_PATH = '/api/price?currency=';
     const GET_CALLBACKS_PATH = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';

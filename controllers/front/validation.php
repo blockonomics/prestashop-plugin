@@ -26,6 +26,8 @@
 
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
+    const WEBSOCKET_URL = 'wss://www.blockonomics.co';
+    
     public function setMedia()
     {
         parent::setMedia();
@@ -232,9 +234,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => Configuration::get(
-                'BLOCKONOMICS_WEBSOCKET_URL'
-            ),
+            'base_websocket_url' => BlockonomicsValidationModuleFrontController::WEBSOCKET_URL,
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
