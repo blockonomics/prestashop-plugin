@@ -26,6 +26,9 @@
 
 class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 {
+    const BLOCKONOMICS_WEBSOCKET_URL = "wss://www.blockonomics.co";
+    const BLOCKONOMICS_BCH_WEBSOCKET_URL = "wss://bch.blockonomics.co";
+    
     public function setMedia()
     {
         parent::setMedia();
@@ -255,8 +258,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $customer->secure_key;
         
         $base_websocket_url = ($crypto['code']  == 'bch') ?
-        Configuration::get('BLOCKONOMICS_BCH_WEBSOCKET_URL'):
-        Configuration::get('BLOCKONOMICS_WEBSOCKET_URL');
+        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
+        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_WEBSOCKET_URL;
 
         //Make $crypto['code'] caps before sending it to the payment.tpl
         $crypto['code'] = Tools::strtoupper($crypto['code']);
