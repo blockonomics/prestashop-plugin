@@ -28,6 +28,14 @@ class Blockonomics extends PaymentModule
 {
     private $html = '';
     private $postErrors = array();
+    //Include configuration from the local file.
+    const BASE_URL = 'https://www.blockonomics.co';
+    const BCH_BASE_URL = 'https://bch.blockonomics.co';
+
+    const NEW_ADDRESS_PATH = '/api/new_address';
+    const PRICE_PATH = '/api/price?currency=';
+    const GET_CALLBACKS_PATH = '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
+    const SET_CALLBACK_PATH = '/api/update_callback';
 
     public function __construct()
     {
@@ -54,84 +62,9 @@ class Blockonomics extends PaymentModule
             'Are you sure you want to uninstall?'
         );
 
-        //Include configuration from the local file.
-        $BLOCKONOMICS_BASE_URL = 'https://www.blockonomics.co';
-        $BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
-        $BLOCKONOMICS_NEW_ADDRESS_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/new_address';
-        $BLOCKONOMICS_PRICE_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/price?currency=';
-        $BLOCKONOMICS_GET_CALLBACKS_URL =
-            $BLOCKONOMICS_BASE_URL .
-            '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BLOCKONOMICS_SET_CALLBACK_URL =
-            $BLOCKONOMICS_BASE_URL . '/api/update_callback';
-
-        $BLOCKONOMICS_BCH_BASE_URL = 'https://bch.blockonomics.co';
-        $BLOCKONOMICS_BCH_WEBSOCKET_URL = 'wss://bch.blockonomics.co';
-        $BLOCKONOMICS_BCH_NEW_ADDRESS_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/new_address';
-        $BLOCKONOMICS_BCH_PRICE_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/price?currency=';
-        $BLOCKONOMICS_BCH_GET_CALLBACKS_URL =
-            $BLOCKONOMICS_BCH_BASE_URL .
-            '/api/address?&no_balance=true&only_xpub=true&get_callback=true';
-        $BLOCKONOMICS_BCH_SET_CALLBACK_URL =
-            $BLOCKONOMICS_BCH_BASE_URL . '/api/update_callback';
-
-        Configuration::updateValue(
-            'BLOCKONOMICS_BASE_URL',
-            $BLOCKONOMICS_BASE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_PRICE_URL',
-            $BLOCKONOMICS_PRICE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_NEW_ADDRESS_URL',
-            $BLOCKONOMICS_NEW_ADDRESS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_WEBSOCKET_URL',
-            $BLOCKONOMICS_WEBSOCKET_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_GET_CALLBACKS_URL',
-            $BLOCKONOMICS_GET_CALLBACKS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_SET_CALLBACK_URL',
-            $BLOCKONOMICS_SET_CALLBACK_URL
-        );
-
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_BASE_URL',
-            $BLOCKONOMICS_BCH_BASE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_PRICE_URL',
-            $BLOCKONOMICS_BCH_PRICE_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_NEW_ADDRESS_URL',
-            $BLOCKONOMICS_BCH_NEW_ADDRESS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_WEBSOCKET_URL',
-            $BLOCKONOMICS_BCH_WEBSOCKET_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_GET_CALLBACKS_URL',
-            $BLOCKONOMICS_BCH_GET_CALLBACKS_URL
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_BCH_SET_CALLBACK_URL',
-            $BLOCKONOMICS_BCH_SET_CALLBACK_URL
-        );
-
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
-                'API Key is not provided to communicate with Blockonomics'
+                'Please specify an API Key'
             );
         }
     }
@@ -237,22 +170,15 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
-        Configuration::deleteByName('BLOCKONOMICS_BTC');
-        Configuration::deleteByName('BLOCKONOMICS_BCH');
 
+        //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
+        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_PRICE_URL');
         Configuration::deleteByName('BLOCKONOMICS_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_WEBSOCKET_URL');
         Configuration::deleteByName('BLOCKONOMICS_GET_CALLBACKS_URL');
         Configuration::deleteByName('BLOCKONOMICS_SET_CALLBACK_URL');
 
-        Configuration::deleteByName('BLOCKONOMICS_BCH_BASE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_PRICE_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_WEBSOCKET_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
-        Configuration::deleteByName('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
         return true;
     }
 
@@ -288,13 +214,10 @@ class Blockonomics extends PaymentModule
 
     public function getPrice($crypto, $id_currency)
     {
+        $domain = ($crypto == 'btc') ? Blockonomics::BASE_URL : Blockonomics::BCH_BASE_URL;
         //Getting price
         $currency = new Currency((int) $id_currency);
-        if ($crypto == 'btc') {
-            $url = Configuration::get('BLOCKONOMICS_PRICE_URL') . $currency->iso_code;
-        } else {
-            $url = Configuration::get('BLOCKONOMICS_BCH_PRICE_URL') . $currency->iso_code;
-        }
+        $url = $domain . Blockonomics::PRICE_PATH . $currency->iso_code;
         return $this->doCurlCall($url)->data->price;
     }
 
@@ -303,16 +226,18 @@ class Blockonomics extends PaymentModule
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
-        if ($crypto == 'btc') {
-            $new_address_url = Configuration::get('BLOCKONOMICS_NEW_ADDRESS_URL');
-        } else {
-            $new_address_url = Configuration::get('BLOCKONOMICS_BCH_NEW_ADDRESS_URL');
-        }
+        $new_address_url = $this->getServerAPIURL($crypto, Blockonomics::NEW_ADDRESS_PATH);
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
             $url = $url . "&reset=1";
         }
         return $this->doCurlCall($url, 'dummy');
+    }
+
+    public function getServerAPIURL($crypto, $path)
+    {
+        $domain = ($crypto == 'btc') ? Blockonomics::BASE_URL : Blockonomics::BCH_BASE_URL;
+        return $domain . $path;
     }
 
     public function doCurlCall($url, $post_content = '')
@@ -480,11 +405,7 @@ class Blockonomics extends PaymentModule
 
     public function updateCallback($callback_url, $crypto, $xpub)
     {
-        if ($crypto == 'btc') {
-            $set_callback_url = Configuration::get('BLOCKONOMICS_SET_CALLBACK_URL');
-        } else {
-            $set_callback_url = Configuration::get('BLOCKONOMICS_BCH_SET_CALLBACK_URL');
-        }
+        $set_callback_url = $this->getServerAPIURL($crypto, Blockonomics::SET_CALLBACK_PATH);
         $post_content =
         '{"callback": "' .
         $callback_url .
@@ -496,12 +417,8 @@ class Blockonomics extends PaymentModule
 
     public function getCallbacks($crypto)
     {
-        if ($crypto == 'btc') {
-            $url = Configuration::get('BLOCKONOMICS_GET_CALLBACKS_URL');
-        } else {
-            $url = Configuration::get('BLOCKONOMICS_BCH_GET_CALLBACKS_URL');
-        }
-        $response = $this->doCurlCall($url);
+        $get_callback_url = $this->getServerAPIURL($crypto, Blockonomics::GET_CALLBACKS_PATH);
+        $response = $this->doCurlCall($get_callback_url);
         return $response;
     }
 
@@ -541,15 +458,15 @@ class Blockonomics extends PaymentModule
             $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
             //if there's no API key, give error immediately
             if (!$api_key) {
-                $error_str = $this->l('API Key is not provided to communicate with Blockonomics');
+                $error_str = $this->l('Please specify an API Key');
                 $output = $output . $this->displayError($error_str);
             //otherwise, test active cryptos
             } else {
                 $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
-                        $article_url = 'https://blockonomics.freshdesk.com/solution/articles/';
-                        $article_url .= '33000215104-troubleshooting-unable-to-generate-new-address';
+                        $article_url = 'https://help.blockonomics.co/support/solutions/articles/';
+                        $article_url .= '33000215104-unable-to-generate-new-address';
                         $error_str = Tools::strtoupper($crypto) .
                             ': ' . $error_str .
                             "</br>" .
@@ -568,21 +485,21 @@ class Blockonomics extends PaymentModule
             }
         } elseif (Tools::isSubmit('updateSettings')) {
             $this->updateSettings();
-            $output = $this->displayConfirmation(
-                $this->l(
-                    'Settings Saved, click on Test Setup to verify installation'
-                )
-            );
+            $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
+            if (!$api_key) {
+                $output = $this->displayError(
+                    $this->l('Please specify an API Key')
+                );
+            } else {
+                $output = $this->displayConfirmation(
+                    $this->l(
+                        'Settings Saved, click on Test Setup to verify installation'
+                    )
+                );
+            }
         } elseif (Tools::isSubmit('generateNewSecret')) {
             $this->generatenewCallbackSecret();
         }
-
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            $output =
-                $output .
-                $this->display(__FILE__, 'views/templates/admin/backend.tpl');
-        }
-
         return $output . $this->displayForm();
     }
 
