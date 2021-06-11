@@ -26,6 +26,8 @@
 
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
+    const WEBSOCKET_URL = 'wss://www.blockonomics.co';
+    
     public function setMedia()
     {
         parent::setMedia();
@@ -105,6 +107,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
 
+        //if no order, or the fiat value of the cart has changed => create a new order
         if (!$order || $order['value'] != $total) {
             $current_time = time();
             $bits = $this->getBits($blockonomics, $currency, $total);
@@ -193,11 +196,14 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
+        //else, reuse the order we have
         } else {
             $address = $order['addr'];
             $id_order = $order['id_order'];
             $current_time = $order['timestamp'];
             $time_remaining = $this->getTimeRemaining($order);
+            //if time runs out, restart the timer and fetch new crypto price
+            //store prices in database so that they are "frozen" until the end of the next time period
             if (!$time_remaining) {
                 $bits = $this->getBits($blockonomics, $currency, $total);
                 $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
@@ -228,9 +234,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => Configuration::get(
-                'BLOCKONOMICS_WEBSOCKET_URL'
-            ),
+            'base_websocket_url' => BlockonomicsValidationModuleFrontController::WEBSOCKET_URL,
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
@@ -260,7 +264,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 
     private function getBits($blockonomics, $currency, $total)
     {
-        $price = $blockonomics->getBTCPrice($currency->id);
+        $price = $blockonomics->getPrice('btc', $currency->id);
         if (!$price) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
