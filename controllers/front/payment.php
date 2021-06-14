@@ -163,13 +163,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 
             $id_order = $blockonomics->currentOrder;
 
-            // Get invoice and add address as a note
-            $presta_order = new Order($id_order);
-            $invoice = $presta_order->getInvoicesCollection()[0];
-            //Leave a space after $address since html tags don't work and perhaps two addresses will be saved
-            $invoice_note = Tools::strtoupper($crypto) . " Address: $address ";
-            $invoice->note = $invoice->note . $invoice_note;
-            $invoice->save();
+            $this->addInvoiceNote($id_order, $crypto['code'], $address);
             
             // Add the backup cart to user
             $new_cart->id_customer = $old_cart_customer_id;
@@ -214,6 +208,9 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 $this->displayError($blockonomics);
             }
             $address = $responseObj->data->address;
+
+            $this->addInvoiceNote($id_order, $crypto['code'], $address);
+
             Db::getInstance()->Execute(
                 "INSERT INTO " .
                     _DB_PREFIX_ .
@@ -296,6 +293,18 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
         //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
+
+    private function addInvoiceNote($id_order, $crypto, $address)
+    {
+        // Get invoice and add address as a note
+        $presta_order = new Order($id_order);
+        $invoice = $presta_order->getInvoicesCollection()[0];
+        //Leave a space after $address since html tags don't work and perhaps two addresses will be saved
+        $invoice_note = Tools::strtoupper($crypto) . " Address: $address ";
+        $invoice->note = $invoice->note . $invoice_note;
+        $invoice->save();
+    }
+
 
     private function getTimeRemaining($order)
     {
