@@ -214,10 +214,9 @@ class Blockonomics extends PaymentModule
 
     public function getPrice($crypto, $id_currency)
     {
-        $domain = ($crypto == 'btc') ? Blockonomics::BASE_URL : Blockonomics::BCH_BASE_URL;
         //Getting price
         $currency = new Currency((int) $id_currency);
-        $url = $domain . Blockonomics::PRICE_PATH . $currency->iso_code;
+        $url = $this->getServerAPIURL($crypto, Blockonomics::PRICE_PATH . $currency->iso_code);
         return $this->doCurlCall($url)->data->price;
     }
 
