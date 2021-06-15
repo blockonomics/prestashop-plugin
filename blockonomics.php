@@ -455,7 +455,7 @@ class Blockonomics extends PaymentModule
         $output = '';
         if (Tools::isSubmit("testSetup")) {
             $output = $this->updateSettings();
-            if(!$output){
+            if (!$output) {
                 $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
@@ -479,7 +479,7 @@ class Blockonomics extends PaymentModule
             }
         } elseif (Tools::isSubmit('updateSettings')) {
             $output = $this->updateSettings();
-            if(!$output) {
+            if (!$output) {
                 $output = $this->displayConfirmation(
                     $this->l(
                         'Settings Saved, click on Test Setup to verify installation'
