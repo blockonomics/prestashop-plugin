@@ -110,9 +110,11 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
     
     $payments = $presta_order->getOrderPayments();
     if (!$payments) {
+        //Too small amount was used in the payment, so the order was not set to PS_OS_PAYMENT and no payment created
         $payment_method = "Blockonomics - " . Tools::strtoupper($blockonomics_order['crypto']);
         $presta_order->addOrderPayment($amount, $payment_method, $txid);
-    } elseif (!$payments[0]->transaction_id) {
+    } elseif ($payments[0]->payment_method == "Bitcoin - Blockonomics" && !$payments[0]->transaction_id) {
+        //Payment created, but the txid still hasn't been recorded
         $payments[0]->transaction_id = $txid;
         $payments[0]->payment_method = "Blockonomics - " . Tools::strtoupper($blockonomics_order['crypto']);
         $payments[0]->save();
