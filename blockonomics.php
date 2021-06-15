@@ -454,14 +454,8 @@ class Blockonomics extends PaymentModule
     {
         $output = '';
         if (Tools::isSubmit("testSetup")) {
-            $this->updateSettings();
-            $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
-            //if there's no API key, give error immediately
-            if (!$api_key) {
-                $error_str = $this->l('Please specify an API Key');
-                $output = $output . $this->displayError($error_str);
-            //otherwise, test active cryptos
-            } else {
+            $output = $this->updateSettings();
+            if(!$output){
                 $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
                     if ($error_str) {
@@ -484,13 +478,8 @@ class Blockonomics extends PaymentModule
                 }
             }
         } elseif (Tools::isSubmit('updateSettings')) {
-            $this->updateSettings();
-            $api_key = Configuration::get('BLOCKONOMICS_API_KEY');
-            if (!$api_key) {
-                $output = $this->displayError(
-                    $this->l('Please specify an API Key')
-                );
-            } else {
+            $output = $this->updateSettings();
+            if(!$output) {
                 $output = $this->displayConfirmation(
                     $this->l(
                         'Settings Saved, click on Test Setup to verify installation'
@@ -706,6 +695,9 @@ class Blockonomics extends PaymentModule
             'BLOCKONOMICS_BCH',
             Tools::getValue('BLOCKONOMICS_BCH')
         );
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            return $this->displayError($this->l('Please specify an API Key'));
+        }
     }
 
     public function generateNewCallbackSecret()
