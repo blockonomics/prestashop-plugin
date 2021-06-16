@@ -26,7 +26,7 @@ function upgrade_module_1_7_92($object, $install = false)
 {
     $object = $object;
     $install = $install;
-    return updateDatabase(); //returns true if there were no errors
+    return $this->updateDatabase(); //returns true if there were no errors
 }
 
 //function used to upgrade the module table
