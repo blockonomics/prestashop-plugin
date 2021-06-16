@@ -26,8 +26,7 @@ function upgrade_module_1_7_92($object, $install = false)
 {
     $object = $object;
     $install = $install;
-    updateDatabase();
-    return true; //if there were no errors
+    return updateDatabase(); //returns true if there were no errors
 }
 
 //function used to upgrade the module table
@@ -37,4 +36,5 @@ function updateDatabase()
     if (!Db::getInstance()->execute($query)) {
         return false;
     }
+    return true;
 }
