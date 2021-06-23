@@ -100,13 +100,23 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
 {
     $paid_ratio = $blockonomics_order['bits_payed'] / $blockonomics_order['bits'];
     $amount = round($paid_ratio * $blockonomics_order['value'], 2);
+
+    // Get invoice and save the address used in the successful payment as an invoice note
+    $presta_order = new Order($blockonomics_order['id_order']);
+    $invoice = $presta_order->getInvoicesCollection()[0];
+    $invoice_note = Tools::strtoupper($blockonomics_order['crypto']) . " Address: " . $blockonomics_order['addr'];
+    $invoice->note = $invoice_note;
+    $invoice->save();
     
     $payments = $presta_order->getOrderPayments();
     if (!$payments) {
-        $payment_method = 'Bitcoin - Blockonomics';
+        //Too small amount was used in the payment, so the order was not set to PS_OS_PAYMENT and no payment created
+        $payment_method = "Blockonomics - " . Tools::strtoupper($blockonomics_order['crypto']);
         $presta_order->addOrderPayment($amount, $payment_method, $txid);
-    } elseif ($payments[0]->payment_method = 'Bitcoin - Blockonomics' && !$payments[0]->transaction_id) {
+    } elseif ($payments[0]->payment_method == "Bitcoin - Blockonomics" && !$payments[0]->transaction_id) {
+        //Payment created, but the txid still hasn't been recorded
         $payments[0]->transaction_id = $txid;
+        $payments[0]->payment_method = "Blockonomics - " . Tools::strtoupper($blockonomics_order['crypto']);
         $payments[0]->save();
     }
 }
