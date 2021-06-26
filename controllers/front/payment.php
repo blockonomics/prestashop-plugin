@@ -116,7 +116,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
-            if (!$responseObj->data || !$responseObj->data->address) {
+            if (!$responseObj->data || !isset($responseObj->data->address)) {
                 $this->displayError($blockonomics);
             }
             $address = $responseObj->data->address;
@@ -204,7 +204,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
-            if (!$responseObj->data || !$responseObj->data->address) {
+            if (!$responseObj->data || !isset($responseObj->data->address)) {
                 $this->displayError($blockonomics);
             }
             $address = $responseObj->data->address;
