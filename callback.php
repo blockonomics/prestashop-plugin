@@ -101,7 +101,7 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
     $paid_ratio = $blockonomics_order['bits_payed'] / $blockonomics_order['bits'];
     $amount = round($paid_ratio * $blockonomics_order['value'], 2);
 
-    $presta_order = new Order($blockonomics_order['id_order']);    
+    $presta_order = new Order($blockonomics_order['id_order']);
     $payments = $presta_order->getOrderPayments();
     if (!$payments) {
         //Too small amount was used in the payment, so the order was not set to PS_OS_PAYMENT and no payment created
