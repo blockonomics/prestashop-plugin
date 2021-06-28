@@ -301,7 +301,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $invoice = $presta_order->getInvoicesCollection()[0];
         //Leave a space after $address since html tags don't work and perhaps two addresses will be saved
         $invoice_note = Tools::strtoupper($crypto) . " Address: $address ";
-        $invoice->note = $invoice->note . $invoice_note;
+        $invoice->note = $invoice->note . "\r\n" . $invoice_note;
         $invoice->save();
     }
 
