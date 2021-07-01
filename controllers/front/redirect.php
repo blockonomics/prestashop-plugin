@@ -41,6 +41,7 @@ class BlockonomicsRedirectModuleFrontController extends ModuleFrontController
             '&id_order='.
             $id_order.
             '&key='.
-            $key);
+            $key
+        );
     }
 }
