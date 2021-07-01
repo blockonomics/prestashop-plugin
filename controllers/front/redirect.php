@@ -23,6 +23,7 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
+
 class BlockonomicsRedirectModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
@@ -32,6 +33,14 @@ class BlockonomicsRedirectModuleFrontController extends ModuleFrontController
         $key = Tools::getValue('key');
         $id_cart = Tools::getValue('id_cart');
 
-        Tools::redirect('index.php?controller=order-confirmation&id_cart='.$id_cart.'&id_module='.$id_module.'&id_order='.$id_order.'&key='.$key);
+        Tools::redirect(
+            'index.php?controller=order-confirmation&id_cart='.
+            $id_cart.
+            '&id_module='.
+            $id_module.
+            '&id_order='.
+            $id_order.
+            '&key='.
+            $key);
     }
 }

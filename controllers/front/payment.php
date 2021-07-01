@@ -260,8 +260,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 'id_order' => $id_order,
                 'key' => $customer->secure_key,
                 'id_cart' => (int)$cart->id
-                )
-            , true);
+                ),
+            true);
 
         $base_websocket_url = ($crypto['code']  == 'bch') ?
         BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
