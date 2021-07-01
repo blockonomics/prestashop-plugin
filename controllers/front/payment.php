@@ -252,16 +252,17 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             }
         }
 
-        $redirect_link = __PS_BASE_URI__ .
-            $this->context->language->iso_code.
-            '/order-confirmation?&id_module=' .
-            (int) $blockonomics->id .
-            '&id_order=' .
-            $id_order .
-            '&key=' .
-            $customer->secure_key .
-            '&id_cart=' .
-            (int) $cart->id;
+        $redirect_link =  $this->context->link->getModuleLink(
+            $blockonomics->name,
+            'redirect',
+            array(
+                'id_module' => (int)$blockonomics->id,
+                'id_order' => $id_order,
+                'key' => $customer->secure_key,
+                'id_cart' => (int)$cart->id
+                ),
+            true
+        );
 
         $base_websocket_url = ($crypto['code']  == 'bch') ?
         BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
