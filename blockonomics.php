@@ -642,13 +642,6 @@ class Blockonomics extends PaymentModule
                     $this->name .
                     '&token=' .
                     Tools::getAdminTokenLite('AdminModules')
-            ),
-            'back' => array(
-                'href' =>
-                    AdminController::$currentIndex .
-                    '&token=' .
-                    Tools::getAdminTokenLite('AdminModules'),
-                'desc' => $this->l('Back to list')
             )
         );
 
