@@ -9,6 +9,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_2f14ecdf24da27a9fb0ded962aa17e8
 $_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc226913037'] = 'Platba bitcoinem';
 $_MODULE['<{blockonomics}prestashop>blockonomics_db84ee92e4da32563f91afe070e37a7e'] = 'Váš server blokuje odchozí volání HTTPS';
 $_MODULE['<{blockonomics}prestashop>blockonomics_71d736bf8acac6f396861493102750d1'] = 'Klíč API je nesprávný';
+$_MODULE['<{blockonomics}prestashop>blockonomics_baa8441e3dbb790354e36e17e77d960a'] = 'Přidejte nový obchod na web blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_3436e1de7f0008a60af9cfb41a18f0ce'] = 'Další informace naleznete v tomto článku';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c3d515262545a5bde7c683f68afe06f9'] = 'o řešení problémů';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f75cbf4937d2f1f31e6a4c727ebfee7b'] = 'Nastavení je hotové!';

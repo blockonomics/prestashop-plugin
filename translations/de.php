@@ -9,6 +9,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_2f14ecdf24da27a9fb0ded962aa17e8
 $_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc226913037'] = 'Mit Bitcoin bezahlen';
 $_MODULE['<{blockonomics}prestashop>blockonomics_db84ee92e4da32563f91afe070e37a7e'] = 'Ihr Server blockiert ausgehende HTTPS-Calls';
 $_MODULE['<{blockonomics}prestashop>blockonomics_71d736bf8acac6f396861493102750d1'] = 'API-Schlüssel ist nicht korrekt';
+$_MODULE['<{blockonomics}prestashop>blockonomics_baa8441e3dbb790354e36e17e77d960a'] = 'Bitte fügen Sie einen neuen Shop auf der blockonomics-website hinzu';
 $_MODULE['<{blockonomics}prestashop>blockonomics_3436e1de7f0008a60af9cfb41a18f0ce'] = 'Ausführlichere Information finden Sie in diesen';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c3d515262545a5bde7c683f68afe06f9'] = 'Artikel zur Fehlerbehebung';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f75cbf4937d2f1f31e6a4c727ebfee7b'] = 'Setup wurde abgeschlossen!';
