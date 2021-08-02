@@ -361,7 +361,7 @@ class Blockonomics extends PaymentModule
         $error_str = '';
 
         if (!isset($response->data) || count($response->data) == 0) {
-            $error_str = $this->l("Please add a new store on blockonomics' website");
+            $error_str = $this->l('Please add a new store on blockonomics\' website');
         } elseif (count($response->data) >= 1) {
             $error_str = $this->examineServerCallbackUrls($response->data, $crypto);
         }
@@ -400,7 +400,7 @@ class Blockonomics extends PaymentModule
             return '';
         }
         // No match and no empty callback
-        $error_str = $this->l("Please add a new store on blockonomics' website");
+        $error_str = $this->l('Please add a new store on blockonomics\' website');
         return $error_str;
     }
 
