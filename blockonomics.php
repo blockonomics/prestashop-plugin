@@ -465,8 +465,8 @@ class Blockonomics extends PaymentModule
                         $error_str = Tools::strtoupper($crypto) .
                             ': ' . $error_str .
                             "</br>" .
-                            $this->l('For more information please consult this ') .
-                            "<a target='_blank' href='" .
+                            $this->l('For more information please consult this') .
+                            " <a target='_blank' href='" .
                             $article_url. "'>" .
                             $this->l('troubleshooting article') .
                             "</a>";
@@ -511,8 +511,8 @@ class Blockonomics extends PaymentModule
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l('HTTP CALLBACK URL ') .
-                    '<input style="display: none" type="submit" name="generateNewSecret">
+                    'label' => $this->l('HTTP CALLBACK URL') .
+                    ' <input style="display: none" type="submit" name="generateNewSecret">
                         <a style="display: inline;
                         font-size: 20px;
                         cursor: pointer;
@@ -549,9 +549,9 @@ class Blockonomics extends PaymentModule
         );
 
         // Init Currencies Fields form array; a.k.a. Currencies section
-        $desc = $this->l('To configure, click ') .
-        '<b>'. $this->l('Get Started for Free'). '</b>' .
-        $this->l(' on ');
+        $desc = $this->l('To configure, click') .
+        ' <b>'. $this->l('Get Started for Free'). '</b> ' .
+        $this->l('on');
 
         $fields_form[1]['form'] = array(
             'legend' => array(
@@ -562,7 +562,7 @@ class Blockonomics extends PaymentModule
                     'type' => 'checkbox',
                     'label'     => $this->l('Bitcoin (BTC)'),
                     'desc'      => $desc .
-                    '<a href="https://blockonomics.co/merchants" target="_blank">
+                    ' <a href="https://blockonomics.co/merchants" target="_blank">
                     https://blockonomics.co/merchants</a>',
                     'name' => 'BLOCKONOMICS',
                     'values' => array(
@@ -580,7 +580,7 @@ class Blockonomics extends PaymentModule
                     'type'      => 'checkbox',
                     'label'     => $this->l('Bitcoin Cash (BCH)'),
                     'desc'      => $desc .
-                    '<a href="https://bch.blockonomics.co/merchants" target="_blank">
+                    ' <a href="https://bch.blockonomics.co/merchants" target="_blank">
                     https://bch.blockonomics.co/merchants</a>',
                     'name'      => 'BLOCKONOMICS',
                     'values' => array(
