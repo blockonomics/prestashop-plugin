@@ -10,13 +10,13 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc22691303
 $_MODULE['<{blockonomics}prestashop>blockonomics_db84ee92e4da32563f91afe070e37a7e'] = 'Váš server blokuje odchozí volání HTTPS';
 $_MODULE['<{blockonomics}prestashop>blockonomics_71d736bf8acac6f396861493102750d1'] = 'Klíč API je nesprávný';
 $_MODULE['<{blockonomics}prestashop>blockonomics_baa8441e3dbb790354e36e17e77d960a'] = 'Přidejte nový obchod na web blockonomics';
-$_MODULE['<{blockonomics}prestashop>blockonomics_3436e1de7f0008a60af9cfb41a18f0ce'] = 'Další informace naleznete v tomto článku';
+$_MODULE['<{blockonomics}prestashop>blockonomics_98c2637920a4f98d40f7f6b0fc2fd378'] = 'Další informace naleznete v tomto článku';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c3d515262545a5bde7c683f68afe06f9'] = 'o řešení problémů';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f75cbf4937d2f1f31e6a4c727ebfee7b'] = 'Nastavení je hotové!';
 $_MODULE['<{blockonomics}prestashop>blockonomics_e576911d3083c76abba01c8a03842856'] = 'Po uložení nastavení klikněte na Nastavení testu a ověřte instalaci.';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f4f70727dc34561dfde1a3c529b6205c'] = 'Nastavení';
 $_MODULE['<{blockonomics}prestashop>blockonomics_d876ff8da67c3731ae25d8335a4168b4'] = 'Klíč API';
-$_MODULE['<{blockonomics}prestashop>blockonomics_eaf69bd9c888cf66f40bf03dbea03512'] = 'ZPĚTNÉ VOLÁNÍ HTTP URL';
+$_MODULE['<{blockonomics}prestashop>blockonomics_4090c73f435e12febebe689cdf79031e'] = 'ZPĚTNÉ VOLÁNÍ HTTP URL';
 $_MODULE['<{blockonomics}prestashop>blockonomics_ff64c6d108f9d4760aaf521fbbabbe8f'] = 'Časové období';
 $_MODULE['<{blockonomics}prestashop>blockonomics_1d916369325e045bba284bcbce35ccaf'] = 'Časovač odpočítávání na stránce platby';
 $_MODULE['<{blockonomics}prestashop>blockonomics_70abb32fcb0c9e8194526d1eef15eb05'] = '10 minut';
@@ -25,9 +25,9 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_f31f3ebbdee89a50923676a58da9590
 $_MODULE['<{blockonomics}prestashop>blockonomics_92f08914683ec10736d27ad9a15fa624'] = '25 minut';
 $_MODULE['<{blockonomics}prestashop>blockonomics_0d714869027c4e08ea9b2943d9bd704e'] = '30 minut';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c9cc8cce247e49bae79f15173ce97354'] = 'Uložit';
-$_MODULE['<{blockonomics}prestashop>blockonomics_63522d2ba8d45da2a999747e801e3391'] = 'Chcete-li provést konfiguraci, klikněte ';
+$_MODULE['<{blockonomics}prestashop>blockonomics_a17379a9752f2e6eef6c319c771f5f44'] = 'Chcete-li provést konfiguraci, klikněte ';
 $_MODULE['<{blockonomics}prestashop>blockonomics_64f676ae6e961fa1e596eeeeef5c7df9'] = 'na možnost Začít zdarma';
-$_MODULE['<{blockonomics}prestashop>blockonomics_57992626e0cf3ac6ed1b1a6c974c9528'] = 'na';
+$_MODULE['<{blockonomics}prestashop>blockonomics_ed2b5c0139cec8ad2873829dc1117d50'] = 'na';
 $_MODULE['<{blockonomics}prestashop>blockonomics_dfcfc43722eef1eab1e4a12e50a068b1'] = 'Měny';
 $_MODULE['<{blockonomics}prestashop>blockonomics_bfacb577033fa77ff21438e5ff80ca3b'] = 'Bitcoin (BTC)';
 $_MODULE['<{blockonomics}prestashop>blockonomics_9cb7ca5565d6c28ff385f66a173c86a7'] = 'Bitcoin Cash (BCH)';
