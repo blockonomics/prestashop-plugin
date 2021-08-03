@@ -29,7 +29,7 @@
       <div class="bnomics-order-heading">
         <div class="bnomics-order-heading-wrapper">
           <div class="bnomics-order-id">
-            <span class="bnomics-order-number" ng-cloak>{l s='Order #' mod='blockonomics' }{$id_order|escape:'htmlall':'UTF-8'}</span>
+            <span class="bnomics-order-number" ng-cloak>{l s='Order #' mod='blockonomics' } {$id_order|escape:'htmlall':'UTF-8'}</span>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
                   <!-- Order Amounts -->
                   <div class="bnomics-amount">
                     <div class="bnomics-amount-text" ng-hide="amount_copyshow" ng-cloak>
-                      {l s='To pay, send exactly this ' mod='blockonomics' }{$crypto.code|escape:'htmlall':'UTF-8'}{l s=' amount' mod='blockonomics' }
+                      {l s='To pay, send exactly' mod='blockonomics' }
                     </div>
                     <div class="bnomics-copy-amount-text" ng-show="amount_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
                     <ul ng-click="blockonomics_amount_click()" id="bnomics-amount-input" class="bnomics-amount-input">
@@ -78,7 +78,7 @@
                   </div>
                   <!-- Order Address -->
                   <div class="bnomics-address">
-                    <div class="bnomics-address-text" ng-hide="address_copyshow" ng-cloak>{l s='To this ' mod='blockonomics' }{$crypto.name|escape:'htmlall':'UTF-8'}{l s=' address' mod='blockonomics' }</div>
+                    <div class="bnomics-address-text" ng-hide="address_copyshow" ng-cloak>{l s='To this' mod='blockonomics' } {$crypto.name|escape:'htmlall':'UTF-8'} {l s=' address' mod='blockonomics' }</div>
                     <div class="bnomics-copy-address-text" ng-show="address_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
                     <ul ng-click="blockonomics_address_click()" id="bnomics-address-input" class="bnomics-address-input">
                           <li id="bnomics-address-copy">{$addr|escape:'htmlall':'UTF-8'}</li>
