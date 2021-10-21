@@ -51,8 +51,8 @@
               <!-- QR and Open in wallet -->
               <div class="bnomics-qr-code">
                 <div class="bnomics-qr">
-                  <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">
-                    <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="160" version="6">
+                  <a href="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">
+                    <qrcode data="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="160" version="6">
                       <canvas class="qrcode"></canvas>
                     </qrcode>
                   </a>
