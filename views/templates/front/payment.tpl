@@ -57,7 +57,7 @@
                     </qrcode>
                   </a>
                 </div>
-                <div class="bnomics-qr-code-hint"><a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">{l s='Open in wallet' mod='blockonomics' }</a></div>
+                <div class="bnomics-qr-code-hint"><a href="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">{l s='Open in wallet' mod='blockonomics' }</a></div>
               </div>
               <!-- Right Side -->
               <div class="bnomics-amount">
