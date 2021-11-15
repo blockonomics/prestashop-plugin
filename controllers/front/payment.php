@@ -117,7 +117,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
             if (!$responseObj->data || !isset($responseObj->data->address)) {
-                $this->displayError($blockonomics);
+                $this->displayError($blockonomics, $responseObj);
             }
             $address = $responseObj->data->address;
 
@@ -205,7 +205,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
             if (!$responseObj->data || !isset($responseObj->data->address)) {
-                $this->displayError($blockonomics);
+                $this->displayError($blockonomics, $responseObj);
             }
             $address = $responseObj->data->address;
 
@@ -330,7 +330,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         return $bits;
     }
 
-    private function displayError($blockonomics)
+    private function displayError($blockonomics, $responseObj=NULL)
     {
         $unable_to_generate =
             '<h4>' .
@@ -343,6 +343,17 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 'Please use Test Setup button in configuration to diagnose the error ',
                 'payment'
             );
+        
+        if (isset($responseObj) && isset($responseObj->data) && isset($responseObj->data->message)) {
+            $error_message = $responseObj->data->message;
+            $lowercase_error_message = strtolower($error_message);
+
+            if (strlen($error_message) > 0 && (strpos($lowercase_error_message, 'gap limit') !== false || strpos($lowercase_error_message, 'temporary') !== false)) {
+                $unable_to_generate = $unable_to_generate . '<p>
+                    <strong>More Info:</strong> ' . $responseObj->data->message . 
+                '</p>';
+            }
+        }
 
         echo $unable_to_generate;
         die();
