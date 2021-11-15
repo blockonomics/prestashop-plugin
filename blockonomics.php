@@ -200,9 +200,17 @@ class Blockonomics extends PaymentModule
     public function getPaymentOption()
     {
         $offlineOption = new PaymentOption();
-        $offlineOption
-            ->setCallToActionText($this->l('Pay by bitcoin'))
-            ->setLogo(_MODULE_DIR_.'blockonomics/views/img/bitcoin-icon.png')
+        $active_cryptos = $this->getActiveCurrencies();
+        $cryptos = array();
+        $logo_icons = array();
+        foreach ($active_cryptos as $crypto) {
+            array_push($cryptos, $crypto['name']);
+            array_push($logo_icons, $crypto['code']);
+        }
+        
+        $offlineOption 
+            ->setCallToActionText($this->l('Pay by ' . join(' or ', $cryptos)))
+            ->setLogo(_MODULE_DIR_.'blockonomics/views/img/'.join('-', $logo_icons).'-icon.png')
             ->setAction(
                 $this->context->link->getModuleLink(
                     $this->name,
