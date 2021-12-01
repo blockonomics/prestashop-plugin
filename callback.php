@@ -78,13 +78,21 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             }
             //Update order status
             $o = new Order($order[0]['id_order']);
-
+            $linked_orders = $o->getByReference($o->reference);
+            $new_order_state = NULL;
+            
             if ($status == 2) {
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
-                    $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
+                    $new_order_state = Configuration::get('PS_OS_ERROR');
                 } else {
                     Context::getContext()->currency = new Currency($o->id_currency);
-                    $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
+                    $new_order_state = Configuration::get('PS_OS_PAYMENT');
+                }
+            }
+            
+            if (isset($new_order_state)) {
+                foreach($linked_orders as $linked_order) {
+                    $linked_order->setCurrentState($new_order_state);
                 }
                 insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]);
             }
