@@ -332,27 +332,39 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 
     private function displayError($blockonomics, $responseObj=NULL)
     {
-        $unable_to_generate =
-            '<h4>' .
-            $blockonomics->l(
-                'Unable to generate bitcoin address.',
-                'payment'
-            ) .
-            '</h4><p>' .
-            $blockonomics->l(
-                'Please use Test Setup button in configuration to diagnose the error ',
-                'payment'
-            );
+        
+        $unable_to_generate = ''; 
         
         if (isset($responseObj) && isset($responseObj->data) && isset($responseObj->data->message)) {
+            
             $error_message = $responseObj->data->message;
             $lowercase_error_message = strtolower($error_message);
-
+            
             if (strlen($error_message) > 0 && (strpos($lowercase_error_message, 'gap limit') !== false || strpos($lowercase_error_message, 'temporary') !== false)) {
-                $unable_to_generate = $unable_to_generate . '<p>
-                    <strong>More Info:</strong> ' . $responseObj->data->message . 
-                '</p>';
+                $unable_to_generate =
+                    '<h3>' .
+                    $blockonomics->l(
+                        'Could not generate new address',
+                        'payment'
+                    ) .
+                    '</h3><p>' . 
+                    $responseObj->data->message . 
+                    '</p>';
             }
+        }
+        
+        if ($unable_to_generate == '') {
+            $unable_to_generate =
+                '<h3>' .
+                $blockonomics->l(
+                    'Could not generate new address',
+                    'payment'
+                ) .
+                '</h3><p>' .
+                $blockonomics->l(
+                    'Please use Test Setup button in configuration to diagnose the error ',
+                    'payment'
+                );
         }
 
         echo $unable_to_generate;
