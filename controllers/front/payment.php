@@ -330,7 +330,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         return $bits;
     }
 
-    private function displayError($blockonomics, $responseObj=NULL)
+    private function displayError($blockonomics, $responseObj = null)
     {
         
         $unable_to_generate = '<h3>' . $blockonomics->l(
@@ -339,11 +339,13 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         ) . '</h3><p>';
         
         if (isset($responseObj) && isset($responseObj->data) && isset($responseObj->data->message)) {
-            
             $error_message = $responseObj->data->message;
-            $lowercase_error_message = strtolower($error_message);
+            $lowercase_error_message = Tools::strtolower($error_message);
             
-            if (strlen($error_message) > 0 && (strpos($lowercase_error_message, 'gap limit') !== false || strpos($lowercase_error_message, 'temporary') !== false)) {
+            if (Tools::strlen($error_message) > 0 && (
+                strpos($lowercase_error_message, 'gap limit') !== false
+                || strpos($lowercase_error_message, 'temporary') !== false
+            )) {
                 $unable_to_generate .= $error_message;
             }
         } else {
