@@ -211,6 +211,7 @@
 }
 
 .bnomics-select-container {
+  padding-top: 10vh;
   text-align:center;
   max-width:400px;
   margin:auto;
