@@ -336,7 +336,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $unable_to_generate = '<h3>' . $blockonomics->l(
             'Could not generate new address',
             'payment'
-        ) . '</h3><p>';
+        ) . '</h3>';
+        $message_details = $blockonomics->l(
+            'Please use Test Setup button in configuration to diagnose the error ',
+            'payment'
+        );
         
         if (isset($responseObj) && isset($responseObj->data) && isset($responseObj->data->message)) {
             $error_message = $responseObj->data->message;
@@ -346,14 +350,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 strpos($lowercase_error_message, 'gap limit') !== false
                 || strpos($lowercase_error_message, 'temporary') !== false
             )) {
-                $unable_to_generate .= $error_message;
+                $message_details = $error_message;
             }
-        } else {
-            $unable_to_generate .= $blockonomics->l(
-                'Please use Test Setup button in configuration to diagnose the error ',
-                'payment'
-            );
         }
+
+        $unable_to_generate .= "<p>" . $message_details . "</p>";
 
         echo $unable_to_generate;
         die();
