@@ -21,19 +21,17 @@
 {block name="content"}
 <div class="bnomics-order-container">
   <div class="bnomics-select-container">
-    <tr>
-      {foreach $active_cryptos as $crypto}
-        <a href="{url entity='module' name='blockonomics' controller='payment' params=['crypto' => $crypto.code]}" style="color: inherit; text-decoration: inherit;">
-          <button class="bnomics-select-options btn btn-primary">
-            <span class="bnomics-icon-{$crypto.code|escape:'htmlall':'UTF-8'} bnomics-rotate-{$crypto.code|escape:'htmlall':'UTF-8'}"></span>
-            <span class="vertical-line">
-              {l s='Pay With' mod='blockonomics' }
-              {$crypto.name|escape:'htmlall':'UTF-8'}
-            </span>
-          </button>
-        </a>
-      {/foreach}
-    </tr>
+    {foreach $active_cryptos as $crypto}
+      <a href="{url entity='module' name='blockonomics' controller='payment' params=['crypto' => $crypto.code]}" style="color: inherit; text-decoration: inherit;">
+        <button class="bnomics-select-options btn btn-primary">
+          <span class="bnomics-icon-{$crypto.code|escape:'htmlall':'UTF-8'} bnomics-rotate-{$crypto.code|escape:'htmlall':'UTF-8'}"></span>
+          <span class="vertical-line">
+            {l s='Pay With' mod='blockonomics' }
+            {$crypto.name|escape:'htmlall':'UTF-8'}
+          </span>
+        </button>
+      </a>
+    {/foreach}
   </div>
 </div>
 

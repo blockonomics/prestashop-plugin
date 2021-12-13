@@ -199,14 +199,11 @@
   cursor:pointer;
   width:100%;
   display: block;
-  height: 4.2em;
   margin-bottom: 10px !important;
   box-shadow: 0 4px 8px 0;
   transition: 0.3s;
-  /* border-radius:5px; */
   text-align: center !important;
   word-break: break-word;
-  /* text-transform: uppercase; */
 }
 
 .bnomics-select-options:hover {
