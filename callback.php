@@ -79,7 +79,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             //Update order status
             $o = new Order($order[0]['id_order']);
             $linked_orders = $o->getByReference($o->reference);
-            $new_order_state = NULL;
+            $new_order_state = null;
             
             if ($status == 2) {
                 if ($order[0]['bits'] > $order[0]['bits_payed']) {
@@ -91,7 +91,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             }
             
             if (isset($new_order_state)) {
-                foreach($linked_orders as $linked_order) {
+                foreach ($linked_orders as $linked_order) {
                     $linked_order->setCurrentState($new_order_state);
                 }
                 insertTXIDIntoPaymentDetails($o, $order[0]['txid'], $order[0]);
