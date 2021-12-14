@@ -117,7 +117,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
             if (!$responseObj->data || !isset($responseObj->data->address)) {
-                $this->displayError($blockonomics);
+                $this->displayError($blockonomics, $responseObj);
             }
             $address = $responseObj->data->address;
 
@@ -205,7 +205,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             $responseObj = $blockonomics->getNewAddress($crypto['code']);
             if (!$responseObj->data || !isset($responseObj->data->address)) {
-                $this->displayError($blockonomics);
+                $this->displayError($blockonomics, $responseObj);
             }
             $address = $responseObj->data->address;
 
@@ -332,19 +332,30 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         return $bits;
     }
 
-    private function displayError($blockonomics)
+    private function displayError($blockonomics, $responseObj = null)
     {
-        $unable_to_generate =
-            '<h4>' .
-            $blockonomics->l(
-                'Unable to generate bitcoin address.',
-                'payment'
-            ) .
-            '</h4><p>' .
-            $blockonomics->l(
+        
+        $unable_to_generate = '<h3>' . $blockonomics->l(
+            'Could not generate new address',
+            'payment'
+        ) . '</h3><p>';
+        
+        if (isset($responseObj)
+            && isset($responseObj->data)
+            && isset($responseObj->data->message)
+            && (strpos(Tools::strtolower($responseObj->data->message), 'gap limit') !== false
+                || strpos(Tools::strtolower($responseObj->data->message), 'temporary') !== false
+            )
+        ) {
+            $unable_to_generate .= $responseObj->data->message;
+        } else {
+            $unable_to_generate .= $blockonomics->l(
                 'Please use Test Setup button in configuration to diagnose the error ',
                 'payment'
             );
+        }
+
+        $unable_to_generate .= "</p>";
 
         echo $unable_to_generate;
         die();
