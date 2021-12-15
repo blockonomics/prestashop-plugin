@@ -154,6 +154,7 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
+        Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "40");
 
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
@@ -171,6 +172,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
+        Configuration::deleteByName('BLOCKONOMICS_LOGO_HEIGHT');
 
         //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
@@ -201,6 +203,14 @@ class Blockonomics extends PaymentModule
     {
         $offlineOption = new PaymentOption();
         $active_cryptos = $this->getActiveCurrencies();
+        $logoHeight = Configuration::get('BLOCKONOMICS_LOGO_HEIGHT');
+
+        if(!$logoHeight) {
+            $logoHeight = "40";
+        }
+
+        $this->context->smarty->assign('blockonomicsLogoHeight', $logoHeight);
+
         $cryptos = array();
         $logo_icons = array();
         foreach ($active_cryptos as $crypto) {
@@ -211,6 +221,7 @@ class Blockonomics extends PaymentModule
         $offlineOption 
             ->setCallToActionText($this->l('Pay by ' . join(' or ', $cryptos)))
             ->setLogo(_MODULE_DIR_.'blockonomics/views/img/'.join('-', $logo_icons).'-icon.png')
+            ->setAdditionalInformation($this->context->smarty->fetch('module:blockonomics/views/templates/front/payment_infos.tpl'))
             ->setAction(
                 $this->context->link->getModuleLink(
                     $this->name,
@@ -495,6 +506,15 @@ class Blockonomics extends PaymentModule
                     )
                 );
             }
+        }  elseif (Tools::isSubmit('updateAdditionalSettings')) {
+            $output = $this->updateAdditionalSettings();
+            if (!$output) {
+                $output = $this->displayConfirmation(
+                    $this->l(
+                        'Additional Settings Saved, click on Test Setup to verify installation'
+                    )
+                );
+            }
         } elseif (Tools::isSubmit('generateNewSecret')) {
             $this->generatenewCallbackSecret();
         }
@@ -613,6 +633,27 @@ class Blockonomics extends PaymentModule
                     ),
                 ),
         );
+
+        $fields_form[2]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Additional Settings')
+            ),
+            'input' => array(
+                array(
+                    'type'     => 'text',
+                    'label'    => $this->l('Payment Logo Height (px)'),
+                    'desc'     => 'Height of logo in Checkout Page in pixels. Default is 40 pixels, Set to 0 to disable logo.',
+                    'name'     => 'BLOCKONOMICS_LOGO_HEIGHT',
+                    'required' => false
+                    
+                )
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+                'name' => 'updateAdditionalSettings',
+                'class' => 'btn btn-default pull-right'
+            )
+        );
         
         $helper = $this->generateHelper();
         return $helper->generateForm($fields_form);
@@ -666,6 +707,9 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
             'BLOCKONOMICS_BCH'
         );
+        $helper->fields_value['BLOCKONOMICS_LOGO_HEIGHT'] = Configuration::get(
+            'BLOCKONOMICS_LOGO_HEIGHT'
+        );
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if (!$callback_secret) {
             $this->generatenewCallback();
@@ -697,9 +741,25 @@ class Blockonomics extends PaymentModule
             'BLOCKONOMICS_BCH',
             Tools::getValue('BLOCKONOMICS_BCH')
         );
+        Configuration::updateValue(
+            'BLOCKONOMICS_LOGO_HEIGHT',
+            Tools::getValue('BLOCKONOMICS_LOGO_HEIGHT')
+        );
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             return $this->displayError($this->l('Please specify an API Key'));
         }
+    }
+    public function updateAdditionalSettings()
+    {
+        $logoHeight = Tools::getValue('BLOCKONOMICS_LOGO_HEIGHT');
+        if ($logoHeight) {
+            $logoHeight = preg_replace("/[^0-9]/", "", $logoHeight);
+        }
+
+        Configuration::updateValue(
+            'BLOCKONOMICS_LOGO_HEIGHT',
+            $logoHeight
+        );
     }
 
     public function generateNewCallbackSecret()
