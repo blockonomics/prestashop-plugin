@@ -205,7 +205,7 @@ class Blockonomics extends PaymentModule
         $active_cryptos = $this->getActiveCurrencies();
         $logoHeight = Configuration::get('BLOCKONOMICS_LOGO_HEIGHT');
 
-        if(!$logoHeight) {
+        if(!isset($logoHeight)) {
             $logoHeight = "40";
         }
 
