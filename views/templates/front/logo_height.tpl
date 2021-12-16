@@ -17,16 +17,7 @@
  * International Registered Trademark & Property of Blockonomics
  *}
 
-<div id="blockonomics-payment-helper"></div>
 <script>
-    let helper = document.getElementById("blockonomics-payment-helper")
-    let payment_number = helper.parentElement.id.split("-additional-information")[0].replace("payment-option-", "")
-    let payment_container = document.getElementById("payment-option-" + payment_number + "-container")
-
-    if (payment_container) {
-        payment_container.querySelectorAll("img").forEach(img => {
-            console.log(img)
-            img.style.height = "{$blockonomicsLogoHeight}px"
-        })
-    }
+    var image = document.querySelector("img[src*='blockonomics/views/img']")
+    image.style.height = "{$blockonomicsLogoHeight}px"
 </script>
