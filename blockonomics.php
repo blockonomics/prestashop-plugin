@@ -154,7 +154,7 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
-        Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "40");
+        Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
 
         //Generate callback secret
         $secret = md5(uniqid(rand(), true));
@@ -204,10 +204,6 @@ class Blockonomics extends PaymentModule
         $offlineOption = new PaymentOption();
         $active_cryptos = $this->getActiveCurrencies();
         $logoHeight = Configuration::get('BLOCKONOMICS_LOGO_HEIGHT');
-
-        if (!isset($logoHeight) || !$logoHeight) {
-            $logoHeight = "0";
-        }
 
         $this->context->smarty->assign('blockonomicsLogoHeight', $logoHeight);
 
@@ -565,8 +561,8 @@ class Blockonomics extends PaymentModule
                     'type'     => 'text',
                     'label'    => $this->l('Payment Logo Height (px)'),
                     'desc'     => $this->l(
-                        'Height of logo in Checkout Page in pixels. Default is 0
-                         pixels, Set to 0 to disable logo.'
+                        'Height of logo in Checkout Page in pixels.
+                         Set to 0 to disable logo.'
                     ),
                     'name'     => 'BLOCKONOMICS_LOGO_HEIGHT',
                     'required' => false,

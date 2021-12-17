@@ -19,5 +19,5 @@
 
 <script>
     var image = document.querySelector("img[src*='blockonomics/views/img']")
-    image.style.height = "{$blockonomicsLogoHeight|escape:'htmlall':'UTF-8'}px"
+    image.style.height = "{$blockonomicsLogoHeight|intval}px"
 </script>
