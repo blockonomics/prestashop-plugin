@@ -219,9 +219,10 @@ class Blockonomics extends PaymentModule
         $this->context->smarty->assign('blockonomicsEnabledLogos', $logo_icons);
         
         $offlineOption
+            ->setModuleName('blockonomics')
             ->setCallToActionText($this->l('Pay by ' . join(' or ', $cryptos)))
             ->setAdditionalInformation(
-                $this->context->smarty->fetch('module:blockonomics/views/templates/front/logo_height.tpl')
+                $this->context->smarty->fetch('module:blockonomics/views/templates/hook/logo_height.tpl')
             )
             ->setAction(
                 $this->context->link->getModuleLink(
