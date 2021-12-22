@@ -723,10 +723,6 @@ class Blockonomics extends PaymentModule
             'BLOCKONOMICS_BCH',
             Tools::getValue('BLOCKONOMICS_BCH')
         );
-        Configuration::updateValue(
-            'BLOCKONOMICS_LOGO_HEIGHT',
-            Tools::getValue('BLOCKONOMICS_LOGO_HEIGHT')
-        );
 
         $logoHeight = Tools::getValue('BLOCKONOMICS_LOGO_HEIGHT');
         if ($logoHeight) {
