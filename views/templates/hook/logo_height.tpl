@@ -22,7 +22,7 @@
 
     {foreach $blockonomicsEnabledLogos as $logo}
         img = document.createElement("img")
-        img.src = "{$logo}"
+        img.src = "{$logo|escape:'htmlall':'UTF-8'}"
         img.style.height = "{$blockonomicsLogoHeight|intval}px"
         img.style.paddingRight = "5px"
         container.appendChild(img)

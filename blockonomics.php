@@ -211,7 +211,8 @@ class Blockonomics extends PaymentModule
         $logo_icons = array();
         foreach ($active_cryptos as $crypto) {
             array_push($cryptos, $crypto['name']);
-            array_push($logo_icons, 
+            array_push(
+                $logo_icons,
                 _MODULE_DIR_.'blockonomics/views/img/'.$crypto['code'].'-icon.png'
             );
         }
