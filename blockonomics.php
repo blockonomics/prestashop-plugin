@@ -206,17 +206,20 @@ class Blockonomics extends PaymentModule
         $logoHeight = Configuration::get('BLOCKONOMICS_LOGO_HEIGHT');
 
         $this->context->smarty->assign('blockonomicsLogoHeight', $logoHeight);
-
+        
         $cryptos = array();
         $logo_icons = array();
         foreach ($active_cryptos as $crypto) {
             array_push($cryptos, $crypto['name']);
-            array_push($logo_icons, $crypto['code']);
+            array_push($logo_icons, 
+                _MODULE_DIR_.'blockonomics/views/img/'.$crypto['code'].'-icon.png'
+            );
         }
+
+        $this->context->smarty->assign('blockonomicsEnabledLogos', $logo_icons);
         
         $offlineOption
             ->setCallToActionText($this->l('Pay by ' . join(' or ', $cryptos)))
-            ->setLogo(_MODULE_DIR_.'blockonomics/views/img/'.join('-', $logo_icons).'-icon.png')
             ->setAdditionalInformation(
                 $this->context->smarty->fetch('module:blockonomics/views/templates/front/logo_height.tpl')
             )
