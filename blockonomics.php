@@ -565,10 +565,10 @@ class Blockonomics extends PaymentModule
                 ),
                 array(
                     'type'     => 'text',
-                    'label'    => $this->l('Payment Logo Height (px)'),
+                    'label'    => $this->l('Pay by bitcoin icon size'),
                     'desc'     => $this->l(
-                        'Height of logo in Checkout Page in pixels.
-                         Set to 0 to disable logo.'
+                        'Size in pixels.
+                         Set 0 to disable icon'
                     ),
                     'name'     => 'BLOCKONOMICS_LOGO_HEIGHT',
                     'required' => false,
