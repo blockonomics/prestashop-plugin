@@ -222,6 +222,7 @@ class Blockonomics extends PaymentModule
         $offlineOption
             ->setModuleName('blockonomics')
             ->setCallToActionText($this->l('Pay by ' . join(' or ', $cryptos)))
+            ->setLogo(_MODULE_DIR_.'blockonomics/views/img/btc-icon.svg')
             ->setAdditionalInformation(
                 $this->context->smarty->fetch('module:blockonomics/views/templates/hook/logo_height.tpl')
             )

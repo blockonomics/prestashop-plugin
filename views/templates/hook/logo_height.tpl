@@ -17,14 +17,31 @@
  * International Registered Trademark & Property of Blockonomics
  *}
 
-<script>
-    let container = document.querySelector("input[data-module-name=blockonomics]").parentElement.parentElement.querySelector("label")
+<style>
+    .blockonomics-hidden { 
+        display: none !important; 
+    }
+    .blockonomics-crypto-logo-container {
+        display: inline-block;
+    }
+    .blockonomics-crypto-logo {
+        height: {$blockonomicsLogoHeight|intval}px;
+        padding-left: 5px;
+    }
+</style>
+
+<script id="blockonomics-hook-logo-height">
+    let image = document.querySelector("img[src*='blockonomics/views/img']")
+    let image_container = document.createElement("span")
+    image_container.classList.add("blockonomics-crypto-logo-container")
 
     {foreach $blockonomicsEnabledLogos as $logo}
         img = document.createElement("img")
-        img.src = "{$logo|escape:'htmlall':'UTF-8'}"
-        img.style.height = "{$blockonomicsLogoHeight|intval}px"
-        img.style.paddingRight = "5px"
-        container.appendChild(img)
+        img.src = "{$logo|escape:'htmlall'}"
+        img.classList.add("blockonomics-crypto-logo")
+        image_container.appendChild(img)
     {/foreach}
+    
+    image.parentNode.replaceChild(image_container, image)
+    document.getElementById("blockonomics-hook-logo-height").parentElement.classList.add("blockonomics-hidden")
 </script>
