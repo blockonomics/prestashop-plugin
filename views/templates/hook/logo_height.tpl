@@ -37,7 +37,7 @@
 
     {foreach $blockonomicsEnabledLogos as $logo}
         img = document.createElement("img")
-        img.src = "{$logo|escape:'htmlall'}"
+        img.src = "{$logo|escape:'htmlall':'UTF-8'}"
         img.classList.add("blockonomics-crypto-logo")
         image_container.appendChild(img)
     {/foreach}
