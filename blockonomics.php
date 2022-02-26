@@ -511,7 +511,7 @@ class Blockonomics extends PaymentModule
                 );
             }
         } elseif (Tools::isSubmit('generateNewSecret')) {
-            $this->generatenewCallbackSecret();
+            $this->generateNewCallbackSecret();
         }
         return $output . $this->displayForm();
     }
@@ -697,7 +697,7 @@ class Blockonomics extends PaymentModule
         );
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if (!$callback_secret) {
-            $this->generatenewCallback();
+            $this->generateNewCallbackSecret();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
         $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true).
