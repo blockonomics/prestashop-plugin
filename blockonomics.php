@@ -715,6 +715,9 @@ class Blockonomics extends PaymentModule
 
     public function updateSettings()
     {
+        if (Shop::isFeatureActive() && Shop::getContext() == Shop::CONTEXT_GROUP) {
+            return $this->displayError($this->l('Cannot save settings for a shop group. Setup each shop individually'));
+        }
         Configuration::updateValue(
             'BLOCKONOMICS_API_KEY',
             Tools::getValue('BLOCKONOMICS_API_KEY')
@@ -748,6 +751,9 @@ class Blockonomics extends PaymentModule
 
     public function generateNewCallbackSecret()
     {
+        if (Shop::isFeatureActive() && Shop::getContext() == Shop::CONTEXT_GROUP) {
+            return;
+        }
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
     }
