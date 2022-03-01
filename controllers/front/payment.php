@@ -149,6 +149,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             );
 
             $mes = "Adr BTC : " . $address;
+            $blockonomics->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', null);
             $blockonomics->validateOrder(
                 (int) $cart->id,
                 (int) Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
