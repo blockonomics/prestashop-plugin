@@ -157,8 +157,7 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
 
         //Generate callback secret
-        $secret = md5(uniqid(rand(), true));
-        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+        $this->generateNewCallbackSecret();
         return true;
     }
 
