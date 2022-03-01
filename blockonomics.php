@@ -156,8 +156,14 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
         Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
 
-        //Generate callback secret
-        $this->generateNewCallbackSecret();
+        /* Setup each shop secret */
+        $shops = Shop::getShops();
+        foreach ($shops as $shop) {
+            /* Sets up configuration */
+            $secret = md5(uniqid(rand(), true));
+            Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret, false, 0, $shop['id_shop']);
+        }
+
         return true;
     }
 
