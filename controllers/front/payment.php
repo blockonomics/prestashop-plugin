@@ -72,6 +72,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $cart = $this->context->cart;
         $this->display_column_left = false;
         $blockonomics = $this->module;
+        $blockonomics->setShopContextAll();
         $crypto = $blockonomics->getActiveCurrencies()[Tools::getValue('crypto')];
 
         if (!isset($cart->id) or
@@ -149,7 +150,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             );
 
             $mes = "Adr BTC : " . $address;
-            $blockonomics->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', null);
+
             $blockonomics->validateOrder(
                 (int) $cart->id,
                 (int) Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
@@ -314,6 +315,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
     private function getTimeRemaining($order)
     {
         if ($order) {
+            $blockonomics = $this->module;
+            $blockonomics->setShopContextAll();
             $time_remaining = ($order['timestamp'] +
             (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
             if ($time_remaining > 0) {

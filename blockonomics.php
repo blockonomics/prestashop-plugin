@@ -62,6 +62,7 @@ class Blockonomics extends PaymentModule
             'Are you sure you want to uninstall?'
         );
 
+        $this->setShopContextAll();
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             $this->warning = $this->l(
                 'Please specify an API Key'
@@ -96,6 +97,7 @@ class Blockonomics extends PaymentModule
 
     public function installOrder($key, $title, $template)
     {
+        $this->setShopContextAll();
         //Already existing from previous install(ignore)
         if (Configuration::get($key) > 0) {
             return true;
@@ -120,6 +122,7 @@ class Blockonomics extends PaymentModule
 
     public function uninstallOrder($key)
     {
+        $this->setShopContextAll();
         $orderState = new OrderState();
         $orderState->id = (int) Configuration::get($key);
         $orderState->delete();
@@ -149,6 +152,7 @@ class Blockonomics extends PaymentModule
         UNIQUE KEY order_table (addr))"
         );
 
+        $this->setShopContextAll();
         //Blockonomics basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
@@ -156,13 +160,9 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
         Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
 
-        /* Setup each shop secret */
-        $shops = Shop::getShops();
-        foreach ($shops as $shop) {
-            /* Sets up configuration */
-            $secret = md5(uniqid(rand(), true));
-            Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret, false, 0, $shop['id_shop']);
-        }
+        /* Sets up shop secret */
+        $secret = md5(uniqid(rand(), true));
+        Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret, false);
 
         return true;
     }
@@ -174,6 +174,8 @@ class Blockonomics extends PaymentModule
                 _DB_PREFIX_ .
                 'blockonomics_bitcoin_orders`;'
         );
+
+        $this->setShopContextAll();
         Configuration::deleteByName('BLOCKONOMICS_API_KEY');
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
@@ -206,6 +208,7 @@ class Blockonomics extends PaymentModule
 
     public function getPaymentOption()
     {
+        $this->setShopContextAll();
         $offlineOption = new PaymentOption();
         $active_cryptos = $this->getActiveCurrencies();
         $logoHeight = Configuration::get('BLOCKONOMICS_LOGO_HEIGHT');
@@ -255,6 +258,7 @@ class Blockonomics extends PaymentModule
      */
     public function getNewAddress($crypto = 'btc', $test_mode = false)
     {
+        $this->setShopContextAll();
         $new_address_url = $this->getServerAPIURL($crypto, Blockonomics::NEW_ADDRESS_PATH);
         $url = $new_address_url . "?match_callback=" . Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         if ($test_mode) {
@@ -271,6 +275,7 @@ class Blockonomics extends PaymentModule
 
     public function doCurlCall($url, $post_content = '')
     {
+        $this->setShopContextAll();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -311,6 +316,7 @@ class Blockonomics extends PaymentModule
      */
     public function getActiveCurrencies()
     {
+        $this->setShopContextAll();
         $active_currencies = array();
         $blockonomics_currencies = $this->getSupportedCurrencies();
         foreach ($blockonomics_currencies as $code => $currency) {
@@ -399,6 +405,7 @@ class Blockonomics extends PaymentModule
     // checks each existing xpub callback URL to update and/or use
     public function examineServerCallbackUrls($response_body, $crypto)
     {
+        $this->setShopContextAll();
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         $api_url = Context::getContext()->shop->getBaseURL(true) . 'modules/' . $this->name;
         $presta_callback_url = $api_url . '/callback.php?secret=' . $callback_secret;
@@ -651,6 +658,7 @@ class Blockonomics extends PaymentModule
 
     public function generateHelper()
     {
+        $this->setShopContextAll();
         // Get default language
         $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
         $helper = new HelperForm();
@@ -715,9 +723,7 @@ class Blockonomics extends PaymentModule
 
     public function updateSettings()
     {
-        if (Shop::isFeatureActive() && Shop::getContext() == Shop::CONTEXT_GROUP) {
-            return $this->displayError($this->l('Cannot save settings for a shop group. Setup each shop individually'));
-        }
+        $this->setShopContextAll();
         Configuration::updateValue(
             'BLOCKONOMICS_API_KEY',
             Tools::getValue('BLOCKONOMICS_API_KEY')
@@ -751,10 +757,15 @@ class Blockonomics extends PaymentModule
 
     public function generateNewCallbackSecret()
     {
-        if (Shop::isFeatureActive() && Shop::getContext() == Shop::CONTEXT_GROUP) {
-            return;
-        }
+        $this->setShopContextAll();
         $secret = md5(uniqid(rand(), true));
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
+    }
+
+    public function setShopContextAll()
+    {
+        if (Shop::isFeatureActive()) {
+            Shop::setContext(Shop::CONTEXT_ALL);
+        }
     }
 }
