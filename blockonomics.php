@@ -407,7 +407,8 @@ class Blockonomics extends PaymentModule
     {
         $this->setShopContextAll();
         $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
-        $api_url = Context::getContext()->shop->getBaseURL(true) . 'modules/' . $this->name;
+        
+        $api_url = Tools::getHttpHost(true).__PS_BASE_URI__ . 'modules/' . $this->name;
         $presta_callback_url = $api_url . '/callback.php?secret=' . $callback_secret;
         $base_url = preg_replace('/https?:\/\//', '', $api_url);
         $available_xpub = '';
@@ -713,7 +714,7 @@ class Blockonomics extends PaymentModule
             $this->generateNewCallbackSecret();
             $callback_secret = Configuration::get('BLOCKONOMICS_CALLBACK_SECRET');
         }
-        $helper->fields_value['callbackURL'] = Context::getContext()->shop->getBaseURL(true).
+        $helper->fields_value['callbackURL'] = Tools::getHttpHost(true).__PS_BASE_URI__.
         'modules/' .
         $this->name .
         '/callback.php?secret=' .
