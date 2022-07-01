@@ -586,6 +586,14 @@ class Blockonomics extends PaymentModule
                     'name'     => 'BLOCKONOMICS_LOGO_HEIGHT',
                     'required' => false,
                     'class'    => 'fixed-width-xl'
+                ),
+                array(
+                    'type'     => 'html',
+                    'label'    => $this->l('Underpayment Slack %'),
+                    'desc'     => $this->l('Allow payments that are off by a small percentage'),
+                    'required' => false,
+                    #'class'    => 'fixed-width-xl',
+                    'html_content' => '<input type="number" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value="">'
                 )
             ),
             'submit' => array(
