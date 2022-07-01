@@ -158,6 +158,7 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
+        Configuration::updateValue('BLOCKONOMICS_UNDERPAYMENT_SLACK', 0);
         Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
 
         /* Sets up shop secret */
@@ -180,6 +181,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
         Configuration::deleteByName('BLOCKONOMICS_LOGO_HEIGHT');
+        Configuration::deleteByName('BLOCKONOMICS_UNDERPAYMENT_SLACK');
 
         //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
@@ -531,6 +533,7 @@ class Blockonomics extends PaymentModule
 
     public function displayForm()
     {
+        $slack_value = Configuration::get('BLOCKONOMICS_UNDERPAYMENT_SLACK');
         $fields_form = array();
         // Init Settings Fields form array; a.k.a. Settings section
         $fields_form[0]['form'] = array(
@@ -593,7 +596,7 @@ class Blockonomics extends PaymentModule
                     'desc'     => $this->l('Allow payments that are off by a small percentage'),
                     'required' => false,
                     #'class'    => 'fixed-width-xl',
-                    'html_content' => '<input type="number" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value="">'
+                    'html_content' => '<input type="number" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value='.strval($slack_value).'>'
                 )
             ),
             'submit' => array(
@@ -711,6 +714,9 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_BTC'] = Configuration::get(
             'BLOCKONOMICS_BTC'
         );
+        $helper->fields_value['BLOCKONOMICS_UNDERPAYMENT_SLACK'] = Configuration::get(
+            'BLOCKONOMICS_UNDERPAYMENT_SLACK'
+        );
         $helper->fields_value['BLOCKONOMICS_BCH'] = Configuration::get(
             'BLOCKONOMICS_BCH'
         );
@@ -744,6 +750,10 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue(
             'BLOCKONOMICS_BTC',
             Tools::getValue('BLOCKONOMICS_BTC')
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_UNDERPAYMENT_SLACK',
+            Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
         );
         Configuration::updateValue(
             'BLOCKONOMICS_BCH',
