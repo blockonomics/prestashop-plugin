@@ -83,9 +83,11 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
             $o = new Order($order[0]['id_order']);
             $linked_orders = $o->getByReference($o->reference);
             $new_order_state = null;
+            // Get underpayment slack
+            $underpayment_slack = Configuration::get('BLOCKONOMICS_UNDERPAYMENT_SLACK')/100 * $order[0]['bits'];
             
             if ($status == 2) {
-                if ($order[0]['bits'] > $order[0]['bits_payed']) {
+                if ($order[0]['bits'] - $underpayment_slack > $order[0]['bits_payed']) {
                     $new_order_state = Configuration::get('PS_OS_ERROR');
                 } else {
                     Context::getContext()->currency = new Currency($o->id_currency);
