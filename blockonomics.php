@@ -526,16 +526,6 @@ class Blockonomics extends PaymentModule
                     )
                 );
             }
-        } elseif (Tools::isSubmit('updateAdvanceSettings')) {
-            $output = $this->updateAdvanceSettings();
-            if (!$output) {
-                $output = $this->displayConfirmation(
-                    $this->l(
-                        // removing the "click test setup to verify" from message
-                        'Settings Saved'
-                    )
-                );
-            }
         } elseif (Tools::isSubmit('generateNewSecret')) {
             $this->generateNewCallbackSecret();
         }
@@ -572,93 +562,76 @@ class Blockonomics extends PaymentModule
                     'name' => 'callbackURL',
                     'disabled' => 'disabled',
                 ),
+                // Inserting JQuery into HelperForm for advance setting toggle
+                array(
+                  'type' => 'html',
+                  'name' => 'settingToggle',
+                  'class' => 'btn btn-default',
+                  'html_content' => '<script>
+                                        $(document).ready(function() {
+                                          $("#advance-settings-toggle").click(function(){
+                                            $("#advance-settings-1").parent().parent().toggleClass("hide");
+                                            $("#advance-settings-2").parent().parent().toggleClass("hide");
+                                            $("#advance-settings-3").parent().parent().toggleClass("hide");
+                                            if ($("#advance-settings-toggle").text().trim() === "Show Advanced Settings")
+                                            {
+                                                $("#advance-settings-toggle").text("Hide Advanced Settings");
+                                            } else 
+                                            {
+                                                $("#advance-settings-toggle").text("Show Advanced Settings");
+                                            }
+                                          });
+                                        });
+                                      </script>
+                                      <button type="button" id="advance-settings-toggle" class="btn btn-default btn-lg">
+                                        Show Advanced Settings
+                                      </button>',
+              ),                
+              array(
+                  'type' => 'select',
+                  'label' => $this->l('Time Period'),
+                  'name' => 'BLOCKONOMICS_TIMEPERIOD',
+                  'desc' => $this->l('Countdown timer on payment page'),
+                  'required' => false,
+                  'id' => 'advance-settings-1',
+                  'form_group_class' => 'hide',
+                  'options' => array(
+                      'query' => array(
+                          array('key' => '10', 'name' => $this->l('10 minutes')),
+                          array('key' => '15', 'name' => $this->l('15 minutes')),
+                          array('key' => '20', 'name' => $this->l('20 minutes')),
+                          array('key' => '25', 'name' => $this->l('25 minutes')),
+                          array('key' => '30', 'name' => $this->l('30 minutes')),
+                      ),
+                      'id' => 'key',
+                      'name' => 'name',
+                  ),
+              ),
+              array(
+                  'type' => 'text',
+                  'label' => $this->l('Pay by bitcoin icon size'),
+                  'desc' => $this->l(
+                      'Size in pixels.
+                       Set 0 to disable icon'
+                  ),
+                  'name' => 'BLOCKONOMICS_LOGO_HEIGHT',
+                  'required' => false,
+                  'class' => 'fixed-width-xl',
+                  'form_group_class' => 'hide',
+                  'id' => 'advance-settings-2',
+              ),
+              array(
+                  'type' => 'html',
+                  'label' => $this->l('Underpayment Slack %'),
+                  'desc' => $this->l('Allow payments that are off by a small percentage'),
+                  'required' => false,
+                  'form_group_class' => 'hide',
+                  'html_content' => '<input type="number" class="fixed-width-xl" id="advance-settings-3" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
+              ),
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
                 'name' => 'updateSettings',
-                'class' => 'btn btn-default pull-right',
-            ),
-        );
-        $fields_form[1]['form'] = array(
-            'input' => array(
-                array(
-                    'type' => 'html',
-#                    'title' => $this->l('Show More options'),
-                    'name' => 'testSetup',
-                    'class' => 'btn btn-default',
-                    'html_content' => '
-                            <button onclick="showAdvanced()" type="button" id="show-advance" style="display: none" class="btn btn-default btn-lg"> Hide Advanced Settings &#9650</button>
-                            <button onclick="showAdvanced()" type="button" id="show-basic" style="display:block" class="btn btn-default btn-lg"> Show Advanced Settings &#9660</button>
-                            <script type="text/javascript">
-                            window.onload = function(){
-                                document.getElementById("fieldset_2_2").style.display="none";
-                              };
-
-                            function showAdvanced() {
-                            if (document.getElementById("fieldset_2_2").style.display == "none"){
-                            document.getElementById("fieldset_2_2").style.display = "block";
-                            document.getElementById("show-basic").style.display = "none";
-                            document.getElementById("show-advance").style.display = "block";
-
-                            }
-                            else {
-                            document.getElementById("fieldset_2_2").style.display = "none";
-                            document.getElementById("show-basic").style.display = "block";
-                            document.getElementById("show-advance").style.display = "none";
-                            }
-                            }
-                            </script>
-                            ',
-                ),
-            ),
-        );
-        $fields_form[2]['form'] = array(
-            'legend' => array(
-                'title' => $this->l('More Settings'),
-            ),
-            'input' => array(
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Time Period'),
-                    'name' => 'BLOCKONOMICS_TIMEPERIOD',
-                    'desc' => $this->l('Countdown timer on payment page'),
-                    'required' => false,
-                    'id' => 'advanced-setting',
-                    'options' => array(
-                        'query' => array(
-                            array('key' => '10', 'name' => $this->l('10 minutes')),
-                            array('key' => '15', 'name' => $this->l('15 minutes')),
-                            array('key' => '20', 'name' => $this->l('20 minutes')),
-                            array('key' => '25', 'name' => $this->l('25 minutes')),
-                            array('key' => '30', 'name' => $this->l('30 minutes')),
-                        ),
-                        'id' => 'key',
-                        'name' => 'name',
-                    ),
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Pay by bitcoin icon size'),
-                    'desc' => $this->l(
-                        'Size in pixels.
-                         Set 0 to disable icon'
-                    ),
-                    'name' => 'BLOCKONOMICS_LOGO_HEIGHT',
-                    'required' => false,
-                    'class' => 'fixed-width-xl',
-                    'id' => 'advanced-setting',
-                ),
-                array(
-                    'type' => 'html',
-                    'label' => $this->l('Underpayment Slack %'),
-                    'desc' => $this->l('Allow payments that are off by a small percentage'),
-                    'required' => false,
-                    'html_content' => '<input type="number" class="fixed-width-xl" id="advanced-setting" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
-                ),
-            ),
-            'submit' => array(
-                'title' => $this->l('Save'),
-                'name' => 'updateAdvanceSettings',
                 'class' => 'btn btn-default pull-right',
             ),
         );
@@ -668,7 +641,7 @@ class Blockonomics extends PaymentModule
         ' <b>'. $this->l('Get Started for Free'). '</b> ' .
         $this->l('on');
 
-        $fields_form[3]['form'] = array(
+        $fields_form[1]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Currencies')
             ),
@@ -801,6 +774,14 @@ class Blockonomics extends PaymentModule
             Tools::getValue('BLOCKONOMICS_API_KEY')
         );
         Configuration::updateValue(
+            'BLOCKONOMICS_TIMEPERIOD',
+            Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
+        );
+        Configuration::updateValue(
+            'BLOCKONOMICS_UNDERPAYMENT_SLACK',
+            Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
+        );
+        Configuration::updateValue(
             'BLOCKONOMICS_BTC',
             Tools::getValue('BLOCKONOMICS_BTC')
         );
@@ -809,32 +790,18 @@ class Blockonomics extends PaymentModule
             Tools::getValue('BLOCKONOMICS_BCH')
         );
 
-        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
-            return $this->displayError($this->l('Please specify an API Key'));
-        }
-    }
-
-    public function updateAdvanceSettings()
-    {
-        $this->setShopContextAll();
-        Configuration::updateValue(
-            'BLOCKONOMICS_TIMEPERIOD',
-            Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
-        );
-        Configuration::updateValue(
-            'BLOCKONOMICS_UNDERPAYMENT_SLACK',
-            Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
-        );
-
         $logoHeight = Tools::getValue('BLOCKONOMICS_LOGO_HEIGHT');
         if ($logoHeight) {
             $logoHeight = preg_replace("/[^0-9]/", "", $logoHeight);
         }
-
+    
         Configuration::updateValue(
             'BLOCKONOMICS_LOGO_HEIGHT',
             $logoHeight
         );
+        if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
+            return $this->displayError($this->l('Please specify an API Key'));
+        }
     }
 
     public function generateNewCallbackSecret()
