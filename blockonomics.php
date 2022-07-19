@@ -763,8 +763,14 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
     }
 
+    /*
+     * Ensures module settings apply to all stores
+     * Fixes PS multistore issues by using single
+     * Blockonomics settings for all stores
+     */
     public function setShopContextAll()
     {
+        // Check if the multistore feature is activated
         if (Shop::isFeatureActive()) {
             Shop::setContext(Shop::CONTEXT_ALL);
         }

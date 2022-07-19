@@ -27,6 +27,7 @@ $value = Tools::getValue('value');
 $status = Tools::getValue('status');
 $addr = Tools::getValue('addr');
 
+// Check if the multistore feature is activated
 if (Shop::isFeatureActive()) {
     Shop::setContext(Shop::CONTEXT_ALL);
 }
