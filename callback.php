@@ -27,6 +27,10 @@ $value = Tools::getValue('value');
 $status = Tools::getValue('status');
 $addr = Tools::getValue('addr');
 
+// Check if the multistore feature is activated
+if (Shop::isFeatureActive()) {
+    Shop::setContext(Shop::CONTEXT_ALL);
+}
 //Match secret for callback
 if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
      // Update kernel initialization for Prestashop 1.7.6.1
