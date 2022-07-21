@@ -622,6 +622,7 @@ class Blockonomics extends PaymentModule
               ),
               array(
                   'type' => 'html',
+                  'name' => 'BLOCKONOMICS_UNDERPAYMENT_SLACK',
                   'label' => $this->l('Underpayment Slack %'),
                   'desc' => $this->l('Allow payments that are off by a small percentage'),
                   'required' => false,
