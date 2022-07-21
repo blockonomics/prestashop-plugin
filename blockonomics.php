@@ -569,23 +569,22 @@ class Blockonomics extends PaymentModule
                   'class' => 'btn btn-default',
                   'html_content' => '<script>
                                         $(document).ready(function() {
-                                          $("#advance-settings-toggle").click(function(){
-                                            $("#advance-settings-1").parent().parent().toggleClass("hide");
-                                            $("#advance-settings-2").parent().parent().toggleClass("hide");
-                                            $("#advance-settings-3").parent().parent().toggleClass("hide");
-                                            if ($("#advance-settings-toggle").text().trim() === "Show Advanced Settings")
-                                            {
-                                                $("#advance-settings-toggle").text("Hide Advanced Settings");
-                                            } else 
-                                            {
-                                                $("#advance-settings-toggle").text("Show Advanced Settings");
+                                          $("#advanced_title").click(function(){
+                                            $("#advanced_title_1").parent().parent().toggleClass("hide");
+                                            $("#advanced_title_2").parent().parent().toggleClass("hide");
+                                            $("#advanced_title_3").parent().parent().toggleClass("hide");
+                                            if ($("#advanced_title").text().trim() === "Advanced Settings ▼"){
+                                                $("#advanced_title").text("Advanced Settings ▲");
+                                            } 
+                                            else {
+                                                $("#advanced_title").text("Advanced Settings ▼");
                                             }
                                           });
                                         });
                                       </script>
-                                      <button type="button" id="advance-settings-toggle" class="btn btn-default btn-lg">
-                                        Show Advanced Settings
-                                      </button>',
+                                      <a id="advanced_title" style="cursor: pointer; font-weight: bold">
+                                        Advanced Settings &#9660
+                                      </a>',
               ),                
               array(
                   'type' => 'select',
@@ -593,7 +592,7 @@ class Blockonomics extends PaymentModule
                   'name' => 'BLOCKONOMICS_TIMEPERIOD',
                   'desc' => $this->l('Countdown timer on payment page'),
                   'required' => false,
-                  'id' => 'advance-settings-1',
+                  'id' => 'advanced_title_1',
                   'form_group_class' => 'hide',
                   'options' => array(
                       'query' => array(
@@ -618,7 +617,7 @@ class Blockonomics extends PaymentModule
                   'required' => false,
                   'class' => 'fixed-width-xl',
                   'form_group_class' => 'hide',
-                  'id' => 'advance-settings-2',
+                  'id' => 'advanced_title_2',
               ),
               array(
                   'type' => 'html',
@@ -627,7 +626,7 @@ class Blockonomics extends PaymentModule
                   'desc' => $this->l('Allow payments that are off by a small percentage'),
                   'required' => false,
                   'form_group_class' => 'hide',
-                  'html_content' => '<input type="number" class="fixed-width-xl" id="advance-settings-3" min=0 max=20 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
+                  'html_content' => '<input type="number" class="fixed-width-xl" id="advanced_title_3" min=0 max=20 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
               ),
             ),
             'submit' => array(
