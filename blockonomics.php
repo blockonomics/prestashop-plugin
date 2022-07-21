@@ -778,10 +778,16 @@ class Blockonomics extends PaymentModule
             'BLOCKONOMICS_TIMEPERIOD',
             Tools::getValue('BLOCKONOMICS_TIMEPERIOD')
         );
-        Configuration::updateValue(
-            'BLOCKONOMICS_UNDERPAYMENT_SLACK',
-            Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
-        );
+        $underpaymentSlack = Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK');
+        if (0 <= $underpaymentSlack && $underpaymentSlack <= 20){
+            Configuration::updateValue(
+                'BLOCKONOMICS_UNDERPAYMENT_SLACK',
+                Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
+            );
+        }
+        else {
+            return $this->displayError($this->l('Invalid Underpayment Slack. Enter a value between 0 to 20'));
+        }
         Configuration::updateValue(
             'BLOCKONOMICS_BTC',
             Tools::getValue('BLOCKONOMICS_BTC')
