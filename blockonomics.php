@@ -627,7 +627,7 @@ class Blockonomics extends PaymentModule
                   'desc' => $this->l('Allow payments that are off by a small percentage'),
                   'required' => false,
                   'form_group_class' => 'hide',
-                  'html_content' => '<input type="number" class="fixed-width-xl" id="advance-settings-3" min=0 max=10 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
+                  'html_content' => '<input type="number" class="fixed-width-xl" id="advance-settings-3" min=0 max=20 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
               ),
             ),
             'submit' => array(
