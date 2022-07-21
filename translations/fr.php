@@ -89,7 +89,8 @@ $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea']
 $_MODULE['<{blockonomics}prestashop>no_crypto_7a686f1321744105bd4183854107d431']
     = 'Aucune crypto-monnaie n\'est activée pour les paiements';
 $_MODULE['<{blockonomics}prestashop>no_crypto_6387ce01d8a5c7eff4bfc2e74afc1767']
-    = 'Note à l\'administrateur : Peut être activée via Administrateur PrestaShop > Modules > Gestionnaire de modules > Bitcoin - Blockonomics > Monnaies';
+    = 'Note à l\'administrateur : Peut être activée via '.
+        'Administrateur PrestaShop > Modules > Gestionnaire de modules > Bitcoin - Blockonomics > Monnaies';
 $_MODULE['<{blockonomics}prestashop>select_03a7faed722f23ed1f61d3a49425200b']
     = 'Pay avec';
 $_MODULE['<{blockonomics}prestashop>validation_02cb6e7914265feb537fe7078c7a5649']

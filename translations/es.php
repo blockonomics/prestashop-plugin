@@ -89,7 +89,8 @@ $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea']
 $_MODULE['<{blockonomics}prestashop>no_crypto_7a686f1321744105bd4183854107d431']
     = 'Ninguna criptomoneda está habilitada para el pago';
 $_MODULE['<{blockonomics}prestashop>no_crypto_6387ce01d8a5c7eff4bfc2e74afc1767']
-    = 'Nota para el webmaster: se puede habilitar a través de PrestaShop Admin > Módulos > Administrador de módulos > Bitcoin - Blockonomics > Monedas ';
+    =  'Nota para el webmaster: se puede habilitar a través de '.
+        'PrestaShop Admin > Módulos > Administrador de módulos > Bitcoin - Blockonomics > Monedas ';
 $_MODULE['<{blockonomics}prestashop>select_03a7faed722f23ed1f61d3a49425200b']
     = 'Pagar con';
 $_MODULE['<{blockonomics}prestashop>validation_02cb6e7914265feb537fe7078c7a5649']
