@@ -156,6 +156,7 @@ class Blockonomics extends PaymentModule
         //Blockonomics basic configuration
         Configuration::updateValue('BLOCKONOMICS_API_KEY', '');
         Configuration::updateValue('BLOCKONOMICS_TIMEPERIOD', 10);
+        Configuration::updateValue('BLOCKONOMICS_UNDERPAYMENT_SLACK', 0);
         Configuration::updateValue('BLOCKONOMICS_BTC', true);
         Configuration::updateValue('BLOCKONOMICS_BCH', false);
         Configuration::updateValue('BLOCKONOMICS_LOGO_HEIGHT', "0");
@@ -180,6 +181,7 @@ class Blockonomics extends PaymentModule
         Configuration::deleteByName('BLOCKONOMICS_CALLBACK_SECRET');
         Configuration::deleteByName('BLOCKONOMICS_TIMEPERIOD');
         Configuration::deleteByName('BLOCKONOMICS_LOGO_HEIGHT');
+        Configuration::deleteByName('BLOCKONOMICS_UNDERPAYMENT_SLACK');
 
         //We should still delete these values since older versions had them
         Configuration::deleteByName('BLOCKONOMICS_BASE_URL');
@@ -492,6 +494,7 @@ class Blockonomics extends PaymentModule
         $output = '';
         if (Tools::isSubmit("testSetup")) {
             $output = $this->updateSettings();
+
             if (!$output) {
                 $error_strings = $this->testSetup();
                 foreach ($error_strings as $crypto => $error_str) {
@@ -499,12 +502,12 @@ class Blockonomics extends PaymentModule
                         $article_url = 'https://help.blockonomics.co/support/solutions/articles/';
                         $article_url .= '33000215104-unable-to-generate-new-address';
                         $error_str = Tools::strtoupper($crypto) .
-                            ': ' . $error_str .
-                            "</br>" .
-                            $this->l('For more information please consult this') .
-                            " <a target='_blank' href='" .
-                            $article_url. "'>" .
-                            $this->l('troubleshooting article') .
+                        ': ' . $error_str .
+                        "</br>" .
+                        $this->l('For more information please consult this') .
+                        " <a target='_blank' href='" .
+                        $article_url . "'>" .
+                        $this->l('troubleshooting article') .
                             "</a>";
                         $output = $output . $this->displayError($error_str);
                     } else {
@@ -531,11 +534,12 @@ class Blockonomics extends PaymentModule
 
     public function displayForm()
     {
+        $slack_value = Configuration::get('BLOCKONOMICS_UNDERPAYMENT_SLACK');
         $fields_form = array();
         // Init Settings Fields form array; a.k.a. Settings section
         $fields_form[0]['form'] = array(
             'legend' => array(
-                'title' => $this->l('Settings')
+                'title' => $this->l('Settings'),
             ),
             'input' => array(
                 array(
@@ -543,7 +547,7 @@ class Blockonomics extends PaymentModule
                     'label' => $this->l('API Key'),
                     'name' => 'BLOCKONOMICS_API_KEY',
                     'size' => 10,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
@@ -556,42 +560,79 @@ class Blockonomics extends PaymentModule
                         class="process-icon-refresh"></a>
                     </input>',
                     'name' => 'callbackURL',
-                    'disabled' => 'disabled'
+                    'disabled' => 'disabled',
                 ),
+                // Inserting JQuery into HelperForm for advance setting toggle
                 array(
-                    'type' => 'select',
-                    'label' => $this->l('Time Period'),
-                    'name' => 'BLOCKONOMICS_TIMEPERIOD',
-                    'desc' => $this->l('Countdown timer on payment page'),
-                    'required' => false,
-                    'options' => array(
-                    'query' => array(
-                        array('key' => '10', 'name' => $this->l('10 minutes')),
-                        array('key' => '15', 'name' => $this->l('15 minutes')),
-                        array('key' => '20', 'name' => $this->l('20 minutes')),
-                        array('key' => '25', 'name' => $this->l('25 minutes')),
-                        array('key' => '30', 'name' => $this->l('30 minutes')),
-                    ),
-                        'id' => 'key',
-                        'name' => 'name'
-                    )
-                ),
-                array(
-                    'type'     => 'text',
-                    'label'    => $this->l('Pay by bitcoin icon size'),
-                    'desc'     => $this->l(
-                        'Size in pixels.
-                         Set 0 to disable icon'
-                    ),
-                    'name'     => 'BLOCKONOMICS_LOGO_HEIGHT',
-                    'required' => false,
-                    'class'    => 'fixed-width-xl'
-                )
+                  'type' => 'html',
+                  'name' => 'settingToggle',
+                  'class' => 'btn btn-default',
+                  'html_content' => '<script>
+                                        $(document).ready(function() {
+                                          $("#advanced_title").click(function(){
+                                            $("#advanced_title_1").parent().parent().toggleClass("hide");
+                                            $("#advanced_title_2").parent().parent().toggleClass("hide");
+                                            $("#advanced_title_3").parent().parent().toggleClass("hide");
+                                            if ($("#advanced_title").text().trim() === "Advanced Settings ▼"){
+                                                $("#advanced_title").text("Advanced Settings ▲");
+                                            } 
+                                            else {
+                                                $("#advanced_title").text("Advanced Settings ▼");
+                                            }
+                                          });
+                                        });
+                                      </script>
+                                      <a id="advanced_title" style="cursor: pointer; font-weight: bold">
+                                        Advanced Settings &#9660
+                                      </a>',
+              ),                
+              array(
+                  'type' => 'select',
+                  'label' => $this->l('Time Period'),
+                  'name' => 'BLOCKONOMICS_TIMEPERIOD',
+                  'desc' => $this->l('Countdown timer on payment page'),
+                  'required' => false,
+                  'id' => 'advanced_title_1',
+                  'form_group_class' => 'hide',
+                  'options' => array(
+                      'query' => array(
+                          array('key' => '10', 'name' => $this->l('10 minutes')),
+                          array('key' => '15', 'name' => $this->l('15 minutes')),
+                          array('key' => '20', 'name' => $this->l('20 minutes')),
+                          array('key' => '25', 'name' => $this->l('25 minutes')),
+                          array('key' => '30', 'name' => $this->l('30 minutes')),
+                      ),
+                      'id' => 'key',
+                      'name' => 'name',
+                  ),
+              ),
+              array(
+                  'type' => 'text',
+                  'label' => $this->l('Pay by bitcoin icon size'),
+                  'desc' => $this->l(
+                      'Size in pixels.
+                       Set 0 to disable icon'
+                  ),
+                  'name' => 'BLOCKONOMICS_LOGO_HEIGHT',
+                  'required' => false,
+                  'class' => 'fixed-width-xl',
+                  'form_group_class' => 'hide',
+                  'id' => 'advanced_title_2',
+              ),
+              array(
+                  'type' => 'html',
+                  'name' => 'BLOCKONOMICS_UNDERPAYMENT_SLACK',
+                  'label' => $this->l('Underpayment Slack %'),
+                  'desc' => $this->l('Allow payments that are off by a small percentage'),
+                  'required' => false,
+                  'form_group_class' => 'hide',
+                  'html_content' => '<input type="number" class="fixed-width-xl" id="advanced_title_3" min=0 max=20 step=0.01 name="BLOCKONOMICS_UNDERPAYMENT_SLACK" value=' . strval($slack_value) . '>',
+              ),
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
                 'name' => 'updateSettings',
-                'class' => 'btn btn-default pull-right'
+                'class' => 'btn btn-default pull-right',
             ),
         );
 
@@ -700,6 +741,9 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_TIMEPERIOD'] = Configuration::get(
             'BLOCKONOMICS_TIMEPERIOD'
         );
+        $helper->fields_value['BLOCKONOMICS_UNDERPAYMENT_SLACK'] = Configuration::get(
+            'BLOCKONOMICS_UNDERPAYMENT_SLACK'
+        );
         $helper->fields_value['BLOCKONOMICS_BTC'] = Configuration::get(
             'BLOCKONOMICS_BTC'
         );
@@ -753,6 +797,17 @@ class Blockonomics extends PaymentModule
         );
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
             return $this->displayError($this->l('Please specify an API Key'));
+        }
+        
+        $underpayment_slack = Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK');        
+        if (0 <= $underpayment_slack && $underpayment_slack <= 20){
+            Configuration::updateValue(
+                'BLOCKONOMICS_UNDERPAYMENT_SLACK',
+                Tools::getValue('BLOCKONOMICS_UNDERPAYMENT_SLACK')
+            );
+        }
+        else {
+            return $this->displayError($this->l('Invalid Underpayment Slack. Enter a value between 0 to 20'));
         }
     }
 
