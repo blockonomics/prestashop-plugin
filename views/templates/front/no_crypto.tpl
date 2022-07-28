@@ -19,9 +19,9 @@
 
 <div class="bnomics-order-container">
     <h3>
-    {l s="No crypto currencies are enabled for checkout" mod='blockonomics'}
+    {l s='No crypto currencies are enabled for checkout' mod='blockonomics'}
     </h3>
     <p>
-    {l s="Note to webmaster: Can be enabled via PrestaShop Admin > Modules > Module manager > Bitcoin - Blockonomics > Currencies" mod='blockonomics'}
+    {l s='Note to webmaster: Can be enabled via PrestaShop Admin > Modules > Module manager > Bitcoin - Blockonomics > Currencies' mod='blockonomics'}
     </p>
 </div>
