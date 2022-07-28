@@ -522,7 +522,7 @@ class Blockonomics extends PaymentModule
             if (!$output) {
                 $output = $this->displayConfirmation(
                     $this->l(
-                        'Settings Saved, click on Test Setup to verify installation'
+                        'Settings Saved'
                     )
                 );
             }
