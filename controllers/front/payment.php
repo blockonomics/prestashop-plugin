@@ -35,7 +35,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $this->registerStylesheet(
             'mystyle2',
             'modules/blockonomics/views/css/order.css',
-            array('postion' => 'head')
+            array('position' => 'head')
         );
         $this->registerJavascript(
             'bootstrap',
