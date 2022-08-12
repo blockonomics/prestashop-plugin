@@ -38,10 +38,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             array('position' => 'head')
         );
         $this->registerJavascript(
-            'bootstrap',
-            'modules/blockonomics/views/js/bootstrap.js'
-        );
-        $this->registerJavascript(
             'angular',
             'modules/blockonomics/views/js/angular.js'
         );
