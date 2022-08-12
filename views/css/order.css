@@ -1,5 +1,4 @@
 /* ----- Checkout Page Styles ------*/
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700&subset=latin-ext);
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
@@ -14,7 +13,6 @@
 }
 
 .bnomics-order-container {
-  font-family: Open Sans, sans-serif;
   margin: 5vh auto;
   padding: 8px;
   max-width: 700px;
@@ -156,7 +154,6 @@
   }
 
   .bnomics-order-container {
-    font-family: Open Sans, sans-serif;
     text-align: center;
   }
 
