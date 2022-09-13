@@ -36,7 +36,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
+        /* Commenting this to avoid console errors, temporary fix for thirtybees
+         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js'); */
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
