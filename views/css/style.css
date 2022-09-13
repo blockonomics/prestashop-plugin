@@ -44,6 +44,25 @@
 .bnomics-altcoin-pane {
   margin-top: 4.3em;
 }
+/* adding qr code style from order.css */
+.bnomics-qr {
+  text-align: center !important;
+  background-color:#f3f3f3;
+  padding: 10px 10px 5px 10px;
+  width:180px;
+  margin: 0 auto;
+  text-align: left;
+}
+.bnomics-qr-code {
+  flex: 1;
+}
+.bnomics-qr-code-hint {
+  text-align: center;
+  margin-top: 1.6em;
+  margin-bottom: 1em;
+  font-size: 0.8em;
+  padding: 0 20px;
+}
 
 .bnomics-spinner {
   margin: auto;
