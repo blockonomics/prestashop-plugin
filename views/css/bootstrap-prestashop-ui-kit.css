@@ -2,7 +2,8 @@
 /* not used */
 /* TODO change padding */
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800");
-@import url(jquery.pstagger.css);
+/* Commenting this to avoid console errors, temporary fix for thirtybees */
+/* @import url(jquery.pstagger.css); */
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

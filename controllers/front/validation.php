@@ -36,7 +36,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js');
+        /* Commenting this to avoid console errors, temporary fix for thirtybees
+         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js'); */
         $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
         $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
@@ -98,7 +99,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
       ('".(int)$blockonomics->currentOrder."','".(int)$current_time."','".pSQL($new_address)."', '', -1,'".(float)$total."','".(int)$bits."', 0)"
         );
 
-        $redirect_link = '/index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
+        $redirect_link = 'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
 
         $this->context->smarty->assign(
             array(

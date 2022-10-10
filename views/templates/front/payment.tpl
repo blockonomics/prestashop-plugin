@@ -59,16 +59,16 @@
           </div>
 
           <!-- QR Code -->
-          <div class="row qr-code-box">
-            <div class="col-md-5 col-sm-12 qr-code">
-              <div class="qr-enclosure">
-                <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}"> 
-                  <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="200">
-                  <canvas class="qrcode"></canvas>
-                  </qrcode></a>
+              <div class="bnomics-qr-code">
+                <div class="bnomics-qr">
+                  <a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">
+                    <qrcode data="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="160" version="6">
+                      <canvas class="qrcode"></canvas>
+                    </qrcode>
+                  </a>
+                </div>
+                <div class="bnomics-qr-code-hint"><a href="bitcoin:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">{l s='Open in wallet' mod='blockonomics' }</a></div>
               </div>
-            </div>
-          </div>
         </div>
 
         <div class="col-md-6 invoice-status" style="margin-top:15px;">
