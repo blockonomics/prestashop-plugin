@@ -30,8 +30,8 @@
 {if $txid != ''}
 <tr><td>{l s='Amount Paid' mod='blockonomics'}</td> <td> : {math equation='x/y' x=$bits_payed y=100000000} BTC</td></tr>
 <tr><td>{l s='Transaction Link' mod='blockonomics'}</td> <td> : <a href="{$base_url|escape:'htmlall':'UTF-8'}/api/tx?txid={$txid|escape:'htmlall':'UTF-8'}&addr={$addr|escape:'htmlall':'UTF-8'}"> {$txid|escape:'htmlall':'UTF-8'} <a></td></tr>
-{if $bits != $bits_payed}
-<tr><td>{l s='Payment Error' mod='blockonomics'}</td><td style='color:red'> : {l s='Amount paid not matching cart value' mod='blockonomics'}</td></tr>
+{if $bits > $bits_payed}
+<tr><td>{l s='Payment Error' mod='blockonomics'}</td><td style='color:red'> : {l s='Amount paid less than cart value' mod='blockonomics'}</td></tr>
 {/if}
 {/if}
 </table>

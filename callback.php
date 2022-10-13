@@ -61,7 +61,7 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 $o->setCurrentState(Configuration::get('BLOCKONOMICS_ORDER_STATUS_0'));
             } elseif ($status == 2) {
                 $o->setCurrentState(Configuration::get('BLOCKONOMICS_ORDER_STATUS_2'));
-                if ($order[0]['bits'] != $order[0]['bits_payed']) {
+                if ($order[0]['bits'] > $order[0]['bits_payed']) {
                     $o->setCurrentState(Configuration::get('PS_OS_ERROR'));
                 } else {
                     $o->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
