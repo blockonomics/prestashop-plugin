@@ -86,8 +86,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         // Create backup cart
         $old_cart_secure_key = $cart->secure_key;
         $old_cart_customer_id = (int)$cart->id_customer;
-        $cart->id_customer = 0;
-        $cart->save();
         $cart_products = $cart->getProducts();
         $new_cart = new Cart();
         $new_cart->id_lang = $this->context->language->id;
@@ -96,22 +94,22 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         foreach ($cart_products as $product) {
             $new_cart->updateQty((int) $product['quantity'], (int) $product['id_product'], (int) $product['id_product_attribute']);
         }
+        // Add the backup cart to user
+        if ($this->context->cookie->id_guest) {
+            $guest = new Guest($this->context->cookie->id_guest);
+            $new_cart->mobile_theme = $guest->mobile_theme;
+        }
         // Validate the order
         $mailVars =    array(
             '{bitcoin_address}' => $new_address,
             '{bits}' => $bits/1.0e8,
-            '{track_url}' => Tools::getHttpHost(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
+            '{track_url}' => Tools::getHttpHost(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
         );
 
 
         $mes = "Adr BTC : " .$new_address;
         $blockonomics->validateOrder((int)($cart->id), Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'), $total, $blockonomics->displayName, $mes, $mailVars, (int)($currency->id), false, $customer->secure_key);
 
-        // Add the backup cart to user
-        if ($this->context->cookie->id_guest) {
-            $guest = new Guest($this->context->cookie->id_guest);
-            $new_cart->mobile_theme = $guest->mobile_theme;
-        }
         $new_cart->id_customer = $old_cart_customer_id;
         $new_cart->save();
         if ($new_cart->id) {
