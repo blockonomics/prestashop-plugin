@@ -44,7 +44,6 @@ if ($secret == Configuration::get('BLOCKONOMICS_CALLBACK_SECRET')) {
                 "cart WHERE id_cart = '" .
                 $order[0]['id_cart'] . "'";
           Db::getInstance()->Execute($delete_cart);
-            );
                 //Remove id_cart from order
                 $remove_cart =
                     "UPDATE " .
