@@ -144,6 +144,7 @@ class Blockonomics extends PaymentModule
             value double(10,2) NOT NULL,
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
+            id_cart INT UNSIGNED NOT NULL,
             PRIMARY KEY (id),
         UNIQUE KEY order_table (addr))"
         );
