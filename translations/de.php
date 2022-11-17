@@ -15,8 +15,6 @@ $_MODULE['<{blockonomics}default-bootstrap>blockonomics_f75cbf4937d2f1f31e6a4c72
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_e576911d3083c76abba01c8a03842856'] = 'Einstellungen gespeichert, klicke „teste Einstellungen“ Um die Installation abzuschließen';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_f4f70727dc34561dfde1a3c529b6205c'] = 'Einstellungen';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_d876ff8da67c3731ae25d8335a4168b4'] = 'API-key';
-$_MODULE['<{blockonomics}default-bootstrap>blockonomics_c10755b087ec0bd0a03f4abdab1ad6e2'] = 'Altcoins Integration';
-$_MODULE['<{blockonomics}default-bootstrap>blockonomics_09480d4c6e8467efa474d4ae82ad164e'] = 'Akzeptiere Altcoins, wie zum Beispiel ETH, LTC, BCH';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Aktiviert';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_b9f5c797ebbf55adccdd8539a65a0241'] = 'Deaktiviert';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_c9cc8cce247e49bae79f15173ce97354'] = 'Speichern';
@@ -34,7 +32,6 @@ $_MODULE['<{blockonomics}default-bootstrap>payment_0c0f5919972bfc91771b8552015a5
 $_MODULE['<{blockonomics}default-bootstrap>payment_b2f40690858b404ed10e62bdf422c704'] = 'Menge';
 $_MODULE['<{blockonomics}default-bootstrap>payment_aff2aa748a4a989fbebc43f6ef01e2df'] = 'Oder Sie können';
 $_MODULE['<{blockonomics}default-bootstrap>payment_416f7f5671cf7fb2af869b59b9d9b35f'] = 'Ethereum, Bitcoin Cash, Dash und viele andere werden unterstützt';
-$_MODULE['<{blockonomics}default-bootstrap>payment_1d93aee64e112db458bdb5dbd738c356'] = 'Warten auf BTC-Bezahlung durch Shapeshift Altcoin-Umwandlung';
 $_MODULE['<{blockonomics}default-bootstrap>payment_936ccdb97115e9f35a11d35e3d5b5cad'] = 'Klicken Sie bitte hier';
 $_MODULE['<{blockonomics}default-bootstrap>payment_dbb87629b54dde540b7e5dd76a798604'] = 'um Abbrechen und Zurückgehen';
 $_MODULE['<{blockonomics}default-bootstrap>invoice_pdf_ed15da2b3ba1d3c667dda1092c1d5391'] = 'Bitcoins bezahlt';

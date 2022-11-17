@@ -36,7 +36,6 @@
       </div>
     </div>
     <!-- Amount row -->
-    <div ng-hide="altcoin_waiting">
       <div class="row">
 
         <div class="col-xs-12">
@@ -81,30 +80,12 @@
               <small>{$currency_iso_code|escape:'htmlall':'UTF-8'}</small></label>
           </div>
 
-          {if $accept_altcoin}
-          <div class="bnomics-altcoin-pane">
-              <h4>{l s='OR you can' mod='blockonomics'}</h4>
-              <div>
-                <a ng-click="pay_altcoins()" href=""><img  style="margin: auto;" src="https://shapeshift.io/images/shifty/small_dark_altcoins.png"  class="ss-button"></a>
-                <div>
-                  <h4>{l s='Ethereum, Bitcoin Cash, Dash and many others supported' mod='blockonomics'}</h4>
-                </div>
-              </div>
-          </div>
-          {/if}
         </div>
       </div>
-    </div>
 
-    <div class="row" ng-show="altcoin_waiting" ng-cloak>
-      <div class="col-xs-12 altcoin-waiting">
-        <h4>{l s='Waiting for BTC payment from shapeshift altcoin conversion' mod='blockonomics'}</h4>
-        <div class="bnomics-spinner"></div>
-        <h4><a href="" ng-click="altcoin_waiting=false">{l s='Click here' mod='blockonomics'}</a>{l s=' to cancel and go back' mod='blockonomics'}</h4>
-      </div>
-    </div>
 
-    <div class="row" ng-hide="altcoin_waiting">
+
+    <div class="row">
       <div class="col-xs-12">
         <div class="input-group">
           <!-- Necessary to apply text transfrom as some styles will capitalize h4 leading to wrong address -->
