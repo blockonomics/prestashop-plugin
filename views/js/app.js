@@ -41,11 +41,6 @@ app.controller("CheckoutController", function($window, $scope, $location, $inter
         }
     };
 
-    $scope.pay_altcoins = function() {
-        $scope.altcoin_waiting = true;
-        url = "https://shapeshift.io/shifty.html?destination=" + $scope.address + "&amount=" + $scope.satoshi + "&output=BTC";
-        window.open(url, '1418115287605','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
-    }
 
     $scope.init = function(invoice_status, invoice_addr, invoice_timestamp, base_websocket_url, final_url, invoice_satoshi){
 

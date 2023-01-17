@@ -15,8 +15,6 @@ $_MODULE['<{blockonomics}default-bootstrap>blockonomics_f75cbf4937d2f1f31e6a4c72
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_e576911d3083c76abba01c8a03842856'] = 'Configuración guardada, seleccione probar configuración para verificar la instalación';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_f4f70727dc34561dfde1a3c529b6205c'] = 'Configuración';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_d876ff8da67c3731ae25d8335a4168b4'] = 'La clave API';
-$_MODULE['<{blockonomics}default-bootstrap>blockonomics_c10755b087ec0bd0a03f4abdab1ad6e2'] = 'Integración Altcoins';
-$_MODULE['<{blockonomics}default-bootstrap>blockonomics_09480d4c6e8467efa474d4ae82ad164e'] = 'Aceptar altcoins como ETC, LTC, BCH';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Permitido';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_b9f5c797ebbf55adccdd8539a65a0241'] = 'Inhabilitado';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_c9cc8cce247e49bae79f15173ce97354'] = 'Conservar';
@@ -34,7 +32,6 @@ $_MODULE['<{blockonomics}default-bootstrap>payment_0c0f5919972bfc91771b8552015a5
 $_MODULE['<{blockonomics}default-bootstrap>payment_b2f40690858b404ed10e62bdf422c704'] = 'Monto';
 $_MODULE['<{blockonomics}default-bootstrap>payment_aff2aa748a4a989fbebc43f6ef01e2df'] = 'O puedes';
 $_MODULE['<{blockonomics}default-bootstrap>payment_416f7f5671cf7fb2af869b59b9d9b35f'] = 'Ethereum, Bitcoin Cash, Dash y muchas otras criptomonedas aceptadas';
-$_MODULE['<{blockonomics}default-bootstrap>payment_1d93aee64e112db458bdb5dbd738c356'] = 'Esperando por el pago de BTC desde la conversión de altcoin Shapeshift';
 $_MODULE['<{blockonomics}default-bootstrap>payment_936ccdb97115e9f35a11d35e3d5b5cad'] = 'Haga clic aquí';
 $_MODULE['<{blockonomics}default-bootstrap>payment_dbb87629b54dde540b7e5dd76a798604'] = 'para cancelar y volver atrás';
 $_MODULE['<{blockonomics}default-bootstrap>invoice_pdf_ed15da2b3ba1d3c667dda1092c1d5391'] = 'Bitcoins pagados';

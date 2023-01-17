@@ -32,7 +32,7 @@ class Blockonomics extends PaymentModule
     {
         $this->name = 'blockonomics';
         $this->tab = 'payments_gateways';
-        $this->version = '1.6.6';
+        $this->version = '1.6.7';
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
@@ -144,6 +144,7 @@ class Blockonomics extends PaymentModule
             value double(10,2) NOT NULL,
             bits int(8) NOT NULL,
             bits_payed int(8) NOT NULL,
+            id_cart INT UNSIGNED NOT NULL,
             PRIMARY KEY (id),
         UNIQUE KEY order_table (addr))"
         );
@@ -156,7 +157,6 @@ class Blockonomics extends PaymentModule
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_SECRET', $secret);
         Configuration::updateValue('BLOCKONOMICS_CALLBACK_URL', Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/callback.php?secret='.$secret);
 
-        Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', false);
         return true;
     }
 
@@ -363,7 +363,7 @@ class Blockonomics extends PaymentModule
 
             if ($tx_status == -1) {
                 $status = 'Payment Not Received.';
-            } elseif ($tx_status == 0) {
+            } elseif ($tx_status == 0  || $tx_status == 1) {
                 $status = 'Waiting for 2 Confirmations.';
             } else {
                 $status = 'Payment Confirmed.';
@@ -395,7 +395,6 @@ class Blockonomics extends PaymentModule
       if (Tools::isSubmit("testSetup")) {
         //Save current settings before testing setup
 				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
-				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
         $error_str = $this->testSetup();
         if ($error_str)
         {
@@ -407,7 +406,6 @@ class Blockonomics extends PaymentModule
 			} 
 			elseif (Tools::isSubmit('updateSettings')) {
 				Configuration::updateValue('BLOCKONOMICS_API_KEY', Tools::getValue('BLOCKONOMICS_API_KEY'));
-				Configuration::updateValue('BLOCKONOMICS_ACCEPT_ALTCOINS', Tools::getValue('BLOCKONOMICS_ACCEPT_ALTCOINS'));
 				$output = $this->displayConfirmation($this->l('Settings Saved, click on Test Setup to verify installation'));
 			}
 			elseif (Tools::isSubmit('generateNewURL')) {
@@ -439,54 +437,25 @@ class Blockonomics extends PaymentModule
             'required' => true,
           ),
 					array(
-						'type'      => 'switch',                               // This is an <input type="checkbox"> tag.
-						'label'     => $this->l('Altcoins Integration'),        // The <label> for this <input> tag.
-						'desc'      => $this->l('Accept altcoins like ETH, LTC, BCH'),   // A help text, displayed right next to the <input> tag.
-						'name'      => 'BLOCKONOMICS_ACCEPT_ALTCOINS',                              // The content of the 'id' attribute of the <input> tag.
-						'required'  => true,                                  // If set to true, this option must be set.
-						'class'     => 't',                                   // The content of the 'class' attribute of the <label> tag for the <input> tag.
-						'is_bool'   => true,                                  // If set to true, this means you want to display a yes/no or true/false option.
-						// The CSS styling will therefore use green mark for the option value '1', and a red mark for value '2'.
-						// If set to false, this means there can be more than two radio buttons,
-						// and the option label text will be displayed instead of marks.
-						'values'    => array(                                 // $values contains the data itself.
-							array(
-								'id'    => 'active_on',                           // The content of the 'id' attribute of the <input> tag, and of the 'for' attribute for the <label> tag.
-								'value' => 1,                                     // The content of the 'value' attribute of the <input> tag.   
-								'label' => $this->l('Enabled')                    // The <label> for this radio button.
-							),
-							array(
-								'id'    => 'active_off',
-								'value' => 0,
-								'label' => $this->l('Disabled')
-							)
-						),
+            'type' => 'text',
+            'label' => $this->l('HTTP CALLBACK URL'),
+            'name' => 'callbackURL',
+            'disabled' => 'disabled'
 					)),
         'submit' => array(
           'title' => $this->l('Save'),
           'name'  => 'updateSettings',
           'class' => 'btn btn-default pull-right'
-        )
-      );
-
-      // Init Fields form array
-      $fields_form[1]['form'] = array(
-        'legend' => array(
-          'title' => $this->l('Store Info'),
         ),
-        'input' => array(
-          array(
-            'type' => 'free',
-            'label' => $this->l('HTTP CALLBACK URL'),
-            'name' => 'callbackURL',
-            'class' => 'readonly'
-          )
-        ),
-        'submit' => array(
-          'title' => $this->l('Test Setup'),
-          'name' =>  $this->l('testSetup'),
-          'class' => 'btn btn-default pull-right'
-        )
+        'buttons' => array(
+          'test-setup' => array(
+              'title' => $this->l('Test Setup'),
+              'name' => $this->l('testSetup'),
+              'type' => 'submit',
+              'class' => 'btn btn-default pull-right',
+              'icon' => 'process-icon-save',
+              ),
+          ),
       );
       $helper = new HelperForm();
 
@@ -520,7 +489,6 @@ class Blockonomics extends PaymentModule
 
       // Load current value
       $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
-      $helper->fields_value['BLOCKONOMICS_ACCEPT_ALTCOINS'] = Configuration::get('BLOCKONOMICS_ACCEPT_ALTCOINS');
       $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
       if (!$callbackurl)
       {

@@ -41,9 +41,6 @@
   float:right;
 }
 
-.bnomics-altcoin-pane {
-  margin-top: 4.3em;
-}
 /* adding qr code style from order.css */
 .bnomics-qr {
   text-align: center !important;
@@ -71,20 +68,6 @@
   animation: rotate 1.4s infinite ease-in-out, background 1.4s infinite ease-in-out alternate;
 }
 
-.altcoin-td {
-  width: 35%;
-  border-left: 2px ridge;
-}
-
-.altcoin-waiting {
-  text-align: center;
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
-
-.altcoin-waiting h4 {
-  margin-top: 1em;
-}
 
 @media (max-width: 979px) {
   .invoice {
@@ -93,9 +76,6 @@
 }
 
 @media (max-width: 768px) {
-  .bnomics-altcoin-pane {
-    margin-top: 0;
-  }
   .invoice-amount, .invoice-status {
     float: none;
     text-align: center;
