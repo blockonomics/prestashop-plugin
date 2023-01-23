@@ -32,16 +32,17 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
     public function setMedia()
     {
         parent::setMedia();
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/bootstrap.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/vendors.min.js');
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/angular-qrcode.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_ . $this->module->name . '/views/js/bootstrap.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_ . $this->module->name . '/views/js/angular.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_ . $this->module->name . '/views/js/vendors.min.js');
+        $this->context->controller->addJS(_PS_MODULE_DIR_ . $this->module->name . '/views/js/angular-qrcode.js');
         /* Commenting this to avoid console errors, temporary fix for thirtybees
          $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/prestashop-ui-kit.js'); */
-        $this->context->controller->addJS(_PS_MODULE_DIR_.$this->module->name.'/views/js/app.js');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/style.css');
-        $this->context->controller->addCSS(_PS_MODULE_DIR_.$this->module->name.'/views/css/bootstrap-prestashop-ui-kit.css');
+        $this->context->controller->addJS(_PS_MODULE_DIR_ . $this->module->name . '/views/js/app.js');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_ . $this->module->name . '/views/css/style.css');
+        $this->context->controller->addCSS(_PS_MODULE_DIR_ . $this->module->name . '/views/css/bootstrap-prestashop-ui-kit.css');
     }
+
     public function postProcess()
     {
         $cart = $this->context->cart;
@@ -49,18 +50,18 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $blockonomics = $this->module;
 
         if (!isset($cart->id) or $cart->id_customer == 0 or $cart->id_address_delivery == 0 or $cart->id_address_invoice == 0 or !$blockonomics->active) {
-            Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
 
-        $customer = new Customer((int)$cart->id_customer);
+        $customer = new Customer((int) $cart->id_customer);
 
         if (!Validate::isLoadedObject($customer)) {
-            Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
+            Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
 
         $cookie = $blockonomics->getContext()->cookie;
-        $currency = new Currency((int)(Tools::getIsset(Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency));
-        $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
+        $currency = new Currency((int) (Tools::getIsset(Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency));
+        $total = (float) $cart->getOrderTotal(true, Cart::BOTH);
 
         // API Key not set
         if (!Configuration::get('BLOCKONOMICS_API_KEY')) {
@@ -70,7 +71,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         if (!extension_loaded('intl')) {
             $this->displayExtError($blockonomics);
         }
-        $sql = 'SELECT * FROM '._DB_PREFIX_."blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . "blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
 
         if (!$order || $order['value'] != $total) {
@@ -78,17 +79,17 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $bits = $this->getBits($blockonomics, $currency, $total);
             $responseObj = $blockonomics->getNewAddress();
 
-            if (!$responseObj->data || !$responseObj->data->address){
-                    $this->displayError($blockonomics);
-                }        
+            if (!$responseObj->data || !$responseObj->data->address) {
+                $this->displayError($blockonomics);
+            }
             $address = $responseObj->data->address;
-        
+
             if (!extension_loaded('intl')) {
                 $this->displayExtError($blockonomics);
             }
             // Create backup cart
             $old_cart_secure_key = $cart->secure_key;
-            $old_cart_customer_id = (int)$cart->id_customer;
+            $old_cart_customer_id = (int) $cart->id_customer;
             $cart_products = $cart->getProducts();
             $new_cart = new Cart();
             $new_cart->id_lang = $this->context->language->id;
@@ -105,29 +106,29 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 $guest = new Guest($this->context->cookie->id_guest);
                 $new_cart->mobile_theme = $guest->mobile_theme;
             }
-            
+
             // Validate the order
-            $mailVars =    array(
+            $mailVars = [
                 '{bitcoin_address}' => $address,
-                '{bits}' => $bits/1.0e8,
-                '{track_url}' => Tools::getHttpHost(true, true) . __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key
-            );
-    
-    
-            $mes = "Adr BTC : " .$address;
+                '{bits}' => $bits / 1.0e8,
+                '{track_url}' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int) $cart->id . '&id_module=' . (int) $blockonomics->id . '&id_order=' . $blockonomics->currentOrder . '&key=' . $customer->secure_key,
+            ];
+
+            $mes = 'Adr BTC : ' . $address;
             $blockonomics->validateOrder(
-                (int)($cart->id),
+                (int) $cart->id,
                 Configuration::get('BLOCKONOMICS_ORDER_STATE_WAIT'),
                 $total,
                 $blockonomics->displayName,
                 $mes,
                 $mailVars,
-                (int)($currency->id),
+                (int) $currency->id,
                 false,
-                $customer->secure_key);
-            
+                $customer->secure_key
+            );
+
             $id_order = $blockonomics->currentOrder;
-            
+
             // Add the backup cart to user
             $new_cart->id_customer = $old_cart_customer_id;
             $new_cart->save();
@@ -137,28 +138,27 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             }
             $id_cart = (int) $new_cart->id;
             $new_cart->secure_key = $old_cart_secure_key;
-    
+
             Db::getInstance()->Execute(
-                "INSERT INTO ".
-                    _DB_PREFIX_.
-                    "blockonomics_bitcoin_orders (id_order, id_cart, timestamp, ".
+                'INSERT INTO ' .
+                    _DB_PREFIX_ .
+                    'blockonomics_bitcoin_orders (id_order, id_cart, timestamp, ' .
                     "addr, txid, status,value, bits, bits_payed) VALUES
-                    ('".
-                    (int)$blockonomics->currentOrder.
-                    "','".
+                    ('" .
+                    (int) $blockonomics->currentOrder .
+                    "','" .
                     (int) $id_cart .
-                    "','".
-                    (int)$current_time .
-                    "','".
-                    pSQL($address).
-                    "', '', -1,'".
-                    (float)$total.
-                    "','".
-                    (int)$bits.
+                    "','" .
+                    (int) $current_time .
+                    "','" .
+                    pSQL($address) .
+                    "', '', -1,'" .
+                    (float) $total .
+                    "','" .
+                    (int) $bits .
                     "', 0)"
             );
-        }
-        else {
+        } else {
             $address = $order['addr'];
             $id_order = $order['id_order'];
 
@@ -166,49 +166,47 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             $time_remaining = $this->getTimeRemaining($order);
             if (!$time_remaining) {
                 $bits = $this->getBits($blockonomics, $currency, $total);
-                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
-                .time().", bits= $bits WHERE id_cart = $cart->id";
-                
+                $query = 'UPDATE ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders SET timestamp='
+                . time() . ", bits= $bits WHERE id_cart = $cart->id";
+
                 Db::getInstance()->Execute($query);
-                
+
                 $time_remaining = 10;
             } else {
                 $total = $order['value'];
                 $bits = $order['bits'];
             }
-
-
         }
-        $redirect_link = 'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key;
+        $redirect_link = 'index.php?controller=order-confirmation?id_cart=' . (int) $cart->id . '&id_module=' . (int) $blockonomics->id . '&id_order=' . $blockonomics->currentOrder . '&key=' . $customer->secure_key;
 
         $this->context->smarty->assign(
-            array(
-            'id_order' => (int)$id_order,
+            [
+            'id_order' => (int) $id_order,
             'status' => -1,
             'addr' => $address,
-            'txid' => "",
-            'bits' => rtrim(sprintf('%.8f', $bits/1.0e8), '0'),
-            'value' => (float)$total,
+            'txid' => '',
+            'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
+            'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
             'base_websocket_url' => Configuration::get('BLOCKONOMICS_WEBSOCKET_URL'),
             'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
             'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            )
+            ]
         );
 
         $this->setTemplate('payment.tpl');
-        //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
-        //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+        // Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
+        // Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
     private function displayError($blockonomics)
     {
-        $unable_to_generate = '<h4>'.$blockonomics->l('Unable to generate bitcoin address.', 'validation').'</h4><p>'.$blockonomics->l('Please use Test Setup button in configuration to diagnose the error ', 'validation');
+        $unable_to_generate = '<h4>' . $blockonomics->l('Unable to generate bitcoin address.', 'validation') . '</h4><p>' . $blockonomics->l('Please use Test Setup button in configuration to diagnose the error ', 'validation');
 
         echo $unable_to_generate;
-        die();
+        exit;
     }
 
     private function getTimeRemaining($order)
@@ -220,6 +218,7 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
                 return $time_remaining;
             }
         }
+
         return false;
     }
 
@@ -229,7 +228,8 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         if (!$price) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
-        $bits =(int) ((1.0e8 * $total) / $price);
+        $bits = (int) ((1.0e8 * $total) / $price);
+
         return $bits;
     }
 
@@ -248,7 +248,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             );
 
         echo $missing_extension;
-        die();
+        exit;
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_2cd248faec609d132624980e19c7ca97'] = 'Bitcoin - Blockonomics';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b'] = 'Module d\'acceptation des paiements en bitcoin';
 $_MODULE['<{blockonomics}default-bootstrap>blockonomics_876f23178c29dc2552c0b48bf23cd9bd'] = 'Êtes-vous sur de vouloir désinstaller?';
