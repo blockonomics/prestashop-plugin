@@ -34,6 +34,10 @@ class Blockonomics extends PaymentModule
         $this->author = 'Blockonomics';
         $this->need_instance = 1;
         $this->bootstrap = true;
+        $this->ps_versions_compliancy = [
+            'min' => '1.6',
+            'max' => '1.6.1.24',
+        ];
         $this->display_column_left = false;
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
 
@@ -475,7 +479,7 @@ class Blockonomics extends PaymentModule
         $helper->fields_value['BLOCKONOMICS_API_KEY'] = Configuration::get('BLOCKONOMICS_API_KEY');
         $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         if (!$callbackurl) {
-            generatenewCallback();
+            $this->generatenewCallback();
             $callbackurl = Configuration::get('BLOCKONOMICS_CALLBACK_URL');
         }
         $helper->fields_value['callbackURL'] = $callbackurl;
