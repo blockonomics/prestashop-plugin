@@ -23,7 +23,6 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
 class BlockonomicsSelectModuleFrontController extends ModuleFrontController
 {
     public function setMedia()
@@ -32,7 +31,7 @@ class BlockonomicsSelectModuleFrontController extends ModuleFrontController
         $this->registerStylesheet(
             'mystyle2',
             'modules/blockonomics/views/css/order.css',
-            array('position' => 'head')
+            ['position' => 'head']
         );
     }
 

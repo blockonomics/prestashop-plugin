@@ -23,19 +23,18 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
 class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 {
-    const BLOCKONOMICS_WEBSOCKET_URL = "wss://www.blockonomics.co";
-    const BLOCKONOMICS_BCH_WEBSOCKET_URL = "wss://bch.blockonomics.co";
-    
+    const BLOCKONOMICS_WEBSOCKET_URL = 'wss://www.blockonomics.co';
+    const BLOCKONOMICS_BCH_WEBSOCKET_URL = 'wss://bch.blockonomics.co';
+
     public function setMedia()
     {
         parent::setMedia();
         $this->registerStylesheet(
             'mystyle2',
             'modules/blockonomics/views/css/order.css',
-            array('position' => 'head')
+            ['position' => 'head']
         );
         $this->registerJavascript(
             'angular',
@@ -58,6 +57,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'modules/blockonomics/views/js/app.js'
         );
     }
+
     public function postProcess()
     {
         $cart = $this->context->cart;
@@ -94,15 +94,15 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $this->displayError($blockonomics);
         }
 
-        $sql = 'SELECT * FROM '._DB_PREFIX_ .
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ .
         "blockonomics_bitcoin_orders WHERE id_cart = $cart->id";
         $order = Db::getInstance()->getRow($sql);
 
-        $sql = 'SELECT * FROM '._DB_PREFIX_ .
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ .
         "blockonomics_bitcoin_orders WHERE id_cart = $cart->id AND crypto = '" . $crypto['code'] . "'";
         $order_in_crypto = Db::getInstance()->getRow($sql);
 
-        //if no order, or the fiat value of the cart has changed => create a new order
+        // if no order, or the fiat value of the cart has changed => create a new order
         if (!$order || $order['value'] != $total) {
             $current_time = time();
             $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
@@ -115,7 +115,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 
             // Create backup cart
             $old_cart_secure_key = $cart->secure_key;
-            $old_cart_customer_id = (int)$cart->id_customer;
+            $old_cart_customer_id = (int) $cart->id_customer;
             $cart_products = $cart->getProducts();
             $new_cart = new Cart();
             $new_cart->id_lang = $this->context->language->id;
@@ -135,12 +135,12 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             }
 
             // Validate the order
-            $mailVars = array(
+            $mailVars = [
                 '{bitcoin_address}' => $address,
                 '{bits}' => $bits / 1.0e8,
-            );
+            ];
 
-            $mes = "Adr BTC : " . $address;
+            $mes = 'Adr BTC : ' . $address;
 
             $blockonomics->validateOrder(
                 (int) $cart->id,
@@ -157,7 +157,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $id_order = $blockonomics->currentOrder;
 
             $this->addInvoiceNote($id_order, $crypto['code'], $address);
-            
+
             // Add the backup cart to user
             $new_cart->id_customer = $old_cart_customer_id;
             $new_cart->save();
@@ -169,9 +169,9 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $new_cart->secure_key = $old_cart_secure_key;
 
             Db::getInstance()->Execute(
-                "INSERT INTO " .
+                'INSERT INTO ' .
                     _DB_PREFIX_ .
-                    "blockonomics_bitcoin_orders (id_order, id_cart, crypto, timestamp,  ".
+                    'blockonomics_bitcoin_orders (id_order, id_cart, crypto, timestamp,  ' .
                     "addr, txid, status,value, bits, bits_payed) VALUES
                     ('" .
                     (int) $blockonomics->currentOrder .
@@ -189,7 +189,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
-        //We have an order, but not in this crypto
+        // We have an order, but not in this crypto
         } elseif ($order && !$order_in_crypto) {
             $id_order = $order['id_order'];
             $id_cart = $order['id_cart'];
@@ -205,9 +205,9 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $this->addInvoiceNote($id_order, $crypto['code'], $address);
 
             Db::getInstance()->Execute(
-                "INSERT INTO " .
+                'INSERT INTO ' .
                     _DB_PREFIX_ .
-                    "blockonomics_bitcoin_orders (id_order, id_cart, crypto, timestamp,  ".
+                    'blockonomics_bitcoin_orders (id_order, id_cart, crypto, timestamp,  ' .
                     "addr, txid, status,value, bits, bits_payed) VALUES
                     ('" .
                     (int) $id_order .
@@ -225,18 +225,18 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
-        //else, reuse the order we have
+        // else, reuse the order we have
         } else {
             $address = $order_in_crypto['addr'];
             $id_order = $order_in_crypto['id_order'];
             $current_time = $order_in_crypto['timestamp'];
             $time_remaining = $this->getTimeRemaining($order_in_crypto);
-            //if time runs out, restart the timer and fetch new crypto price
-            //store prices in database so that they are "frozen" until the end of the next time period
+            // if time runs out, restart the timer and fetch new crypto price
+            // store prices in database so that they are "frozen" until the end of the next time period
             if (!$time_remaining) {
                 $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
-                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
-                .time().", bits=$bits WHERE id_cart = $cart->id";
+                $query = 'UPDATE ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders SET timestamp='
+                . time() . ", bits=$bits WHERE id_cart = $cart->id";
                 Db::getInstance()->Execute($query);
                 $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
             } else {
@@ -245,30 +245,30 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             }
         }
 
-        $redirect_link =  $this->context->link->getModuleLink(
+        $redirect_link = $this->context->link->getModuleLink(
             $blockonomics->name,
             'redirect',
-            array(
-                'id_module' => (int)$blockonomics->id,
+            [
+                'id_module' => (int) $blockonomics->id,
                 'id_order' => $id_order,
                 'key' => $customer->secure_key,
-                'id_cart' => (int)$cart->id
-                ),
+                'id_cart' => (int) $cart->id,
+                ],
             true
         );
 
-        $base_websocket_url = ($crypto['code']  == 'bch') ?
+        $base_websocket_url = ($crypto['code'] == 'bch') ?
         BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
         BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_WEBSOCKET_URL;
 
-        //Make $crypto['code'] caps before sending it to the payment.tpl
+        // Make $crypto['code'] caps before sending it to the payment.tpl
         $crypto['code'] = Tools::strtoupper($crypto['code']);
 
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign([
             'id_order' => (int) $id_order,
             'status' => -1,
             'addr' => $address,
-            'txid' => "",
+            'txid' => '',
             'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
             'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
@@ -280,13 +280,13 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
             'time_remaining' => $time_remaining,
             'crypto' => $crypto,
-        ));
+        ]);
 
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
         );
-        //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
-        //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
+        // Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
+        // Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
     private function addInvoiceNote($id_order, $crypto, $address)
@@ -302,7 +302,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         }
     }
 
-
     private function getTimeRemaining($order)
     {
         if ($order) {
@@ -314,6 +313,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 return $time_remaining;
             }
         }
+
         return false;
     }
 
@@ -324,17 +324,17 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
         $bits = (int) ((1.0e8 * $total) / $price);
+
         return $bits;
     }
 
     private function displayError($blockonomics, $responseObj = null)
     {
-        
         $unable_to_generate = '<h3>' . $blockonomics->l(
             'Could not generate new address',
             'payment'
         ) . '</h3><p>';
-        
+
         if (isset($responseObj)
             && isset($responseObj->data)
             && isset($responseObj->data->message)
@@ -350,9 +350,9 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             );
         }
 
-        $unable_to_generate .= "</p>";
+        $unable_to_generate .= '</p>';
 
         echo $unable_to_generate;
-        die();
+        exit;
     }
 }
