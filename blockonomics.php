@@ -297,7 +297,7 @@ class Blockonomics extends PaymentModule
         curl_close($ch);
 
         $responseObj = new stdClass();
-        $responseObj->data = Tools::jsonDecode($data);
+        $responseObj->data = json_decode($data);
         $responseObj->response_code = $httpcode;
 
         return $responseObj;
