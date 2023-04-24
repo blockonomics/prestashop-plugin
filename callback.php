@@ -125,6 +125,7 @@ function insertTXIDIntoPaymentDetails($presta_order, $txid, $blockonomics_order)
         //Payment created, but the txid still hasn't been recorded
         $payments[0]->transaction_id = $txid;
         $payments[0]->payment_method = "Blockonomics - " . Tools::strtoupper($blockonomics_order['crypto']);
+        var_dump($payments[0]->amount);
         $payments[0]->save();
     }
 }
