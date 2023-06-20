@@ -406,3 +406,11 @@ svg {
   text-align: center;
   transition: 300ms all ease-in-out;
 }
+
+.bnomics-copy-amount-text,
+.bnomics-copy-address-text,
+.bnomics-address-text,
+.bnomics-amount-text label,
+.bnomics-amount-text .label {
+  text-align: left !important;
+}

@@ -38,24 +38,16 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             array('position' => 'head')
         );
         $this->registerJavascript(
-            'angular',
-            'modules/blockonomics/views/js/angular.js'
+            'qrious',
+            'modules/blockonomics/views/js/vendors/qrious.min.js'
         );
         $this->registerJavascript(
-            'vendor',
-            'modules/blockonomics/views/js/vendors.min.js'
+            'ws',
+            'modules/blockonomics/views/js/vendors/reconnecting-websocket.min.js'
         );
         $this->registerJavascript(
-            'qrcode',
-            'modules/blockonomics/views/js/angular-qrcode.js'
-        );
-        $this->registerJavascript(
-            'angular-resource',
-            'modules/blockonomics/views/js/angular-resource.min.js'
-        );
-        $this->registerJavascript(
-            'app',
-            'modules/blockonomics/views/js/app.js'
+            'checkout',
+            'modules/blockonomics/views/js/checkout.js'
         );
     }
     public function postProcess()
@@ -255,31 +247,20 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 'id_cart' => (int)$cart->id
                 ),
             true
-        );
-
-        $base_websocket_url = ($crypto['code']  == 'bch') ?
-        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
-        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_WEBSOCKET_URL;
+        );        
 
         //Make $crypto['code'] caps before sending it to the payment.tpl
-        $crypto['code'] = Tools::strtoupper($crypto['code']);
-
         $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
-            'status' => -1,
             'addr' => $address,
-            'txid' => "",
-            'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
-            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => $base_websocket_url,
-            'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
-            'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
-            'time_remaining' => $time_remaining,
+            'time_period' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
             'crypto' => $crypto,
+            'payment_uri' => $this->get_payment_uri($crypto['uri'], $address, $bits),
+            'order_amount' => $this->fix_displaying_small_values($bits),
+            'crypto_rate_str' => $this->get_crypto_rate_from_params($total, $bits),
         ));
 
         $this->setTemplate(
@@ -354,5 +335,26 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 
         echo $unable_to_generate;
         die();
+    }
+
+    private function get_payment_uri($uri, $addr, $amount)
+    {
+        return $uri . '://' . $addr . '?amount=' . $amount;
+    }
+    
+    private function fix_displaying_small_values($satoshi)
+    {
+        if ($satoshi < 10000){
+            return rtrim(number_format($satoshi/1.0e8, 8),0);
+        } else {
+            return $satoshi/1.0e8;
+        }
+    }
+
+    private function get_crypto_rate_from_params($value, $satoshi) {
+        // Crypto Rate is re-calculated here and may slightly differ from the rate provided by Blockonomics
+        // This is required to be recalculated as the rate is not stored anywhere in $order, only the converted satoshi amount is.
+        // This method also helps in having a constant conversion and formatting for both Initial Load and API Refresh
+        return number_format($value*1.0e8/$satoshi, 2, '.', '');
     }
 }

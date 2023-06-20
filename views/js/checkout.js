@@ -1,8 +1,12 @@
 'use strict';
 class Blockonomics {
-    constructor({ checkout_id = 'blockonomics_checkout' } = {}) {
+    constructor({
+        checkout_id = 'blockonomics_checkout',
+        refresh_mode = ''
+    } = {}) {
         // User Params
         this.checkout_id = checkout_id;
+        this.refresh_mode = refresh_mode;
 
         // Initialise
         this.init();
@@ -174,6 +178,7 @@ class Blockonomics {
 
     connect_to_ws() {
         //Connect and Listen on websocket for payment notification
+        console.log(this.data);
         var ws = new ReconnectingWebSocket(
             'wss://' +
             (this.data.crypto.code == 'btc'
@@ -182,6 +187,8 @@ class Blockonomics {
             '.blockonomics.co/payment/' +
             this.data.crypto_address
         );
+        console.log(this.data);
+        lo
         let $this = this;
 
         ws.onmessage = function (evt) {
@@ -363,29 +370,32 @@ class Blockonomics {
 
         // Stop Progress Counter
         clearInterval(this.progress.interval);
+        if (this.refresh_mode == 'api') {
+            fetch(this.data.get_order_amount_url, { method: 'GET' })
+                .then((res) => {
+                    if (!res.ok) {
+                        location.reload();
+                    } else {
+                        return res.json();
+                    }
+                })
+                .then((res) => {
+                    this._update_order_params(res);
+                    this._set_refresh_loading(false);
+                })
+                .catch((err) => {
+                    // Enable the button anyways so that user can retry
+                    this._set_refresh_loading(false);
 
-        fetch(this.data.get_order_amount_url, { method: 'GET' })
-            .then((res) => {
-                if (!res.ok) {
+                    // Log to Console for Debuggin by Admin as it's probably a CORS, Network or JSON Decode Issue
+                    console.log('Blockonomics AJAX Error: ', err);
+
+                    // Fallback
                     location.reload();
-                } else {
-                    return res.json();
-                }
-            })
-            .then((res) => {
-                this._update_order_params(res);
-                this._set_refresh_loading(false);
-            })
-            .catch((err) => {
-                // Enable the button anyways so that user can retry
-                this._set_refresh_loading(false);
-
-                // Log to Console for Debuggin by Admin as it's probably a CORS, Network or JSON Decode Issue
-                console.log('Blockonomics AJAX Error: ', err);
-
-                // Fallback
-                location.reload();
-            });
+                });
+        } else {
+            setTimeout(() => location.reload(), 1000)
+        }
     }
 
     _update_order_params(data) {
