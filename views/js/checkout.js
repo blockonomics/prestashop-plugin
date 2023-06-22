@@ -2,7 +2,7 @@
 class Blockonomics {
     constructor({
         checkout_id = 'blockonomics_checkout',
-        refresh_mode = ''
+        refresh_mode = 'reload'
     } = {}) {
         // User Params
         this.checkout_id = checkout_id;

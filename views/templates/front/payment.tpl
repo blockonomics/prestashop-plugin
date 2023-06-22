@@ -49,7 +49,7 @@
                 <tr>
                     <th>
                         <!-- Order Address -->
-                        <label class="bnomics-address-text">{l s='To pay, send ' mod='blockonomics'}{strtolower($crypto['name'])}{l s=' to this adress' mod='blockonomics'}</label>
+                        <label class="bnomics-address-text">{l s='To pay, send' mod='blockonomics'} {strtolower($crypto['name'])} {l s='to this address' mod='blockonomics'}</label>
                         <label class="bnomics-copy-address-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
                         <div class="bnomics-copy-container">
                             <input type="text" value="{$addr}" id="bnomics-address-input" readonly/>
@@ -73,7 +73,7 @@
             <table>
                 <tr>
                     <th>
-                        <label class="bnomics-amount-text">{l s='Amount of ' mod='blockonomics'}{strtolower($crypto['name'])} ({strtoupper($crypto['code'])}){l s=' to send' mod='blockonomics'}</label>
+                        <label class="bnomics-amount-text">{l s='Amount of' mod='blockonomics'} {strtolower($crypto['name'])} ({strtoupper($crypto['code'])}) {l s='to send' mod='blockonomics'}</label>
                         <label class="bnomics-copy-amount-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
 
                         <div class="bnomics-copy-container" id="bnomics-amount-copy-container">
