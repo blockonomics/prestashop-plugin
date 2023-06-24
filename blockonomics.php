@@ -46,7 +46,7 @@ class Blockonomics extends PaymentModule
         $this->bootstrap = true;
         $this->ps_versions_compliancy = [
             'min' => '8.0',
-            'max' => '8.99.99',
+            'max' => _PS_VERSION_,
         ];
         $this->controllers = ['validation'];
         $this->module_key = '454392b952b7d0cfc55a656b3cdebb12';
