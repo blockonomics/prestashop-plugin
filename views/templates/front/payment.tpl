@@ -83,7 +83,7 @@
                         </div>
 
                         <small class="bnomics-crypto-price-timer">
-                            1 {strtoupper($crypto['code'])} = <span id="bnomics-crypto-rate"> {$crypto_rate_str}</span> {$currency_iso_code} {l s='updates in' mod='blockonomics'} <span class="bnomics-time-left">00:00 min</span>
+                            1 {strtoupper($crypto['code'])} = <span id="bnomics-crypto-rate">{$crypto_rate_str}</span> {$currency_iso_code} {l s='updates in' mod='blockonomics'} <span class="bnomics-time-left">00:00 min</span>
                         </small>
                     </th>
                 </tr>
@@ -98,6 +98,6 @@
         crypto_address: '{$addr}',
         finish_order_url: '{$redirect_link nofilter}',
         payment_uri: '{$payment_uri}',
-})
+    })
 </script>
 {/block}
