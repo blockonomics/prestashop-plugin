@@ -178,7 +178,6 @@ class Blockonomics {
 
     connect_to_ws() {
         //Connect and Listen on websocket for payment notification
-        console.log(this.data);
         var ws = new ReconnectingWebSocket(
             'wss://' +
             (this.data.crypto.code == 'btc'
@@ -187,8 +186,6 @@ class Blockonomics {
             '.blockonomics.co/payment/' +
             this.data.crypto_address
         );
-        console.log(this.data);
-        lo
         let $this = this;
 
         ws.onmessage = function (evt) {
