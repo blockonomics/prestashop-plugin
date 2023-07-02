@@ -221,20 +221,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         } else {
             $address = $order_in_crypto['addr'];
             $id_order = $order_in_crypto['id_order'];
-            $current_time = $order_in_crypto['timestamp'];
-            $time_remaining = $this->getTimeRemaining($order_in_crypto);
-            //if time runs out, restart the timer and fetch new crypto price
-            //store prices in database so that they are "frozen" until the end of the next time period
-            if (!$time_remaining) {
-                $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
-                $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
-                .time().", bits=$bits WHERE id_cart = $cart->id";
-                Db::getInstance()->Execute($query);
-                $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
-            } else {
-                $total = $order_in_crypto['value'];
-                $bits = $order_in_crypto['bits'];
-            }
+            
+            $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
+            $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
+            .time().", bits=$bits WHERE id_cart = $cart->id";
+            Db::getInstance()->Execute($query);
         }
 
         $redirect_link =  $this->context->link->getModuleLink(
@@ -266,8 +257,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
         );
-        //Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
-        //Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
     private function addInvoiceNote($id_order, $crypto, $address)
@@ -281,21 +270,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $invoice->note = $invoice->note . "\r\n" . $invoice_note;
             $invoice->save();
         }
-    }
-
-
-    private function getTimeRemaining($order)
-    {
-        if ($order) {
-            $blockonomics = $this->module;
-            $blockonomics->setShopContextAll();
-            $time_remaining = ($order['timestamp'] +
-            (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
-            if ($time_remaining > 0) {
-                return $time_remaining;
-            }
-        }
-        return false;
     }
 
     private function getBits($blockonomics, $crypto, $currency, $total)
