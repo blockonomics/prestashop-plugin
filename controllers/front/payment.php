@@ -37,24 +37,16 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             ['position' => 'head']
         );
         $this->registerJavascript(
-            'angular',
-            'modules/blockonomics/views/js/angular.js'
+            'qrious',
+            'modules/blockonomics/views/js/vendors/qrious.min.js'
         );
         $this->registerJavascript(
-            'vendor',
-            'modules/blockonomics/views/js/vendors.min.js'
+            'ws',
+            'modules/blockonomics/views/js/vendors/reconnecting-websocket.min.js'
         );
         $this->registerJavascript(
-            'qrcode',
-            'modules/blockonomics/views/js/angular-qrcode.js'
-        );
-        $this->registerJavascript(
-            'angular-resource',
-            'modules/blockonomics/views/js/angular-resource.min.js'
-        );
-        $this->registerJavascript(
-            'app',
-            'modules/blockonomics/views/js/app.js'
+            'checkout',
+            'modules/blockonomics/views/js/checkout.js'
         );
     }
 
@@ -229,20 +221,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         } else {
             $address = $order_in_crypto['addr'];
             $id_order = $order_in_crypto['id_order'];
-            $current_time = $order_in_crypto['timestamp'];
-            $time_remaining = $this->getTimeRemaining($order_in_crypto);
-            // if time runs out, restart the timer and fetch new crypto price
-            // store prices in database so that they are "frozen" until the end of the next time period
-            if (!$time_remaining) {
-                $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
-                $query = 'UPDATE ' . _DB_PREFIX_ . 'blockonomics_bitcoin_orders SET timestamp='
-                . time() . ", bits=$bits WHERE id_cart = $cart->id";
-                Db::getInstance()->Execute($query);
-                $time_remaining = Configuration::get('BLOCKONOMICS_TIMEPERIOD');
-            } else {
-                $total = $order_in_crypto['value'];
-                $bits = $order_in_crypto['bits'];
-            }
+            
+            $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
+            $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
+            .time().", bits=$bits WHERE id_cart = $cart->id";
+            Db::getInstance()->Execute($query);
         }
 
         $redirect_link = $this->context->link->getModuleLink(
@@ -255,38 +238,25 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 'id_cart' => (int) $cart->id,
                 ],
             true
-        );
+        );        
 
-        $base_websocket_url = ($crypto['code'] == 'bch') ?
-        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_BCH_WEBSOCKET_URL :
-        BlockonomicsPaymentModuleFrontController::BLOCKONOMICS_WEBSOCKET_URL;
-
-        // Make $crypto['code'] caps before sending it to the payment.tpl
-        $crypto['code'] = Tools::strtoupper($crypto['code']);
-
-        $this->context->smarty->assign([
+        //Make $crypto['code'] caps before sending it to the payment.tpl
+        $this->context->smarty->assign(array(
             'id_order' => (int) $id_order,
-            'status' => -1,
             'addr' => $address,
-            'txid' => '',
-            'bits' => rtrim(sprintf('%.8f', $bits / 1.0e8), '0'),
             'value' => (float) $total,
-            'base_url' => Configuration::get('BLOCKONOMICS_BASE_URL'),
-            'base_websocket_url' => $base_websocket_url,
-            'timestamp' => $current_time,
             'currency_iso_code' => $currency->iso_code,
-            'bits_payed' => 0,
             'redirect_link' => $redirect_link,
-            'timeperiod' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
-            'time_remaining' => $time_remaining,
+            'time_period' => Configuration::get('BLOCKONOMICS_TIMEPERIOD'),
             'crypto' => $crypto,
-        ]);
+            'payment_uri' => $this->get_payment_uri($crypto['uri'], $address, $bits),
+            'order_amount' => $this->fix_displaying_small_values($bits),
+            'crypto_rate_str' => $this->get_crypto_rate_from_params($total, $bits),
+        ));
 
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
         );
-        // Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', array(), true));
-        // Tools::redirectLink(Tools::getHttpHost(true, true) . __PS_BASE_URI__ .'index.php?controller=order-confirmation?id_cart='.(int)($cart->id).'&id_module='.(int)($blockonomics->id).'&id_order='.$blockonomics->currentOrder.'&key='.$customer->secure_key);
     }
 
     private function addInvoiceNote($id_order, $crypto, $address)
@@ -300,21 +270,6 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             $invoice->note = $invoice->note . "\r\n" . $invoice_note;
             $invoice->save();
         }
-    }
-
-    private function getTimeRemaining($order)
-    {
-        if ($order) {
-            $blockonomics = $this->module;
-            $blockonomics->setShopContextAll();
-            $time_remaining = ($order['timestamp'] +
-            (Configuration::get('BLOCKONOMICS_TIMEPERIOD') * 60) - time()) / 60;
-            if ($time_remaining > 0) {
-                return $time_remaining;
-            }
-        }
-
-        return false;
     }
 
     private function getBits($blockonomics, $crypto, $currency, $total)
@@ -354,5 +309,26 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
 
         echo $unable_to_generate;
         exit;
+    }
+
+    private function get_payment_uri($uri, $addr, $amount)
+    {
+        return $uri . '://' . $addr . '?amount=' . $amount;
+    }
+    
+    private function fix_displaying_small_values($satoshi)
+    {
+        if ($satoshi < 10000){
+            return rtrim(number_format($satoshi/1.0e8, 8),0);
+        } else {
+            return $satoshi/1.0e8;
+        }
+    }
+
+    private function get_crypto_rate_from_params($value, $satoshi) {
+        // Crypto Rate is re-calculated here and may slightly differ from the rate provided by Blockonomics
+        // This is required to be recalculated as the rate is not stored anywhere in $order, only the converted satoshi amount is.
+        // This method also helps in having a constant conversion and formatting for both Initial Load and API Refresh
+        return number_format($value*1.0e8/$satoshi, 2, '.', '');
     }
 }
