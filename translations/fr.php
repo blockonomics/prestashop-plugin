@@ -1,13 +1,13 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97']
     = 'Bitcoin - Blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b']
     = 'Module de paiement par Bitcoin';
 $_MODULE['<{blockonomics}prestashop>blockonomics_876f23178c29dc2552c0b48bf23cd9bd']
-    = 'Êtes-vous sûr de vouloir désinstaller le module ?';
+    = "Êtes-vous sûr de vouloir désinstaller le module\u{a0}?";
 $_MODULE['<{blockonomics}prestashop>blockonomics_2f14ecdf24da27a9fb0ded962aa17e8c']
     = 'Veuillez entrer une clé API';
 $_MODULE['<{blockonomics}prestashop>blockonomics_575792812af3733426415dc226913037']
@@ -23,7 +23,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_98c2637920a4f98d40f7f6b0fc2fd37
 $_MODULE['<{blockonomics}prestashop>blockonomics_c3d515262545a5bde7c683f68afe06f9']
     = 'guide de dépannage';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f75cbf4937d2f1f31e6a4c727ebfee7b']
-    = 'La configuration est terminée !';
+    = "La configuration est terminée\u{a0}!";
 $_MODULE['<{blockonomics}prestashop>blockonomics_e576911d3083c76abba01c8a03842856']
     = 'Paramètres enregistrés. Cliquez sur Tester la configuration pour vérifier l\'installation.';
 $_MODULE['<{blockonomics}prestashop>blockonomics_f4f70727dc34561dfde1a3c529b6205c']
@@ -83,14 +83,14 @@ $_MODULE['<{blockonomics}prestashop>payment_ea08ae01e95bb85ba4d51f7fa224a956']
 $_MODULE['<{blockonomics}prestashop>payment_df9e1aa4940f7a34263d65ef41b87cf1']
     = 'min';
 $_MODULE['<{blockonomics}prestashop>payment_7f0801830c4f3ed63e81fc0053177394']
-    = 'Comment payer ? | Consulter les avis sur cette boutique';
+    = "Comment payer\u{a0}? | Consulter les avis sur cette boutique";
 $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea']
     = 'Proposé par Blockonomics';
 $_MODULE['<{blockonomics}prestashop>no_crypto_7a686f1321744105bd4183854107d431']
     = 'Aucune crypto-monnaie n\'est activée pour les paiements';
 $_MODULE['<{blockonomics}prestashop>no_crypto_6387ce01d8a5c7eff4bfc2e74afc1767']
-    = 'Note à l\'administrateur : Peut être activée via '.
-        'Administrateur PrestaShop > Modules > Gestionnaire de modules > Bitcoin - Blockonomics > Monnaies';
+    = "Note à l'administrateur\u{a0}: Peut être activée via " .
+        "Administrateur PrestaShop >\u{a0}Modules > Gestionnaire de modules > Bitcoin - Blockonomics > Monnaies";
 $_MODULE['<{blockonomics}prestashop>select_03a7faed722f23ed1f61d3a49425200b']
     = 'Pay avec';
 $_MODULE['<{blockonomics}prestashop>validation_02cb6e7914265feb537fe7078c7a5649']
