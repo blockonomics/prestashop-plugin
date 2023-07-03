@@ -221,10 +221,12 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         } else {
             $address = $order_in_crypto['addr'];
             $id_order = $order_in_crypto['id_order'];
-            
+
             $bits = $this->getBits($blockonomics, $crypto['code'], $currency, $total);
-            $query = "UPDATE "._DB_PREFIX_."blockonomics_bitcoin_orders SET timestamp="
-            .time().", bits=$bits WHERE id_cart = $cart->id";
+            $query = 'UPDATE ' . _DB_PREFIX_ .
+                'blockonomics_bitcoin_orders SET timestamp=' .
+                time() . ', bits=' . $bits .
+                ' WHERE id_cart = ' . $cart->id;
             Db::getInstance()->Execute($query);
         }
 
@@ -238,10 +240,10 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                 'id_cart' => (int) $cart->id,
                 ],
             true
-        );        
+        );
 
-        //Make $crypto['code'] caps before sending it to the payment.tpl
-        $this->context->smarty->assign(array(
+        // Make $crypto['code'] caps before sending it to the payment.tpl
+        $this->context->smarty->assign([
             'id_order' => (int) $id_order,
             'addr' => $address,
             'value' => (float) $total,
@@ -252,7 +254,7 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
             'payment_uri' => $this->get_payment_uri($crypto['uri'], $address, $bits),
             'order_amount' => $this->fix_displaying_small_values($bits),
             'crypto_rate_str' => $this->get_crypto_rate_from_params($total, $bits),
-        ));
+        ]);
 
         $this->setTemplate(
             'module:blockonomics/views/templates/front/payment.tpl'
@@ -315,20 +317,21 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
     {
         return $uri . '://' . $addr . '?amount=' . $amount;
     }
-    
+
     private function fix_displaying_small_values($satoshi)
     {
-        if ($satoshi < 10000){
-            return rtrim(number_format($satoshi/1.0e8, 8),0);
+        if ($satoshi < 10000) {
+            return rtrim(number_format($satoshi / 1.0e8, 8), 0);
         } else {
-            return $satoshi/1.0e8;
+            return $satoshi / 1.0e8;
         }
     }
 
-    private function get_crypto_rate_from_params($value, $satoshi) {
+    private function get_crypto_rate_from_params($value, $satoshi)
+    {
         // Crypto Rate is re-calculated here and may slightly differ from the rate provided by Blockonomics
         // This is required to be recalculated as the rate is not stored anywhere in $order, only the converted satoshi amount is.
         // This method also helps in having a constant conversion and formatting for both Initial Load and API Refresh
-        return number_format($value*1.0e8/$satoshi, 2, '.', '');
+        return number_format($value * 1.0e8 / $satoshi, 2, '.', '');
     }
 }
