@@ -28,6 +28,12 @@
             <div class="bnomics-spinner"></div>
         </div>
 
+        <!-- Display Error -->
+        <div class="bnomics-display-error">
+            <h2>{l s='Display Error'  mod='blockonomics'}{$id_order}</h2>
+            <p>{l s='Unable to render correctly, Note to Administrator: Please contact blockonomics support for resolution.'  mod='blockonomics'}{$id_order}</p>
+        </div>
+
         <!-- Blockonomics Checkout Panel -->    
         <div class="bnomics-order-panel">
             <table>
@@ -49,7 +55,7 @@
                 <tr>
                     <th>
                         <!-- Order Address -->
-                        <label class="bnomics-address-text">{l s='To pay, send ' mod='blockonomics'}{strtolower($crypto['name'])}{l s=' to this adress' mod='blockonomics'}</label>
+                        <label class="bnomics-address-text">{l s='To pay, send' mod='blockonomics'} {strtolower($crypto['name'])} {l s='to this address' mod='blockonomics'}</label>
                         <label class="bnomics-copy-address-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
                         <div class="bnomics-copy-container">
                             <input type="text" value="{$addr}" id="bnomics-address-input" readonly/>
@@ -73,7 +79,7 @@
             <table>
                 <tr>
                     <th>
-                        <label class="bnomics-amount-text">{l s='Amount of ' mod='blockonomics'}{strtolower($crypto['name'])} ({strtoupper($crypto['code'])}){l s=' to send' mod='blockonomics'}</label>
+                        <label class="bnomics-amount-text">{l s='Amount of' mod='blockonomics'} {strtolower($crypto['name'])} ({strtoupper($crypto['code'])}) {l s='to send' mod='blockonomics'}</label>
                         <label class="bnomics-copy-amount-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
 
                         <div class="bnomics-copy-container" id="bnomics-amount-copy-container">
@@ -83,7 +89,7 @@
                         </div>
 
                         <small class="bnomics-crypto-price-timer">
-                            1 {strtoupper($crypto['code'])} = <span id="bnomics-crypto-rate"> {$crypto_rate_str}</span> {$currency_iso_code} {l s='updates in' mod='blockonomics'} <span class="bnomics-time-left">00:00 min</span>
+                            1 {strtoupper($crypto['code'])} = <span id="bnomics-crypto-rate">{$crypto_rate_str}</span> {$currency_iso_code} {l s='updates in' mod='blockonomics'} <span class="bnomics-time-left">00:00 min</span>
                         </small>
                     </th>
                 </tr>
@@ -92,12 +98,16 @@
     </div>
 </div>
 <script>
+    function decodeEscapedHtml(text) {
+        return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
+    }
+
     var blockonomics_data = JSON.stringify({
         time_period: {$time_period},
-        crypto:  JSON.parse('{json_encode($crypto) nofilter}'),
+        crypto:  JSON.parse(decodeEscapedHtml('{json_encode($crypto)}')),
         crypto_address: '{$addr}',
-        finish_order_url: '{$redirect_link nofilter}',
+        finish_order_url: decodeEscapedHtml('{$redirect_link}'),
         payment_uri: '{$payment_uri}',
-})
+    })
 </script>
 {/block}
