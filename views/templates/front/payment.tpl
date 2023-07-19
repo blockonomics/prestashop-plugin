@@ -28,6 +28,12 @@
             <div class="bnomics-spinner"></div>
         </div>
 
+        <!-- Display Error -->
+        <div class="bnomics-display-error">
+            <h2>{l s='Display Error'  mod='blockonomics'}{$id_order}</h2>
+            <p>{l s='Unable to render correctly, Note to Administrator: Please contact blockonomics support for resolution.'  mod='blockonomics'}{$id_order}</p>
+        </div>
+
         <!-- Blockonomics Checkout Panel -->    
         <div class="bnomics-order-panel">
             <table>
@@ -92,11 +98,15 @@
     </div>
 </div>
 <script>
+    function decodeEscapedHtml(text) {
+        return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
+    }
+
     var blockonomics_data = JSON.stringify({
         time_period: {$time_period},
-        crypto:  JSON.parse('{json_encode($crypto) nofilter}'),
+        crypto:  JSON.parse(decodeEscapedHtml('{json_encode($crypto)}')),
         crypto_address: '{$addr}',
-        finish_order_url: '{$redirect_link nofilter}',
+        finish_order_url: decodeEscapedHtml('{$redirect_link}'),
         payment_uri: '{$payment_uri}',
     })
 </script>
