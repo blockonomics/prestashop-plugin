@@ -1,5 +1,6 @@
-{*
- * 2011-2022 Blockonomics
+<?php
+/**
+ * 2011-2016 Blockonomics
  *
  * NOTICE OF LICENSE
  *
@@ -12,16 +13,17 @@
  * to license@blockonomics.co so we can send you a copy immediately.
  *
  * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2023 Blockonomics
+ * @copyright 2011-2016 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
- *}
+ */
 
-<div class="bnomics-order-container">
-    <h3>
-    {l s='No crypto currencies are enabled for checkout' mod='blockonomics'}
-    </h3>
-    <p>
-    {l s='Note to webmaster: Can be enabled via PrestaShop Admin > Modules > Module manager > Bitcoin - Blockonomics > Currencies' mod='blockonomics'}
-    </p>
-</div>
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+    
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+    
+header("Location: ../");
+exit;
