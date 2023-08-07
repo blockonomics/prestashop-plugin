@@ -12,7 +12,7 @@
  * to license@blockonomics.co so we can send you a copy immediately.
  *
  * @author    Blockonomics Admin <admin@blockonomics.co>
- * @copyright 2023 Blockonomics
+ * @copyright 2011-2022 Blockonomics
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of Blockonomics
  *}
