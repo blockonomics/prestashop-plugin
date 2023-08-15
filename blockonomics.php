@@ -71,11 +71,11 @@ class Blockonomics extends PaymentModule
 
     public function install()
     {
-        if (!parent::install() or
-            !$this->installDB() or
-            !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', null) or
-            !$this->registerHook('paymentOptions') or
-            !$this->registerHook('actionValidateOrder')
+        if (!parent::install()
+            or !$this->installDB()
+            or !$this->installOrder('BLOCKONOMICS_ORDER_STATE_WAIT', 'Awaiting Bitcoin Payment', null)
+            or !$this->registerHook('paymentOptions')
+            or !$this->registerHook('actionValidateOrder')
         ) {
             return false;
         }
@@ -87,8 +87,8 @@ class Blockonomics extends PaymentModule
 
     public function uninstall()
     {
-        if (!parent::uninstall() or
-            !$this->uninstallDB()
+        if (!parent::uninstall()
+            or !$this->uninstallDB()
         ) {
             return false;
         }

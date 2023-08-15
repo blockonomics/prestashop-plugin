@@ -58,11 +58,11 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
         $blockonomics->setShopContextAll();
         $crypto = $blockonomics->getActiveCurrencies()[Tools::getValue('crypto')];
 
-        if (!isset($cart->id) or
-            $cart->id_customer == 0 or
-            $cart->id_address_delivery == 0 or
-            $cart->id_address_invoice == 0 or
-            !$blockonomics->active
+        if (!isset($cart->id)
+            or $cart->id_customer == 0
+            or $cart->id_address_delivery == 0
+            or $cart->id_address_invoice == 0
+            or !$blockonomics->active
         ) {
             Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
         }
@@ -181,8 +181,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
-        // We have an order, but not in this crypto
         } elseif ($order && !$order_in_crypto) {
+            // We have an order, but not in this crypto
             $id_order = $order['id_order'];
             $id_cart = $order['id_cart'];
             $current_time = time();
@@ -217,8 +217,8 @@ class BlockonomicsPaymentModuleFrontController extends ModuleFrontController
                     (int) $bits .
                     "', 0)"
             );
-        // else, reuse the order we have
         } else {
+            // else, reuse the order we have
             $address = $order_in_crypto['addr'];
             $id_order = $order_in_crypto['id_order'];
 
