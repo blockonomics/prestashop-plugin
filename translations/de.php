@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97']
     = 'Bitcoin - Blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b']
@@ -31,7 +31,7 @@ $_MODULE['<{blockonomics}prestashop>blockonomics_f4f70727dc34561dfde1a3c529b6205
 $_MODULE['<{blockonomics}prestashop>blockonomics_d876ff8da67c3731ae25d8335a4168b4']
     = 'API-Schlüssel';
 $_MODULE['<{blockonomics}prestashop>blockonomics_4090c73f435e12febebe689cdf79031e']
-    = 'URL HTTP-CALLBACK ';
+    = "URL HTTP-CALLBACK\u{a0}";
 $_MODULE['<{blockonomics}prestashop>blockonomics_ff64c6d108f9d4760aaf521fbbabbe8f']
     = 'Dauer';
 $_MODULE['<{blockonomics}prestashop>blockonomics_1d916369325e045bba284bcbce35ccaf']
@@ -89,8 +89,8 @@ $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea']
 $_MODULE['<{blockonomics}prestashop>no_crypto_7a686f1321744105bd4183854107d431']
     = 'Für den Zahlvorgang sind keine Kryptowährungen aktiviert';
 $_MODULE['<{blockonomics}prestashop>no_crypto_6387ce01d8a5c7eff4bfc2e74afc1767']
-    = 'Hinweis an den Webmaster: Aktivierung über '.
-        'PrestaShop Admin > Module > Modul-Manager > Bitcoin - Blockonomics > Währungen';
+    = 'Hinweis an den Webmaster: Aktivierung über ' .
+        "PrestaShop Admin >\u{a0}Module > Modul-Manager > Bitcoin - Blockonomics > Währungen";
 $_MODULE['<{blockonomics}prestashop>select_03a7faed722f23ed1f61d3a49425200b']
     = 'Bezahlen mit';
 $_MODULE['<{blockonomics}prestashop>validation_02cb6e7914265feb537fe7078c7a5649']

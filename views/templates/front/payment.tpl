@@ -98,15 +98,11 @@
     </div>
 </div>
 <script>
-    function decodeEscapedHtml(text) {
-        return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
-    }
-
     var blockonomics_data = JSON.stringify({
         time_period: {$time_period|escape:'htmlall':'UTF-8'},
         crypto:  JSON.parse('{$crypto|@json_encode|escape:'javascript':'UTF-8'}'.replaceAll('&quot;', '"')) ,
         crypto_address: '{$addr|escape:'htmlall':'UTF-8'}',
-        finish_order_url: decodeEscapedHtml('{$redirect_link|escape:'htmlall':'UTF-8'}'),
+        finish_order_url: '{$redirect_link|escape:'htmlall':'UTF-8'}',
         payment_uri: '{$payment_uri|escape:'htmlall':'UTF-8'}',
     })
 </script>

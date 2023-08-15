@@ -23,7 +23,6 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
 class BlockonomicsValidationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
@@ -35,14 +34,15 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
         $active_cryptos = $blockonomics->getActiveCurrencies();
         // Check how many crypto currencies are activated
         if (count($active_cryptos) > 1) {
-            Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'select', array(), true));
+            Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'select', [], true));
         } elseif (count($active_cryptos) === 1) {
-            $crypto = array("crypto"=>array_keys($active_cryptos)[0]);
+            $crypto = ['crypto' => array_keys($active_cryptos)[0]];
             Tools::redirect($this->context->link->getModuleLink($blockonomics->name, 'payment', $crypto, true));
         } elseif (count($active_cryptos) === 0) {
             $this->setTemplate('module:blockonomics/views/templates/front/no_crypto.tpl');
         }
     }
+
     private function displayExtError($blockonomics)
     {
         $missing_extension =
@@ -58,6 +58,6 @@ class BlockonomicsValidationModuleFrontController extends ModuleFrontController
             );
 
         echo $missing_extension;
-        die();
+        exit;
     }
 }

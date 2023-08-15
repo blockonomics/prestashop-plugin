@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{blockonomics}prestashop>blockonomics_2cd248faec609d132624980e19c7ca97']
     = 'Bitcoin – Blockonomics';
 $_MODULE['<{blockonomics}prestashop>blockonomics_c0de713a1b5c4354ebbd1e2227ce971b']
@@ -89,7 +89,7 @@ $_MODULE['<{blockonomics}prestashop>payment_69616e342259a7da05c26802caf4f0ea']
 $_MODULE['<{blockonomics}prestashop>no_crypto_7a686f1321744105bd4183854107d431']
     = 'Na pokladně nejsou umožněny žádné kryptoměny';
 $_MODULE['<{blockonomics}prestashop>no_crypto_6387ce01d8a5c7eff4bfc2e74afc1767']
-    = 'Poznámka pro webmastera: Lze je aktivovat prostřednictvím '.
+    = 'Poznámka pro webmastera: Lze je aktivovat prostřednictvím ' .
         'PrestaShop Admin > Moduly > Správce modulů > Bitcoin – Blockonomics > Měny ';
 $_MODULE['<{blockonomics}prestashop>select_03a7faed722f23ed1f61d3a49425200b']
     = 'Platit pomocí';
