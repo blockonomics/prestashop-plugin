@@ -102,7 +102,7 @@
         time_period: {$time_period|escape:'htmlall':'UTF-8'},
         crypto:  JSON.parse('{$crypto|@json_encode|escape:'javascript':'UTF-8'}'.replaceAll('&quot;', '"')) ,
         crypto_address: '{$addr|escape:'htmlall':'UTF-8'}',
-        finish_order_url: '{$redirect_link|escape:'htmlall':'UTF-8'}',
+        finish_order_url: '{$redirect_link|escape:'htmlall':'UTF-8'}'.replaceAll('&amp;', '&'),
         payment_uri: '{$payment_uri|escape:'htmlall':'UTF-8'}',
     })
 </script>
